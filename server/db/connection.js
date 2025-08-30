@@ -1,7 +1,7 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 
-const URI = process.env.ATLAS_URI || "";
-const client = new MongoClient(URI, {
+const uri = process.env.ATLAS_URI || "";
+const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -19,6 +19,12 @@ try {
   console.error(err);
 }
 
-let db = client.db("cats");
+let db = client.db("cat-cafe");
+const cats = db.collection('cats');
+
+// queries for cat named garfield
+const query = {cat_name: 'Garfield'};
+const cat = await cats.findOne(query);
+console.log(cat);
 
 export default db;

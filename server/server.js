@@ -3,6 +3,7 @@ import cors from "cors";
 import cats from "./routes/cats.js";
 
 const PORT = process.env.PORT || 5050;
+const uri = process.env.ATLAS_URI || "";
 const app = express();
 
 app.use(cors());
