@@ -1,0 +1,25 @@
+{
+  "name": "asd-cat-cafe",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elluhhh/ASD-Cat-Cafe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elluhhh/ASD-Cat-Cafe/issues"
+  },
+  "homepage": "https://github.com/elluhhh/ASD-Cat-Cafe#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
