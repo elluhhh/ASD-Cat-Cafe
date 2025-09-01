@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
-// import cats from "./routes/cats.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 const app = express();
+app.use(cors());
 dotenv.config();
 
 const PORT = process.env.PORT || 5050;
