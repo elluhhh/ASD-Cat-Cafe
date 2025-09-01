@@ -1,4 +1,4 @@
-const bookings = require('models\bookingModel.js');
+const Booking = require('models\bookingModel.js');
 
 const getBookings = async(req, res) => {
     try {
@@ -11,7 +11,7 @@ const getBookings = async(req, res) => {
 
 const deleteBooking = async(req, res) => {
     try {
-        let bookingData = await bookings.deleteOne();
+        let bookingData = await Booking.findbyIdAndDelete(/*id here*/);
         res.send(bookingData)
     } catch (err) {
         res.status(500).send(err);
