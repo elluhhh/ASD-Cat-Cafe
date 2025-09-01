@@ -1,19 +1,31 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  branches:
+    include:
+      - main
+      - food-page
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  # Build
+  - script: echo "Building Cat Cafe Food Ordering feature on $(Build.SourceBranchName)"
+    displayName: "Build step"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  # Success
+  - script: |
+      curl -H "Content-Type: application/json" \
+           -X POST \
+           -d "{\"content\": \"Build succeeded on branch **$(Build.SourceBranchName)** (Build No: $(Build.BuildNumber))\"}" \
+           https://discord.com/api/webhooks/1405414484184530985/rWsABiW21gSr9cTAEE3wgYdgdJttYtsvuKuxECOtYlCehC1Kunsng-30Jnkb2siTmcOY
+    displayName: "Discord Notify (Success)"
+    condition: succeeded()
+
+  # Fail
+  - script: |
+      curl -H "Content-Type: application/json" \
+           -X POST \
+           -d "{\"content\": \"Build failed on branch **$(Build.SourceBranchName)** (Build No: $(Build.BuildNumber))\"}" \
+           https://discord.com/api/webhooks/1405414484184530985/rWsABiW21gSr9cTAEE3wgYdgdJttYtsvuKuxECOtYlCehC1Kunsng-30Jnkb2siTmcOY
+    displayName: "Discord Notify (Failure)"
+    condition: failed()
