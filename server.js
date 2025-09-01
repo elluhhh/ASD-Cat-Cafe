@@ -5,11 +5,9 @@ import { fileURLToPath } from 'url';
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.use(express.json());
+app.use(express.static('public'));
 
 app.listen(8080, () => {
     console.log('server is running');

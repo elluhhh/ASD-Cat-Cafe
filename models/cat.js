@@ -12,3 +12,5 @@ function createCat(name, gender, dob, breed, price, microchipId, colour, descrip
         isAdopted: false
     };
 }
+
+module.export = createCat;
