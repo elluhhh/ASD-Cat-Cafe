@@ -9,6 +9,7 @@ const bookingSchema = new mongoose.SchemaType({
     date_time: Date
 });
 
+//gets all bookings from db
 const Booking = mongoose.model('booking', bookingSchema);
 
 module.exports = Booking;
