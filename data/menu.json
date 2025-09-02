@@ -1,0 +1,6 @@
+[
+    { "id": 1, "name": "Cat-puccino", "category": "drink", "price": 4.5, "vegan": false, "description": "Pawprint foam", "image": "https://picsum.photos/seed/catpuccino/300/200" },
+    { "id": 2, "name": "Whisker Latte (Oat)", "category": "drink", "price": 5.0, "vegan": true,  "description": "Oat milk", "image": "https://picsum.photos/seed/oat/300/200" },
+    { "id": 3, "name": "Tuna Melt Toastie", "category": "food",  "price": 8.9, "vegan": false, "description": "Tuna & cheese", "image": "https://picsum.photos/seed/tuna/300/200" }
+  ]
+  
