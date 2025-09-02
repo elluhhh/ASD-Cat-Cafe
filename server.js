@@ -1,14 +1,22 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from 'url';
+const express = require("express");
+const bodyParser = require("body-parser");
+const catRoutes = require("./routes/catRoutes.js");
+const path = require("path");
 
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.listen(8080, () => {
-    console.log('server is running');
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use('/cat-display', catRoutes);
+
+app.get("/", (req, res) => {
+    res.render("index");
+});
+
+const PORT = 8080;
+app.listen(PORT, () => {
+    console.log(`server is running at host http://localhost:${PORT}`);
 });

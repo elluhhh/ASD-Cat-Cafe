@@ -1,6 +1,7 @@
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     background: #ffecd2;
+    min-height: 1200px;
 }
 
 h1 {
@@ -12,6 +13,7 @@ h1 {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
     padding: 50px;
+    margin-bottom: 40px;
 }
 
 .cat-card {
@@ -57,4 +59,20 @@ input[type=text] {
     margin-left: 5rem;
     min-width: 300px;
     padding: 10px;
+    border-radius: 10px;
+    border: 2px #e6cfc3 solid; 
+}
+
+a {
+    padding: 20px;
+    background: #fff8f0;
+    border: 2px #e6cfc3 solid;
+    margin-left: 5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    background: #eee5e0;
 }

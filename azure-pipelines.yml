@@ -18,8 +18,8 @@ steps:
 - script: npm ci
   displayName: 'Install dependencies'
 
-- script: echo linting
+- script: npm run lint
   displayName: 'Lint'
 
 - script: echo running tests!
-  displayName: 'Eventually run the tests'
+  displayName: 'Eventually run tests'
