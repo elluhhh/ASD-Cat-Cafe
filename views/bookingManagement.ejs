@@ -17,7 +17,7 @@
 				<label for="email">Email:</label>
 				<input type="text" placeholder="email@email.com" />
 				<label for="date">Date:</label>
-				<input type="text" placeholder="5/09/2025" />
+				<input type="date"/>
 				<input type="submit" value="Search" />
 			</div>
 
@@ -54,7 +54,7 @@
                     </td>
 					<td><%=booking.attendees_no%></td>
                     <td><%='$'+booking.total_price%></td>
-                    <td><button id="cancel">Cancel</button></td>
+                    <td id="cancel-td"><button id="cancel">Cancel</button></td>
 				</tr>
 				<% }); %>
 			</table>
