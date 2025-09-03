@@ -1,0 +1,19 @@
+th,
+td {
+	padding: 15px;
+	text-align: center;
+}
+
+#cancel {
+	background-color: red;
+	border: 3;
+	border-color: darkred;
+	color: white;
+	padding: 5px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+button:hover {
+	opacity: 0.75;
+}
