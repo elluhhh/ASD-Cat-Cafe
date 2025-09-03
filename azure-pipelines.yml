@@ -8,10 +8,6 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-  # Build
-  - script: echo "Building Cat Cafe Food Ordering feature on $(Build.SourceBranchName)"
-    displayName: "Build step"
-
   # Success
   - script: |
       curl -H "Content-Type: application/json" \
