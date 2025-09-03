@@ -1,4 +1,4 @@
-const Booking = require('models\bookingModel.js');
+const Booking = require('models/bookingModel.js');
 
 const getBookings = async(req, res) => {
     try {
@@ -13,7 +13,7 @@ const deleteBooking = async(req, res) => {
     try {
         //will get the userID from list of bookings sent from ejs
         let bookingData = await Booking.findbyIdAndDelete(req.param.userID);
-        res.redirect('/bookingManagement');
+        res.redirect('bookingManagement');
     } catch (err) {
         res.status(500).send(err);
     }
