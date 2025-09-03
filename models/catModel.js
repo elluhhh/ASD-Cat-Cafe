@@ -6,11 +6,11 @@ const catSchema = new mongoose.Schema({
     dob: String,
     breed: String,
     price: Number,
-    microchipId: Number,
+    microchipId: { type: Number, unique: true },
     colour: String,
     description: String,
     imageUrl: String,
-    isAdopted: Boolean
+    isAdopted: { type: Boolean, default: false }
 });
 
 // Create cat model with above schema
