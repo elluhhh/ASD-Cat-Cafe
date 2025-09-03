@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Cat Café — Cat Profiles</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/css/catProfile.css">
+</head>
+
+<body>
+  <div class="wrap">
+
+    <h1>🐾 Cat Profiles</h1>
+    <p class="muted">Add / Edit / Delete</p>
+
+    <!-- Form -->
+    <section class="panel">
+      <h2 class="panel-title" id="form-title">Add a cat</h2>
+      <form id="cat-form" class="grid">
+        <input type="hidden" id="id" />
+        <label>Name
+          <input id="name" required />
+        </label>
+        <label>Breed
+          <input id="breed" />
+        </label>
+        <label>Age (months)
+          <input id="ageMonths" type="number" min="0" />
+        </label>
+        <label>Adopted?
+          <select id="isAdopted">
+            <option value="false" selected>No</option>
+            <option value="true">Yes</option>
+          </select>
+        </label>
+        <label class="wide">Photo URL
+          <input id="imageUrl" placeholder="https://…" />
+        </label>
+        <div class="actions wide">
+          <button type="submit" class="btn primary">Save</button>
+          <button type="button" id="reset" class="btn">Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Table -->
+    <section class="panel">
+      <h2 class="panel-title">All cats</h2>
+      <table id="cats" class="table">
+        <thead>
+          <tr>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Breed</th>
+            <th>Age (m)</th>
+            <th>Adopted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody><!-- rows injected --></tbody>
+      </table>
+      <p class="empty" id="empty">No cats yet. Add one above 🐱</p>
+    </section>
+
+  </div><!-- ✅ closes .wrap -->
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script>
+    // --- tiny helpers
+    const $ = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const uid = () => 'id-' + Math.random().toString(36).slice(2, 10);
+
+    // --- storage
+    const KEY = 'cats';
+    const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
+    const save = (arr) => localStorage.setItem(KEY, JSON.stringify(arr));
+
+    // --- state
+    let cats = load();            // must be let (mutable)
+    let currentEditId = null;     // track which row is being edited
+
+    // --- view
+    const row = c => `<tr>
+    <td><img class="thumb" src="${c.imageUrl || 'https://placehold.co/80x80?text=Cat'}" alt=""></td>
+    <td>${c.name || '-'}</td>
+    <td>${c.breed || '-'}</td>
+    <td>${c.ageMonths ?? '-'}</td>
+    <td><span class="badge ${c.isAdopted ? 'yes' : 'no'}">${c.isAdopted ? 'Yes' : 'No'}</span></td>
+    <td>
+      <button data-edit="${c._id}" class="btn small">Edit</button>
+      <button data-del="${c._id}" class="btn small danger">Delete</button>
+    </td>
+  </tr>`;
+
+    function render() {
+      $('#cats tbody').innerHTML = cats.map(row).join('');
+      $('#empty').style.display = cats.length ? 'none' : 'block';
+      $$('button[data-edit]').forEach(b => b.onclick = () => loadIntoForm(b.dataset.edit));
+      $$('button[data-del]').forEach(b => b.onclick = () => removeCat(b.dataset.del));
+    }
+
+    // --- CRUD
+    function upsert(payload) {
+      const i = cats.findIndex(c => c._id === payload._id);
+      if (i >= 0) cats[i] = payload; else cats.push(payload);
+      save(cats);
+      render();                 // <— re-render immediately
+    }
+
+    function removeCat(id) {
+      if (!confirm('Delete this cat?')) return;
+      cats = cats.filter(c => c._id !== id);
+      save(cats);
+      render();                 // <— show removal now
+      if (currentEditId === id) resetForm();
+    }
+
+    // --- form
+    function collectForm() {
+      const id = currentEditId || $('#id').value || uid();   // keep same id when editing
+      return {
+        _id: id,
+        name: $('#name').value.trim(),
+        breed: $('#breed').value.trim() || '',
+        ageMonths: $('#ageMonths').value ? Number($('#ageMonths').value) : null,
+        isAdopted: $('#isAdopted').value === 'true',
+        imageUrl: $('#imageUrl').value.trim() || ''
+      };
+    }
+
+    function loadIntoForm(id) {
+      const c = cats.find(x => x._id === id);
+      if (!c) return;
+      currentEditId = id;                // enter edit mode
+      $('#id').value = c._id;            // keep hidden input in sync
+      $('#name').value = c.name || '';
+      $('#breed').value = c.breed || '';
+      $('#ageMonths').value = c.ageMonths ?? '';
+      $('#isAdopted').value = c.isAdopted ? 'true' : 'false';
+      $('#imageUrl').value = c.imageUrl || '';
+      $('#form-title').textContent = 'Edit cat';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetForm() {
+      $('#cat-form').reset();
+      $('#id').value = '';
+      currentEditId = null;              // exit edit mode
+      $('#form-title').textContent = 'Add a cat';
+      if (document.activeElement) document.activeElement.blur();
+    }
+
+    // --- events
+    $('#cat-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const p = collectForm();
+      if (!p.name) { alert('Name is required'); return; }
+      upsert(p);          // saves + re-renders
+      resetForm();        // back to Add mode
+    });
+    $('#reset').addEventListener('click', resetForm);
+
+    // --- boot
+    if (cats.length === 0) {
+      cats = [{ _id: uid(), name: 'Mochi', breed: 'DSH', ageMonths: 12, isAdopted: false, imageUrl: '' }];
+      save(cats);
+    }
+    render();
+  </script>
