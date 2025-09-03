@@ -11,8 +11,7 @@ const getBookings = async (req, res) => {
 
 const deleteBooking = async (req, res) => {
 	try {
-		//will get the userID from list of bookings sent from ejs
-		Booking.findbyIdAndDelete(req.param.userID);
+		Booking.findbyIdAndDelete(req.param.bookingID);
 		res.redirect("bookingManagement");
 	} catch (err) {
 		res.status(500).send(err);
@@ -21,11 +20,10 @@ const deleteBooking = async (req, res) => {
 
 const findBookings = async (req, res) => {
 	try {
-		const { id, email, date } = req.body;
+		const { id_, email } = req.body;
 		const bookingSearch = await Booking.find({
-			id_: id,
-			email: email,
-			date_time: date
+			id_: id_,
+			email: email
 		}).exec();
 		res.render("bookingManagement", { bookingSearch });
 	} catch (err) {
