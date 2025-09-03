@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const catSchema = new mongoose.Schema({
     name: String,
     gender: String,
-    dob: String,
+    dob: Date,
     breed: String,
     price: Number,
     microchipId: { type: Number, unique: true },
