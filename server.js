@@ -16,6 +16,10 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
+app.get("/cat-profile", (req, res) => {
+    res.render("cat-profile");
+})
+
 const PORT = 8080;
 app.listen(PORT, () => {
     console.log(`server is running at host http://localhost:${PORT}`);

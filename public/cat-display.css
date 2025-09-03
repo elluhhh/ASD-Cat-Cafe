@@ -13,7 +13,6 @@ h1 {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
     padding: 50px;
-    margin-bottom: 40px;
 }
 
 .cat-card {
@@ -51,7 +50,7 @@ h2 {
     margin: 0;
 }
 
-p {
+.intro {
     margin-left: 5rem;
 }
 
@@ -63,16 +62,48 @@ input[type=text] {
     border: 2px #e6cfc3 solid; 
 }
 
-a {
-    padding: 20px;
+.btn {
+    padding: 15px;
+    margin-left: 5rem;
     background: #fff8f0;
     border: 2px #e6cfc3 solid;
-    margin-left: 5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-radius: 10px;
     text-decoration: none;
     color: black;
+    margin-top: 2rem;
 }
 
-a:hover {
+.btn:hover {
     background: #eee5e0;
+    cursor: grab;
+}
+
+/* change link styling to parent styling */
+a {
+    all: unset;
+    display: inline-block;
+}
+
+.profile {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 90px;
+    max-width: 1200px;
+    gap: 2rem;
+}
+
+.left {
+    flex: 1;
+}
+
+.left img {
+    max-width: 100%;
+    height: auto;
+    border: 2px #e6cfc3 solid;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.details {
+    flex: 2;
 }

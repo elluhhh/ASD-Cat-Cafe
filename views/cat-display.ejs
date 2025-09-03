@@ -11,14 +11,22 @@
 
 <body>
     <h1>Meet the Cats!</h1>
-    <p>Browse the cats we have available for adoption below.</p>
-    <input type="text" id="searchBox" placeholder="Search by name, age, or gender">
+    <p class="intro">Browse the cats we have available for adoption below.</p>
+    <input type="text" id="searchBox" placeholder="Search by name or age">
+
+    <input type="radio" id="femaleCat" name="gender">
+    <label for="femaleCat">Female</label>
+    <input type="radio" id="maleCat" name="gender">
+    <label for="maleCat">Male</label>
+
+    <button class="btn" style="padding: 10px;">Clear Search</button>
+
     <div class="container">
-        <div class="cat-card">
+        <a href="/cat-profile"><div class="cat-card">
             <img src="/images/cat1.jpg" alt="Brown cat">
             <h2>Penny</h2>
             <p class="cat-info">Female, 3 Years Old</p>
-        </div>
+        </div></a>
         <div class="cat-card">
             <img src="/images/cat2.jpg" alt="Brown and white tabby cat standing in the sun">
             <h2>Bilbo</h2>
@@ -57,7 +65,7 @@
     </div>
 
     <!-- links back to index page -->
-    <a href="/">Go Back Home</a>
+    <a class="btn" href="/">Go Back Home</a>
 </body>
 
 </html>
