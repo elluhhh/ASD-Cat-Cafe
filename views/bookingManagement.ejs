@@ -4,11 +4,69 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>Bookings</title>
+        <title>Booking Management</title>
     </head>
 
     <body>
-        <p></p>
+        <form action ="/bookingManagement" method="POST">
+            <h3>Booking Lookup</h3>
+            <div>
+                <label for="id">Booking ID:</label>
+                <input type="text" placeholder="12356">
+                <label for="email">Email:</label>
+                <input type="text" placeholder="email@email.com">
+                <label for="date">Date:</label>
+                <input type="text" placeholder="5/09/2025">
+                <input type="submit" value="Search">
+            </div>
+        </form>
+
+        <ul>
+            <% bookings.forEach(booking => { %>
+               <li>
+                    <%= booking.id_ %> - <%=booking.first_name%>
+               </li> 
+            <%  }); %>
+        </ul>
+
+        <h1>
+            Booking Management
+        </h1>
+        <form action="/bookingManagement" method="POST">
+            <table>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Attendees No.</th>
+                
+                <tr>
+                    <td>
+                        123456
+                    </td>
+                    <td>
+                        Ella
+                    </td>
+                    <td>
+                        Gibbs
+                    </td>
+                    <td>
+                        ellagibbs@email.com
+                    </td>
+                    <td>
+                        5/09/2025
+                    </td>
+                    <td>
+                        5:00PM
+                    </td>
+                    <td>
+                        3
+                    </td>
+                </tr>
+            </table>
+        </form>
     </body>
 
 </html>
