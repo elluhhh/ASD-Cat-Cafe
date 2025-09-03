@@ -9,11 +9,11 @@
 
 	<body>
 		<h1>Booking Management</h1>
-		<form action="/bookingManagement" method="POST">
+		<form action="/bookingManagement" method="GET">
 			<h2>Booking Lookup</h3>
 			<div>
 				<label for="id">Booking ID:</label>
-				<input type="text" placeholder="12356" />
+				<input type="text" placeholder="123567890" id="idInput"/>
 				<label for="email">Email:</label>
 				<input type="text" placeholder="email@email.com" />
 				<label for="date">Date:</label>
@@ -22,7 +22,11 @@
 			</div>
 
             <ul>
-                
+                <!-- <%//bookingSearch.forEach(booking => {%>
+                    <li>
+                        <=%booking._id%>
+                    </li>
+                <% //}); %> -->
             </ul>
 
 		</form>
@@ -37,6 +41,7 @@
 				<th>Time</th>
 				<th>Attendees No.</th>
                 <th>Total Paid</th>
+                <th></th><th></th>
 
 				<% bookings.forEach(booking => { %>
 				<tr>
@@ -54,8 +59,9 @@
                     </td>
 					<td><%=booking.attendees_no%></td>
                     <td><%='$'+booking.total_price%></td>
-                    <td id="cancel-td"><button id="cancel">Cancel</button></td>
-				</tr>
+                    <td><button id="edit">Edit</button></td>
+                    <td><button onclick="return confirm('Are you sure you want to cancel this booking?')" id="cancel">Cancel</button></td>
+                </tr>
 				<% }); %>
 			</table>
 		</form>
