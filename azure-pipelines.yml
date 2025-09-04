@@ -5,41 +5,19 @@ trigger:
       - food-page
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: ubuntu-latest
 
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '18.x'
-    displayName: 'Use Node 18'
+- task: NodeTool@0
+  inputs:
+    versionSpec: '22.x'
+  displayName: Install Node.js
 
-  - script: npm ci
-    displayName: 'Install'
+- script: npm ci
+  displayName: Install dependencies
 
-  - script: npm run lint
-    displayName: 'Lint'
+- script: npm run lint
+  displayName: Lint
 
-  - script: npm run smoke
-    displayName: 'Smoke test'
-
-  - script: |
-      set -e
-      curl -sS -H "Content-Type: application/json" \
-           -X POST \
-           -d "{\"content\": \"Build succeeded on branch **$(Build.SourceBranchName)** (Build No: $(Build.BuildNumber))\"}" \
-           "$DISCORD_WEBHOOK"
-    displayName: "Discord Notify (Success)"
-    condition: succeeded()
-    env:
-      DISCORD_WEBHOOK: $(DISCORD_WEBHOOK)
-
-  - script: |
-      set -e
-      curl -sS -H "Content-Type: application/json" \
-           -X POST \
-           -d "{\"content\": \"Build failed on branch **$(Build.SourceBranchName)** (Build No: $(Build.BuildNumber))\"}" \
-           "$DISCORD_WEBHOOK"
-    displayName: "Discord Notify (Failure)"
-    condition: failed()
-    env:
-      DISCORD_WEBHOOK: $(DISCORD_WEBHOOK)
+- script: npm run smoke
+  displayName: Smoke test
