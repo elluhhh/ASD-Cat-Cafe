@@ -22,4 +22,4 @@ job: CatProfile
     displayName: 'Run Cat Profile Tests'
     steps:
       - script: echo Running Cat Profile Tests...
-        displayName: 'Run Cat Profile Tests'
+       
