@@ -9,16 +9,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-jobs:
-  - job: BMBuild
-    displayName: 'Install dependencies and Node.js'
-    steps:
-      - task: NodeTool@0
-        inputs: 
-          versionSpec: '22.x'
-      - script: npm ci
-
-  - job: CatProfile
+job: CatProfile
     displayName: 'Cat Profile Tests'
     steps:
       - script: echo Running Cat Profile Tests...
