@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Food Management - U118</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+    </head>
+    <body>
+        <h1>Staff Food Management</h1>
+        <p><a href="/">← Home</a> | <a href="/foodManagement/seed">Add Sample Data</a></p>
+        
+        <div style="display: flex; gap: 20px; margin: 20px 0;">
+            <div style="background: #fff; padding: 15px; border-radius: 10px; text-align: center;">
+                <h3><%= foods.length %></h3>
+                <p>Total Items</p>
+            </div>
+            <div style="background: #fff; padding: 15px; border-radius: 10px; text-align: center;">
+                <h3><%= foods.filter(f => f.status === 'Available').length %></h3>
+                <p>Available</p>
+            </div>
+            <div style="background: #fff; padding: 15px; border-radius: 10px; text-align: center;">
+                <h3><%= foods.filter(f => f.status === 'Unavailable').length %></h3>
+                <p>Unavailable</p>
+            </div>
+            <div style="background: #fff; padding: 15px; border-radius: 10px; text-align: center;">
+                <h3><%= foods.filter(f => f.stock < 10).length %></h3>
+                <p>Low Stock</p>
+            </div>
+        </div>
+
+        <h2>All Menu Items - U118 Implementation</h2>
+        <table>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Stock</th>
+            <th>Vegan</th>
+            <th>Description</th>
+            <% foods.forEach(food => { %>
+            <tr style="<%= food.status === 'Unavailable' ? 'opacity: 0.6;' : '' %>">
+                <td><%= food._id %></td>
+                <td><%= food.name %></td>
+                <td><%= food.category.toUpperCase() %></td>
+                <td>$<%= food.price.toFixed(2) %></td>
+                <td><span style="color: <%= food.status === 'Available' ? 'green' : 'red' %>"><%= food.status %></span></td>
+                <td style="<%= food.stock < 10 ? 'color: red; font-weight: bold;' : '' %>"><%= food.stock %></td>
+                <td><%= food.vegan ? '🌱 Yes' : 'No' %></td>
+                <td><%= food.description %></td>
+            </tr>
+            <% }); %>
+        </table>
+    </body>
+</html>

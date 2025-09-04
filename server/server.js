@@ -1,37 +1,28 @@
-import express from "express";
-import cors from "cors";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const bookingRoutes = require("./routes/bookingRoutes");
+const foodRoutes = require("./routes/foodRoutes");
 
 const app = express();
-app.use(cors());
-dotenv.config();
 
-const PORT = process.env.PORT || 5050;
-const uri = process.env.ATLAS_URI || "";
+mongoose
+    .connect(
+        "mongodb+srv://admin:cFBUZU6hozSWFbfk@cat-cafe-website.kycc7fg.mongodb.net/cat-cafe?retryWrites=true&w=majority&appName=cat-cafe-website"
+    )
+    .then(() => {
+        console.log("DB is connected");
+    });
 
-app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set("view engine", "ejs");
+
+app.use("/bookingManagement", bookingRoutes);
+app.use("/foodManagement", foodRoutes);
+
+app.get("/", (req, res) => {
+    res.render("index");
 });
 
-//connect to db
-mongoose.connect(uri).then(()=> {
-    console.log("DB is connected");
-});
-
-//trial get req
-//cat schema
-const catSchema = new mongoose.Schema({
-    name: String,
-    breed: String,
-    colour: String,
-    age: Number
-});
-
-const catModel = mongoose.model("cats", catSchema);
-
-//gets data from database
-app.get("/cats", async(req, res) => {
-    const catData = await catModel.find();
-    res.json(catData);
-});
+app.listen("8000");

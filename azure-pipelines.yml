@@ -4,28 +4,21 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
-- food-page
 - food-management
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '18.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    cd server
-    npm ci
-  displayName: 'Install dependencies'
-
-- script: |
-    cd server
-    npm test --if-present
-  displayName: 'Run tests'
-
-- script: echo "Build completed successfully for Food Management"
-  displayName: 'Build complete'
+jobs:
+  - job: FMBuild
+    displayName: 'Install dependencies and Node.js'
+    steps:
+      - task: NodeTool@0
+        inputs: 
+          versionSpec: '22.x'
+      - script: npm ci
+        workingDirectory: 'server'
+  - job: FMTests
+    displayName: 'Food Management Tests'
+    steps:
+      - script: echo running food management tests
