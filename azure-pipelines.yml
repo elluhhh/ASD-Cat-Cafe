@@ -17,3 +17,9 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+
+job: CatProfile
+    displayName: 'Run Cat Profile Tests'
+    steps:
+      - script: echo Running Cat Profile Tests...
+        displayName: 'Run Cat Profile Tests'
