@@ -43,7 +43,7 @@ const PORT = process.env.PORT || 4000;
 if (process.env.NODE_ENV !== 'test') {
   start()
     .then(() => {
-      app.listen(PORT, () => console.log(`API http://localhost:${PORT}`));
+      app.listen(PORT, () => console.log(`API http://localhost:${PORT}/catprofile`));
     })
     .catch((e) => {
       console.error('Startup error:', e);
