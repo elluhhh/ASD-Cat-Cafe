@@ -30,8 +30,8 @@
 
         <h2>All Menu Items</h2>
         <table>
-            <th>ID</th>
             <th>Name</th>
+            <th>ID</th>
             <th>Category</th>
             <th>Price</th>
             <th>Status</th>
@@ -40,8 +40,8 @@
             <th>Description</th>
             <% foods.forEach(food => { %>
             <tr style="<%= food.status === 'Unavailable' ? 'opacity: 0.6;' : '' %>">
-                <td><%= food._id %></td>
                 <td><%= food.name %></td>
+                <td><%= food._id %></td>
                 <td><%= food.category.toUpperCase() %></td>
                 <td>$<%= food.price.toFixed(2) %></td>
                 <td><span style="color: <%= food.status === 'Available' ? 'green' : 'red' %>"><%= food.status %></span></td>
