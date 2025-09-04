@@ -1,12 +1,20 @@
 {
-    "name": "asd-cat-cafe",
-    "version": "1.0.0",
-    "type": "module",
-    "scripts": {
-        "start": "node server.js"
-    },
-    "dependencies": {
-        "ejs": "^3.1.10",
-        "express": "^4.19.2"
-    }
+  "name": "asd-cat-cafe",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "lint": "eslint . --ext .js --max-warnings=0",
+    "smoke": "start-server-and-test \"node server.js\" http://localhost:8080 \"curl -fsS http://localhost:8080/ && curl -fsS http://localhost:8080/food\""
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "eslint": "^9.34.0",
+    "globals": "^16.3.0",
+    "start-server-and-test": "^2.0.13"
+  }
 }

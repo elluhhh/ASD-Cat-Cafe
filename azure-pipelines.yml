@@ -5,23 +5,41 @@ trigger:
       - food-page
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
-  # Success
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Use Node 18'
+
+  - script: npm ci
+    displayName: 'Install'
+
+  - script: npm run lint
+    displayName: 'Lint'
+
+  - script: npm run smoke
+    displayName: 'Smoke test'
+
   - script: |
-      curl -H "Content-Type: application/json" \
+      set -e
+      curl -sS -H "Content-Type: application/json" \
            -X POST \
            -d "{\"content\": \"Build succeeded on branch **$(Build.SourceBranchName)** (Build No: $(Build.BuildNumber))\"}" \
-           https://discord.com/api/webhooks/1405414484184530985/rWsABiW21gSr9cTAEE3wgYdgdJttYtsvuKuxECOtYlCehC1Kunsng-30Jnkb2siTmcOY
+           "$DISCORD_WEBHOOK"
     displayName: "Discord Notify (Success)"
     condition: succeeded()
+    env:
+      DISCORD_WEBHOOK: $(DISCORD_WEBHOOK)
 
-  # Fail
   - script: |
-      curl -H "Content-Type: application/json" \
+      set -e
+      curl -sS -H "Content-Type: application/json" \
            -X POST \
            -d "{\"content\": \"Build failed on branch **$(Build.SourceBranchName)** (Build No: $(Build.BuildNumber))\"}" \
-           https://discord.com/api/webhooks/1405414484184530985/rWsABiW21gSr9cTAEE3wgYdgdJttYtsvuKuxECOtYlCehC1Kunsng-30Jnkb2siTmcOY
+           "$DISCORD_WEBHOOK"
     displayName: "Discord Notify (Failure)"
     condition: failed()
+    env:
+      DISCORD_WEBHOOK: $(DISCORD_WEBHOOK)
