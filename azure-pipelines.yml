@@ -5,15 +5,27 @@
 
 trigger:
 - main
+- food-page
+- food-management
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    cd server
+    npm ci
+  displayName: 'Install dependencies'
+
+- script: |
+    cd server
+    npm test --if-present
+  displayName: 'Run tests'
+
+- script: echo "Build completed successfully for Food Management"
+  displayName: 'Build complete'
