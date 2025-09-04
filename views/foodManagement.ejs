@@ -46,7 +46,7 @@
                 <td>$<%= food.price.toFixed(2) %></td>
                 <td><span style="color: <%= food.status === 'Available' ? 'green' : 'red' %>"><%= food.status %></span></td>
                 <td style="<%= food.stock < 10 ? 'color: red; font-weight: bold;' : '' %>"><%= food.stock %></td>
-                <td><%= food.vegan ? '🌱 Yes' : 'No' %></td>
+                <td><%= food.vegan ? '🌱 Yes' : '🅽🅰🆄🆁' %></td>
                 <td><%= food.description %></td>
             </tr>
             <% }); %>
