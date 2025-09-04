@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const bookingRoutes = require("./routes/bookingRoutes");
 const foodRoutes = require("./routes/foodRoutes");
 
 const app = express();
@@ -18,7 +17,6 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
-app.use("/bookingManagement", bookingRoutes);
 app.use("/foodManagement", foodRoutes);
 
 app.get("/", (req, res) => {
