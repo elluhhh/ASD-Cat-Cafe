@@ -9,8 +9,6 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-job: CatProfile
-    displayName: 'Cat Profile Tests'
-    steps:
-      - script: echo Running Cat Profile Tests...
-       
+steps:
+- script: echo Running Cat Profile Tests...
+  displayName: 'Cat Profile Tests'
