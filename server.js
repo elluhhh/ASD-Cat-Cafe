@@ -10,6 +10,10 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 app.use(express.static("public"));
 
+// implement ejs
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
 app.get("/api/menu", async (req, res) => {
   try {
     const data = await fs.readFile(path.join(__dirname, "data", "menu.json"), "utf-8");
@@ -20,8 +24,16 @@ app.get("/api/menu", async (req, res) => {
   }
 });
 
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "public", "index.html"));
+// });
+
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.render("index"); // views/index.ejs
+});
+
+app.get("/food", (req, res) =>{
+  res.render("food"); //views/food.ejs
 });
 
 const PORT = process.env.PORT || 8080;

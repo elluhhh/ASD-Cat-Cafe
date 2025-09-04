@@ -1,5 +1,5 @@
-let MENU = [];
-let CART = new Map();
+let menu = [];
+let cart = new Map();
 
 const TAX_RATE = 0.10;
 
@@ -10,20 +10,35 @@ const taxEl = document.getElementById("tax");
 const totalEl = document.getElementById("total");
 const checkoutBtn = document.getElementById("checkoutBtn");
 
-const searchInput = document.getElementById("searchInput");
-const categorySelect = document.getElementById("categorySelect");
+const searchInput = document.getElementById("search");
+const categorySelect = document.getElementById("category");
 const veganOnlyCheckbox = document.getElementById("veganOnly");
+
+const money = n => (Number(n) || 0).toFixed(2);
 
 async function loadMenu() {
   try {
     const res = await fetch("/api/menu");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    MENU = await res.json();
-    renderMenu(applyFilters(MENU));
+    const data = await res.json();
+    menu = Array.isArray(data) ? data : [];
   } catch (err) {
-    console.error("Failed to load menu data:", err);
-    menuGrid.innerHTML = `<p style="color:#b00">Failed to load menu. Please check the server and the <code>data/menu.json</code> file location.</p>`;
+    console.error("menu load failed:", err);
+    menuGrid.textContent = "Couldn't load menu. Please try again.";
   }
+}
+
+function applyFilters(list) {
+  const q = (searchInput.value || "").trim().toLowerCase();
+  const cat = categorySelect.value;
+  const veganOnly = veganOnlyCheckbox.checked;
+
+  return (list || []).filter(({ name = "", description = "", category, vegan }) => {
+    const hit = (name + " " + description).toLowerCase().includes(q || "");
+    const catOk = !cat || category === cat;
+    const veganOk = !veganOnly || vegan === true;
+    return (!q || hit) && catOk && veganOk;
+  });
 }
 
 function renderMenu(items) {
@@ -33,7 +48,7 @@ function renderMenu(items) {
     return;
   }
 
-  items.forEach(m => {
+  for (const m of items) {
     const el = document.createElement("article");
     el.className = "card";
     el.innerHTML = `
@@ -41,18 +56,19 @@ function renderMenu(items) {
       <h3>${m.name}</h3>
       <p>${m.description || ""}</p>
       <div class="price-row">
-        <strong>$${Number(m.price).toFixed(2)}</strong>
+        <strong>$${money(m.price)}</strong>
         <button class="add">Add</button>
-      </div>`;
+      </div>
+    `;
     el.querySelector(".add").onclick = () => addToCart(m.id);
     menuGrid.appendChild(el);
-  });
+  }
 }
 
 function renderCart() {
   cartList.innerHTML = "";
 
-  if (CART.size === 0) {
+  if (cart.size === 0) {
     const li = document.createElement("li");
     li.textContent = "Your cart is empty";
     cartList.appendChild(li);
@@ -60,14 +76,14 @@ function renderCart() {
     return;
   }
 
-  CART.forEach((qty, id) => {
-    const item = MENU.find(m => m.id === id);
+  cart.forEach((qty, id) => {
+    const item = menu.find(m => m.id === id);
     if (!item) return;
 
     const li = document.createElement("li");
     li.className = "cart-row";
+    const itemTotal = (Number(item.price) || 0) * qty;
 
-    const itemTotal = item.price * qty;
     li.innerHTML = `
       <span class="cart-name">${item.name}</span>
       <div class="cart-qty">
@@ -75,7 +91,7 @@ function renderCart() {
         <span>${qty}</span>
         <button class="inc" aria-label="increase">+</button>
       </div>
-      <span class="cart-price">$${itemTotal.toFixed(2)}</span>
+      <span class="cart-price">$${money(itemTotal)}</span>
       <button class="remove" aria-label="remove">✕</button>
     `;
 
@@ -90,72 +106,53 @@ function renderCart() {
 }
 
 function addToCart(id) {
-  const current = CART.get(id) || 0;
-  CART.set(id, current + 1);
+  const current = cart.get(id) || 0;
+  cart.set(id, current + 1);
   renderCart();
 }
 
 function changeQty(id, delta) {
-  const current = CART.get(id) || 0;
+  const current = cart.get(id) || 0;
   const next = current + delta;
-  if (next <= 0) {
-    CART.delete(id);
-  } else {
-    CART.set(id, next);
-  }
+  if (next <= 0) cart.delete(id);
+  else cart.set(id, next);
   renderCart();
 }
 
 function removeFromCart(id) {
-  CART.delete(id);
+  cart.delete(id);
   renderCart();
 }
 
 function updateTotals() {
   let subtotal = 0;
-  CART.forEach((qty, id) => {
-    const item = MENU.find(m => m.id === id);
-    if (item) subtotal += item.price * qty;
+  cart.forEach((qty, id) => {
+    const item = menu.find(m => m.id === id);
+    if (item) subtotal += (Number(item.price) || 0) * qty;
   });
   const tax = subtotal * TAX_RATE;
   const total = subtotal + tax;
 
-  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-  taxEl.textContent = `$${tax.toFixed(2)}`;
-  totalEl.textContent = `$${total.toFixed(2)}`;
+  subtotalEl.textContent = `$${money(subtotal)}`;
+  taxEl.textContent = `$${money(tax)}`;
+  totalEl.textContent = `$${money(total)}`;
 
-  checkoutBtn.disabled = CART.size === 0;
+  checkoutBtn.disabled = cart.size === 0;
 }
 
-function applyFilters(items) {
-  const q = (searchInput?.value || "").trim().toLowerCase();
-  const cat = (categorySelect?.value || "All");
-  const veganOnly = !!veganOnlyCheckbox?.checked;
+function bindEvents() {
+  searchInput.addEventListener("input", () => renderMenu(applyFilters(menu)));
+  categorySelect.addEventListener("change", () => renderMenu(applyFilters(menu)));
+  veganOnlyCheckbox.addEventListener("change", () => renderMenu(applyFilters(menu)));
 
-  return items.filter(m => {
-    const nameHit = !q || m.name.toLowerCase().includes(q) || (m.description || "").toLowerCase().includes(q);
-    const catHit = cat === "All" || (m.category === cat);
-    const veganHit = !veganOnly || !!m.vegan;
-    return nameHit && catHit && veganHit;
-  });
-}
-
-function onFilterChange() {
-  renderMenu(applyFilters(MENU));
-}
-
-function wireEvents() {
-  searchInput?.addEventListener("input", onFilterChange);
-  categorySelect?.addEventListener("change", onFilterChange);
-  veganOnlyCheckbox?.addEventListener("change", onFilterChange);
-
-  checkoutBtn?.addEventListener("click", () => {
+  checkoutBtn.addEventListener("click", () => {
     alert("Checkout flow is not implemented in this demo.");
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  wireEvents();
-  loadMenu();           
-  renderCart();         
+document.addEventListener("DOMContentLoaded", async () => {
+  bindEvents();
+  await loadMenu();
+  renderMenu(applyFilters(menu));
+  renderCart();
 });
