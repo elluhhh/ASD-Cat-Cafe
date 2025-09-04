@@ -16,8 +16,7 @@
 
     <!-- Form -->
     <section class="panel">
-      <h2 class="panel-title" id="form-title">Add a cat</h2>
-      <form id="cat-form" class="grid">
+<h2 class="panel-title" id="form-title">Add Cat</h2>      <form id="cat-form" class="grid">
         <input type="hidden" id="id" />
         <label>Name
           <input id="name" required />
@@ -63,7 +62,7 @@
       <p class="empty" id="empty">No cats yet. Add one above 🐱</p>
     </section>
 
-  </div><!-- ✅ closes .wrap -->
+  </div>
 
   <div id="toast" role="status" aria-live="polite"></div>
   <script>
@@ -78,7 +77,7 @@
     const save = (arr) => localStorage.setItem(KEY, JSON.stringify(arr));
 
     // --- state
-    let cats = load();            // must be let (mutable)
+    let cats = load();           
     let currentEditId = null;     // track which row is being edited
 
     // --- view
