@@ -57,16 +57,15 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody><!-- rows injected --></tbody>
+        <tbody><!-- new rows injected when cats added :D--></tbody>
       </table>
-      <p class="empty" id="empty">No cats yet. Add one above 🐱</p>
+      <p class="empty" id="empty">No cats yet. Add one above. Meow 🐱</p>
     </section>
 
   </div>
 
   <div id="toast" role="status" aria-live="polite"></div>
   <script>
-    // --- tiny helpers
     const $ = (s, r = document) => r.querySelector(s);
     const $$ = (s, r = document) => [...r.querySelectorAll(s)];
     const uid = () => 'id-' + Math.random().toString(36).slice(2, 10);
@@ -105,14 +104,14 @@
       const i = cats.findIndex(c => c._id === payload._id);
       if (i >= 0) cats[i] = payload; else cats.push(payload);
       save(cats);
-      render();                 // <— re-render immediately
+      render();                 // <— re-render immediately so no need to refresh
     }
 
     function removeCat(id) {
       if (!confirm('Delete this cat?')) return;
       cats = cats.filter(c => c._id !== id);
       save(cats);
-      render();                 // <— show removal now
+      render();                 // <— show removal NOW!!!!!!
       if (currentEditId === id) resetForm();
     }
     
@@ -133,7 +132,7 @@
       const c = cats.find(x => x._id === id);
       if (!c) return;
       currentEditId = id;                // enter edit mode
-      $('#id').value = c._id;            // keep hidden input in sync
+      $('#id').value = c._id;            
       $('#name').value = c.name || '';
       $('#breed').value = c.breed || '';
       $('#ageMonths').value = c.ageMonths ?? '';
@@ -161,7 +160,7 @@
     });
     $('#reset').addEventListener('click', resetForm);
 
-    // --- boot
+    // --- just dummy data for demo
     if (cats.length === 0) {
       cats = [{ _id: uid(), name: 'Mochi', breed: 'DSH', ageMonths: 12, isAdopted: false, imageUrl: '' }];
       save(cats);

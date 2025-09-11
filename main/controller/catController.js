@@ -24,9 +24,10 @@ exports.list = async (req, res, next) => {
 /* GET
 Query params:
  *   - q: text search (name/breed)
- *   - adopted: "true" | "false"  (maps to isAdopted)
+ *   - adopted: "true" | "false"  
  *   - page: number (default 1)
- *   - limit: number (default 10, max 100) */
+ *   - limit: number (default 10, max 100) 
+ * Retrieves a single cat by its ID. Returns a 404 if not found.*/
 exports.get = async (req, res, next) => {
   try {
     const cat = await Cat.findById(req.params.id).lean();
@@ -35,7 +36,8 @@ exports.get = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// POST 
+/*POST Creates a new cat record. Validates information on name, ageMonths (must be ≥ 0), price (must be ≥ 0)
+*/
 exports.create = async (req, res, next) => {
   try {
     if (!req.body.name) return res.status(400).json({ message: 'name is required' });
@@ -51,7 +53,7 @@ exports.create = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// PUT 
+// PUT. Replaces a cat by ID with the new data. Adds an updatedAt timestamp.
 exports.update = async (req, res, next) => {
   try {
     const cat = await Cat.findByIdAndUpdate(
@@ -64,7 +66,7 @@ exports.update = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// PATCH 
+// PATCH - NOT USING THIS. SAME AS PUT............
 exports.patch = async (req, res, next) => {
   try {
     const cat = await Cat.findByIdAndUpdate(
@@ -77,7 +79,7 @@ exports.patch = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// DELETE
+// DELETE. Deletes a cat by ID. Returns 204 No Content if successful.
 exports.remove = async (req, res, next) => {
   try {
     const deleted = await Cat.findByIdAndDelete(req.params.id);
