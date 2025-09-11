@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const ctl = require('../controller/catController'); // go up one folder into controller
+const ctl = require('../controllers/catController'); 
 
 router.get('/', ctl.list);
 router.get('/:id', ctl.get);
