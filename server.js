@@ -1,42 +1,27 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs/promises";
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const bookingRoutes = require("./routes/bookingRoutes");
 
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-app.use(express.json());
-app.use(express.static("public"));
+mongoose
+	.connect(
+		"mongodb+srv://admin:cFBUZU6hozSWFbfk@cat-cafe-website.kycc7fg.mongodb.net/cat-cafe?retryWrites=true&w=majority&appName=cat-cafe-website"
+	)
+	.then(() => {
+		console.log("DB is connected");
+	});
 
-// implement ejs
+app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
 
-app.get("/api/menu", async (req, res) => {
-  try {
-    const data = await fs.readFile(path.join(__dirname, "data", "menu.json"), "utf-8");
-    res.json(JSON.parse(data));
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to load menu data" });
-  }
-});
-
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "public", "index.html"));
-// });
+app.use("/bookingManagement", bookingRoutes);
 
 app.get("/", (req, res) => {
-  res.render("index"); // views/index.ejs
+	res.render("index");
 });
 
-app.get("/food", (req, res) =>{
-  res.render("food"); //views/food.ejs
-});
-
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+app.listen("8000");

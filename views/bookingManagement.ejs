@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Booking Management</title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+	</head>
+
+	<body>
+		<h1>Booking Management</h1>
+		<form action="/bookingManagement" method="GET">
+			<h2>Booking Lookup</h3>
+			<div>
+				<label for="id">Booking ID:</label>
+				<input type="text" placeholder="123567890" id="idInput"/>
+				<label for="email">Email:</label>
+				<input type="text" placeholder="email@email.com" />
+				<label for="date">Date:</label>
+				<input type="date"/>
+				<input type="submit" value="Search" />
+			</div>
+
+            <ul>
+                <!-- <%//bookingSearch.forEach(booking => {%>
+                    <li>
+                        <=%booking._id%>
+                    </li>
+                <% //}); %> -->
+            </ul>
+
+		</form>
+		<form action="/bookingManagement" method="GET">
+			<h2>All Bookings</h2>
+            <table>
+				<th>ID</th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Email</th>
+				<th>Date</th>
+				<th>Time</th>
+				<th>Attendees No.</th>
+                <th>Total Paid</th>
+                <th></th><th></th>
+
+				<% bookings.forEach(booking => { %>
+				<tr>
+					<td><%= booking._id %></td>
+					<td><%=booking.f_name%></td>
+					<td><%=booking.l_name%></td>
+					<td><%=booking.email%></td>
+					<td>
+						<%=booking.date_time.toLocaleString([], {year:
+						'numeric', month: 'numeric', day:'numeric'})%>
+					</td>
+                    <td>
+                        <%=booking.date_time.toLocaleString([], {hour:
+						'2-digit', minute:'2-digit', hour12: false})%>
+                    </td>
+					<td><%=booking.attendees_no%></td>
+                    <td><%='$'+booking.total_price%></td>
+                    <td><button id="edit">Edit</button></td>
+                    <td><button onclick="return confirm('Are you sure you want to cancel this booking?')" id="cancel">Cancel</button></td>
+                </tr>
+				<% }); %>
+			</table>
+		</form>
+	</body>
+</html>
