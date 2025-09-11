@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const bookingRoutes = require("./routes/bookingRoutes");
 const foodRoutes = require("./routes/foodRoutes");
+const catRoutes = require("./routes/catRoutes.js");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 app.use("/bookingManagement", bookingRoutes);
+app.use('/cat-display', catRoutes);
 
 app.get("/", (req, res) => {
 	res.render("index");
