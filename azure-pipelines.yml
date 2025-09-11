@@ -1,10 +1,8 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- booking-management
+
+  branches:
+    include:
+      - dev
 
 pool:
   vmImage: ubuntu-latest
@@ -22,4 +20,3 @@ jobs:
     displayName: 'Booking Management Tests'
     steps:
       - script: echo running booking management tests
-      
