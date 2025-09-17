@@ -1,7 +1,6 @@
 {
   "name": "asd-cat-cafe",
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
     "start": "node server.js",
     "lint": "eslint . --ext .js --max-warnings=0",
@@ -9,10 +8,8 @@
   },
   "dependencies": {
     "ejs": "^3.1.10",
-    "express": "^5.1.0"
-    "body-parser": "^2.2.0",
-    "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "body-parser": "^2.2.0",
     "mongoose": "^8.18.0"
   },
   "devDependencies": {
