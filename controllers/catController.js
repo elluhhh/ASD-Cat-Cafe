@@ -64,7 +64,7 @@ exports.create = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-exports.createCat = async (req, res) => {
+exports.createCat = async (req, res, next) => {
   try {
     const { name, gender, dob, breed, price, microchipId, colour, description, ageMonths } = req.body;
 
@@ -90,6 +90,7 @@ exports.createCat = async (req, res) => {
       microchipId,
       colour,
       description,
+      imageUrl,
       ageMonths
     });
 
