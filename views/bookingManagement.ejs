@@ -9,7 +9,6 @@
 
 	<body>
 		<h1>Booking Management</h1>
-		<form action="/bookingManagement" method="GET">
 			<h2>Booking Lookup</h3>
 			<div>
 				<label for="id">Booking ID:</label>
@@ -29,8 +28,7 @@
                 <% //}); %> -->
             </ul>
 
-		</form>
-		<form action="/bookingManagement" method="GET">
+		
 			<h2>All Bookings</h2>
             <table>
 				<th>ID</th>
@@ -42,7 +40,6 @@
 				<th>Attendees No.</th>
                 <th>Total Paid</th>
                 <th></th><th></th>
-
 				<% bookings.forEach(booking => { %>
 				<tr>
 					<td><%= booking._id %></td>
@@ -60,10 +57,13 @@
 					<td><%=booking.attendees_no%></td>
                     <td><%='$'+booking.total_price%></td>
                     <td><button id="edit">Edit</button></td>
-                    <td><button onclick="return confirm('Are you sure you want to cancel this booking?')" id="cancel">Cancel</button></td>
-                </tr>
+                    <td>
+						<form action="bookingManagement/<%=booking._id%>" method="POST">
+						<button id="cancel" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</button>
+						</form>
+					</td>
+				</tr>
 				<% }); %>
 			</table>
-		</form>
 	</body>
 </html>
