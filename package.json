@@ -7,14 +7,14 @@
     "smoke": "start-server-and-test \"node server.js\" http://localhost:8080 \"curl -fsS http://localhost:8080/ && curl -fsS http://localhost:8080/food\""
   },
   "dependencies": {
+    "body-parser": "^2.2.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
-    "body-parser": "^2.2.0",
-    "mongoose": "^8.18.0"
+    "mongoose": "^8.18.0",
+    "multer": "^2.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.34.0",
-    "eslint": "^9.34.0",
+    "eslint": "^8.57.1",
     "globals": "^16.3.0",
     "start-server-and-test": "^2.0.13"
   }

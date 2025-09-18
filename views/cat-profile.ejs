@@ -1,30 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<html>
-
 <head>
     <meta charset="utf-8">
     <title>Cat Profile</title>
-    <link rel="stylesheet" href="cat-display.css">
+    <link rel="stylesheet" href="/cat-display.css">
 </head>
 
 <body>
-    <h1>Meet Penny</h1>
+    <h1>Meet <%= cat.name %> </h1>
     <div class="profile">
         <div class="left">
-            <img class="cat" src="/images/cat1.jpg" alt="Brown cat">
+            <img class="cat" src="/images/<%= cat.imageUrl %>" >
             <!-- links back to cat display page -->
-            <a class="btn" href="/cat-display">Go back to the Cats</a>
+            <a class="btn" href="/cats">Go back to the Cats</a>
         </div>
 
         <div class="details">
-            <h2>Penny</h2>
-            <p class="cat-info">Female, 3 Years Old</p>
-            <p class="description">Penny is a sweet, young cat who is looking for a lovely home.
-                At the cat cafe she has enjoyed lots of attention and has shown a keen interest for treats.
-                She gets along well with the other cats so could go home to a cat household.
-            </p>
+            <h2> <%= cat.name %> </h2>
+            <p class="cat-info"><%= cat.gender %>, <%= Math.floor(cat.ageMonths / 12) %> Years Old</p>
+            <p class="description"><%= cat.description %></p>
             <a class="btn" href="#">Request Adoption</a>
         </div>
         

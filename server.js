@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const bookingRoutes = require("./routes/bookingRoutes");
-const foodRoutes = require("./routes/foodRoutes");
 const catRoutes = require("./routes/catRoutes.js");
 
 const app = express();
@@ -21,10 +20,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 app.use("/bookingManagement", bookingRoutes);
-app.use('/cat-display', catRoutes);
+app.use('/cats', catRoutes);
 
 app.get("/", (req, res) => {
 	res.render("index");
 });
 
-app.listen("8000");
+app.listen(8000, () => {
+	console.log('Server is running on http://localhost:8000/');
+});
