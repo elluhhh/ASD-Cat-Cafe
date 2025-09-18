@@ -2,13 +2,13 @@ trigger:
 
   branches:
     include:
-      - dev
+      - '*'
 
 pool:
   vmImage: ubuntu-latest
 
 jobs:
-  - job: BMBuild
+  - job: Build
     displayName: 'Install dependencies and Node.js'
     steps:
       - task: NodeTool@0
@@ -16,7 +16,12 @@ jobs:
           versionSpec: '22.x'
       - script: npm ci
 
-  - job: BMTests
-    displayName: 'Booking Management Tests'
+  - job: Lint
+    displayName: 'Lint'
     steps:
-      - script: echo running booking management tests
+      - script: npm run lint
+
+  - job: Tests
+    displayName: 'Cat Display Tests'
+    steps:
+      - script: echo running cat display tests
