@@ -20,9 +20,9 @@ const deleteBooking = async (req, res) => {
 
 const findBookings = async (req, res) => {
 	try {
-		const { id_, email } = req.body;
+		const { _id, email } = req.body;
 		const bookingSearch = await Booking.find({
-			id_: id_,
+			_id: _id,
 			email: email
 		}).exec();
 		res.render("bookingManagement", { bookingSearch });
