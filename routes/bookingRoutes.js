@@ -8,7 +8,7 @@ const {
 const router = express.Router();
 
 router.get("/", getBookings);
-router.delete("/", deleteBooking);
+router.post("/:id", deleteBooking);
 router.get("/", findBookings);
 
 module.exports = router;
