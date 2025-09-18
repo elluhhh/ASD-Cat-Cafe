@@ -1,11 +1,9 @@
 {
   "root": true,
-  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
-  "plugins": ["prettier"],
+  "extends": ["eslint:recommended"],
   "parserOptions": { "ecmaVersion": 2023, "sourceType": "module" },
   "env": { "node": true, "es2021": true, "browser": true, "jest": true },
   "rules": {
-    "prettier/prettier": "warn",
     "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
     "no-console": "off"
   },
