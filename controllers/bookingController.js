@@ -11,8 +11,8 @@ const getBookings = async (req, res) => {
 
 const deleteBooking = async (req, res) => {
 	try {
-		Booking.findbyIdAndDelete(req.param.bookingID);
-		res.redirect("bookingManagement");
+		await Booking.findByIdAndDelete(req.params.id);
+		res.redirect("/bookingManagement");
 	} catch (err) {
 		res.status(500).send(err);
 	}
