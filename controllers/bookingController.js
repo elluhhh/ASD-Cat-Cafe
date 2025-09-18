@@ -2,7 +2,7 @@ const Booking = require("../models/bookingModel.js");
 
 const getBookings = async (req, res) => {
 	try {
-		const bookings = await Booking.find();
+		const bookings = await Booking.find().sort({date_time: 1});
 		res.render("bookingManagement", { bookings });
 	} catch (err) {
 		res.status(500).send(err);
