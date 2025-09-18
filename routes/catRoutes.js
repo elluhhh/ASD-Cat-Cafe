@@ -16,6 +16,6 @@ const upload = multer({ storage });
 
 router.post('/add', upload.single('image'), createCat);
 router.get('/', getAllCats);
-router.get('/:id', getCat)
+router.get('/:id', getCat);
 
 module.exports = router;

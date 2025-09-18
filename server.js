@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const bookingRoutes = require("./routes/bookingRoutes");
-const foodRoutes = require("./routes/foodRoutes");
 const catRoutes = require("./routes/catRoutes.js");
 
 const app = express();
