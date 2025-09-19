@@ -24,4 +24,4 @@ catSchema.virtual('ageYears').get(function () {
 //This sets up a MongoDB text index for full-text search across the name and breed fields. Not used yet.
 catSchema.index({ name: 'text', breed: 'text' });
 
-module.exports = { Cat: mongoose.model('Cat', catSchema) };
+module.exports = mongoose.model('Cat', catSchema);
