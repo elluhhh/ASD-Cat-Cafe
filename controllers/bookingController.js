@@ -2,7 +2,7 @@ const Booking = require("../models/bookingModel.js");
 
 const getBookings = async (req, res) => {
 	try {
-		const bookings = await Booking.find();
+		const bookings = await Booking.find().sort({date_time: 1});
 		res.render("bookingManagement", { bookings });
 	} catch (err) {
 		res.status(500).send(err);
@@ -11,8 +11,8 @@ const getBookings = async (req, res) => {
 
 const deleteBooking = async (req, res) => {
 	try {
-		Booking.findbyIdAndDelete(req.param.bookingID);
-		res.redirect("bookingManagement");
+		await Booking.findByIdAndDelete(req.params.id);
+		res.redirect("/bookingManagement");
 	} catch (err) {
 		res.status(500).send(err);
 	}
@@ -20,9 +20,9 @@ const deleteBooking = async (req, res) => {
 
 const findBookings = async (req, res) => {
 	try {
-		const { id_, email } = req.body;
+		const { _id, email } = req.body;
 		const bookingSearch = await Booking.find({
-			id_: id_,
+			_id: _id,
 			email: email
 		}).exec();
 		res.render("bookingManagement", { bookingSearch });
