@@ -19,9 +19,12 @@ router.post('/add', upload.single('image'), createCat);
 router.get('/:id', getCat);
 
 router.get('/', async (req, res) => {
-    const { gender } = req.query;
-    // match any case for gender field
-    const filter = gender ? { gender: new RegExp(`^${gender}$`, 'i') } : {};
+    const { name, gender } = req.query;
+    let filter = {};
+    // case insensitive, name allows partial matches
+    if (gender) filter.gender = new RegExp(`^${gender}$`, 'i');
+    if (name) filter.name = new RegExp(name, 'i');
+
     const cats = await Cat.find(filter);
     res.render('cat-display', { cats });
 });

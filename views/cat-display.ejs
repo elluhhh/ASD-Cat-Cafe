@@ -12,16 +12,17 @@
 <body>
     <h1>Meet the Cats!</h1>
     <p class="intro">Browse the cats we have available for adoption below.</p>
-    <input type="text" id="searchBox" placeholder="Search by name or age">
 
-    <form id="genderFilter">
+    <form id="catFilter">
+        <input type="text" name="name" placeholder="Search by name or age">
+
         <input type="radio" value="female" name="gender">
         <label for="femaleCat">Female</label>
         <input type="radio" value="male" name="gender">
         <label for="maleCat">Male</label>
     </form>
 
-    <button class="btn" style="padding: 10px;">Clear Search</button>
+    <button class="btn" style="padding: 10px;">Clear Filters</button>
 
     <div class="container" id="catList">
         <% if (cats.length > 0 ) { %>
@@ -42,20 +43,27 @@
     <a class="btn" href="/">Go Back Home</a>
 
 <script>
+    const form = document.getElementById('catFilter');
+    
+    async function updateCatList() {
+        const name = form.name.value;
+        const selected = document.querySelector('input[name="gender"]:checked');
+        const gender = selected ? selected.value : '';
+
+        const res = await fetch(`/cats?name=${encodeURIComponent(name)}&gender=${gender}`);
+        const html = await res.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newList = doc.querySelector('#catList');
+        document.querySelector('#catList').innerHTML = newList.innerHTML;
+    };
+    // Live update for gender radio
     document.querySelectorAll('input[name="gender"]').forEach(radio => {
-        radio.addEventListener('change', async () => {
-            const gender = radio.value;
-             console.log(gender);
-
-            const res = await fetch(`/cats?gender=${gender}`);
-            const html = await res.text();
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const newList = doc.querySelector('#catList');
-            document.querySelector('#catList').innerHTML = newList.innerHTML;
-        });
-    });
+        radio.addEventListener('change', updateCatList);
+    })
+    // Live update for text search
+    form.name.addEventListener('input', updateCatList);
 </script>
 
 </body>
