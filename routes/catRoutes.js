@@ -1,5 +1,5 @@
 const express = require('express');
-const { getCat, getAllCats, createCat } = require('../controllers/catController.js');
+const { getCat, createCat } = require('../controllers/catController.js');
 const multer = require('multer');
 const path = require('path');
 const Cat = require('../models/Cat.js');
