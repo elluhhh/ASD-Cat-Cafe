@@ -11,13 +11,15 @@
 		<h1>Booking Management</h1>
 			<h2>Booking Lookup</h3>
 			<div>
-				<label for="id">Booking ID:</label>
-				<input type="text" placeholder="123567890" id="idInput"/>
-				<label for="email">Email:</label>
-				<input type="text" placeholder="email@email.com" />
-				<label for="date">Date:</label>
-				<input type="date"/>
-				<input type="submit" value="Search" />
+				<form action="bookingManagement/search" method="GET">
+					<label for="id">Booking ID:</label>
+					<input type="text" placeholder="123567890" id="idInput"/>
+					<label for="email">Email:</label>
+					<input type="text" placeholder="email@email.com" />
+					<label for="date">Date:</label>
+					<input type="date"/>
+					<input type="submit" value="Search" />
+				</form>
 			</div>
 
             <ul>
