@@ -75,6 +75,15 @@
     // Live update for text search
     form.name.addEventListener('input', updateCatList);
     form.age.addEventListener('change', updateCatList);
+
+    // clear all filters
+    const clearButton = document.getElementById('clearFilter');
+    
+    clearButton.addEventListener('click', () => {
+        form.reset();
+        updateCatList();
+    });
+
 </script>
 
 </body>
