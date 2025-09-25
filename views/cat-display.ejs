@@ -14,7 +14,15 @@
     <p class="intro">Browse the cats we have available for adoption below.</p>
 
     <form id="catFilter">
-        <input type="text" name="name" placeholder="Search by name or age">
+        <input type="text" name="name" placeholder="Search by name">
+
+        <select name="age">
+            <option value="">Any age</option>
+            <option value="kitten">Kitten: 0-1</option>
+            <option value="junior">Junior: 2-3</option>
+            <option value="adult">Adult: 4-8</option>
+            <option value="senior">Senior: 9+</option>
+        </select>
 
         <input type="radio" value="female" name="gender">
         <label for="femaleCat">Female</label>
@@ -22,7 +30,7 @@
         <label for="maleCat">Male</label>
     </form>
 
-    <button class="btn" style="padding: 10px;">Clear Filters</button>
+    <button class="btn" style="padding: 10px;" type="button" id="clearFilter">Clear Filters</button>
 
     <div class="container" id="catList">
         <% if (cats.length > 0 ) { %>
@@ -45,12 +53,14 @@
 <script>
     const form = document.getElementById('catFilter');
     
+    // update cats displayed dependent on filters
     async function updateCatList() {
         const name = form.name.value;
+        const age = form.age?.value || '';
         const selected = document.querySelector('input[name="gender"]:checked');
         const gender = selected ? selected.value : '';
 
-        const res = await fetch(`/cats?name=${encodeURIComponent(name)}&gender=${gender}`);
+        const res = await fetch(`/cats?name=${encodeURIComponent(name)}&age=${age}&gender=${gender}`);
         const html = await res.text();
 
         const parser = new DOMParser();
@@ -61,9 +71,10 @@
     // Live update for gender radio
     document.querySelectorAll('input[name="gender"]').forEach(radio => {
         radio.addEventListener('change', updateCatList);
-    })
+    });
     // Live update for text search
     form.name.addEventListener('input', updateCatList);
+    form.age.addEventListener('change', updateCatList);
 </script>
 
 </body>
