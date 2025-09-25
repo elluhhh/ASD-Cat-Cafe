@@ -12,28 +12,79 @@
 <body>
     <h1>Meet the Cats!</h1>
     <p class="intro">Browse the cats we have available for adoption below.</p>
-    <input type="text" id="searchBox" placeholder="Search by name or age">
 
-    <input type="radio" id="femaleCat" name="gender">
-    <label for="femaleCat">Female</label>
-    <input type="radio" id="maleCat" name="gender">
-    <label for="maleCat">Male</label>
+    <form id="catFilter">
+        <input type="text" name="name" placeholder="Search by name">
 
-    <button class="btn" style="padding: 10px;">Clear Search</button>
+        <select name="age">
+            <option value="">Any age</option>
+            <option value="kitten">Kitten: 0-1</option>
+            <option value="junior">Junior: 2-3</option>
+            <option value="adult">Adult: 4-8</option>
+            <option value="senior">Senior: 9+</option>
+        </select>
 
-    <div class="container">
-        <% cats.forEach(cat => { %>
-            <a href="/cats/<%= cat._id %>"><div class="cat-card">
-                <img src="/images/<%= cat.imageUrl %>">
-                <h2><%= cat.name %></h2>
-                <p class="cat-info"><%= cat.gender %></p>
-                <p class="cat-info"><%= Math.floor(cat.ageMonths / 12) %> Years and <%= (cat.ageMonths % 12) %> months old</p>
-            </div></a>
-        <% }) %>
+        <input type="radio" value="female" name="gender">
+        <label for="femaleCat">Female</label>
+        <input type="radio" value="male" name="gender">
+        <label for="maleCat">Male</label>
+    </form>
+
+    <button class="btn" style="padding: 10px;" type="button" id="clearFilter">Clear Filters</button>
+
+    <div class="container" id="catList">
+        <% if (cats.length > 0 ) { %>
+            <% cats.forEach(cat => { %>
+                <a href="/cats/<%= cat._id %>"><div class="cat-card">
+                    <img src="/images/<%= cat.imageUrl %>">
+                    <h2><%= cat.name %></h2>
+                    <p class="cat-info"><%= cat.gender %></p>
+                    <p class="cat-info"><%= Math.floor(cat.ageMonths / 12) %> Years and <%= (cat.ageMonths % 12) %> months old</p>
+                </div></a>
+            <% }) %>
+        <% } else { %>
+            <p class="intro">No Cats Found :(</p>
+        <% } %>
     </div>
 
     <!-- links back to index page -->
     <a class="btn" href="/">Go Back Home</a>
-</body>
 
+<script>
+    const form = document.getElementById('catFilter');
+    
+    // update cats displayed dependent on filters
+    async function updateCatList() {
+        const name = form.name.value;
+        const age = form.age?.value || '';
+        const selected = document.querySelector('input[name="gender"]:checked');
+        const gender = selected ? selected.value : '';
+
+        const res = await fetch(`/cats?name=${encodeURIComponent(name)}&age=${age}&gender=${gender}`);
+        const html = await res.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newList = doc.querySelector('#catList');
+        document.querySelector('#catList').innerHTML = newList.innerHTML;
+    };
+    // Live update for gender radio
+    document.querySelectorAll('input[name="gender"]').forEach(radio => {
+        radio.addEventListener('change', updateCatList);
+    });
+    // Live update for text search
+    form.name.addEventListener('input', updateCatList);
+    form.age.addEventListener('change', updateCatList);
+
+    // clear all filters
+    const clearButton = document.getElementById('clearFilter');
+    
+    clearButton.addEventListener('click', () => {
+        form.reset();
+        updateCatList();
+    });
+
+</script>
+
+</body>
 </html>
