@@ -78,7 +78,7 @@ exports.createCat = async (req, res, next) => {
 
     let imageUrl = null;
     if (req.file) {
-      imageUrl = `/public/uploads/${req.file.filename}`;
+      imageUrl = `/uploads/${req.file.filename}`;
     }
 
     const cat = new Cat({

@@ -36,7 +36,7 @@
         <% if (cats.length > 0 ) { %>
             <% cats.forEach(cat => { %>
                 <a href="/cats/<%= cat._id %>"><div class="cat-card">
-                    <img src="/images/<%= cat.imageUrl %>">
+                    <img src="<%= cat.imageUrl %>">
                     <h2><%= cat.name %></h2>
                     <p class="cat-info"><%= cat.gender %></p>
                     <p class="cat-info"><%= Math.floor(cat.ageYears) %> Years and <%= (cat.ageMonths % 12) %> months old</p>
