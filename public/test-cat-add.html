@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Upload a Cat</title>
+    </head>
+    <body>
+        <h1>Add a New Cat</h1>
+        
+        <form action="/cats/add" method="POST" enctype="multipart/form-data">
+            <label for="name">Name: </label>
+            <input type="text" name="name" required>
+            
+            <label for="gender">Gender: </label>
+            <select name="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <label for="dob">Date of Birth: </label>
+            <input type="date" name="dob">
+
+            <label for="breed">Breed: </label>
+            <input type="text" name="breed">
+
+            <label for="price">Price: $</label>
+            <input type="number" name="price">
+
+            <label for="microchipId">Microchip ID: </label>
+            <input type="text" name="microchipId">
+
+            <label for="colour">Colour: </label>
+            <input type="text" name="colour">
+
+            <label for="description">Description: </label>
+            <input type="textarea" name="description">
+
+            <label for="image">Photo: </label>
+            <input type="file" name="image" accept="image/*">
+
+            <button type="submit">Upload New Cat</button>
+        </form>
+    </body>
+</html>
