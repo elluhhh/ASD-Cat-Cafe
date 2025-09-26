@@ -1,4 +1,4 @@
-const { Cat } = require('../models/Cat'); 
+const Cat = require('../models/Cat'); 
 
 exports.list = async (req, res, next) => {
   try {
@@ -66,7 +66,7 @@ exports.create = async (req, res, next) => {
 
 exports.createCat = async (req, res, next) => {
   try {
-    const { name, gender, dob, breed, price, microchipId, colour, description, ageMonths } = req.body;
+    const { name, gender, dob, breed, price, microchipId, colour, description } = req.body;
 
     if (!req.body.name) return res.status(400).json({ message: 'name is required' });
     if (req.body.ageMonths != null && req.body.ageMonths < 0) {
@@ -78,10 +78,10 @@ exports.createCat = async (req, res, next) => {
 
     let imageUrl = null;
     if (req.file) {
-      imageUrl = '/public/uploads/${req.file.filename}';
+      imageUrl = `/public/uploads/${req.file.filename}`;
     }
 
-    const cat = await Cat.create({
+    const cat = new Cat({
       name,
       gender,
       dob,
@@ -90,10 +90,10 @@ exports.createCat = async (req, res, next) => {
       microchipId,
       colour,
       description,
-      imageUrl,
-      ageMonths
+      imageUrl
     });
 
+    await cat.save();
     res.status(201).json(cat);
   } catch (err) {
     next(err);

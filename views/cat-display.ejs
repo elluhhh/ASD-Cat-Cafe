@@ -25,9 +25,9 @@
         </select>
 
         <input type="radio" value="female" name="gender">
-        <label for="femaleCat">Female</label>
+        <label for="female">Female</label>
         <input type="radio" value="male" name="gender">
-        <label for="maleCat">Male</label>
+        <label for="male">Male</label>
     </form>
 
     <button class="btn" style="padding: 10px;" type="button" id="clearFilter">Clear Filters</button>
@@ -39,7 +39,7 @@
                     <img src="/images/<%= cat.imageUrl %>">
                     <h2><%= cat.name %></h2>
                     <p class="cat-info"><%= cat.gender %></p>
-                    <p class="cat-info"><%= Math.floor(cat.ageMonths / 12) %> Years and <%= (cat.ageMonths % 12) %> months old</p>
+                    <p class="cat-info"><%= Math.floor(cat.ageYears) %> Years and <%= (cat.ageMonths % 12) %> months old</p>
                 </div></a>
             <% }) %>
         <% } else { %>
