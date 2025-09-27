@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 
 //const bookingRoutes = require("./routes/bookingRoutes");
 //const catRoutes = require("./routes/catRoutes.js");
-const adoptionRoutes = require("./routes/adoptionRoute"); // ← ADD THIS
+const adoptionRoutes = require("../routes/adoptionRoute"); // ← ADD THIS
 const path = require('path');
 
 const app = express();
