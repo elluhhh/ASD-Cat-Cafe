@@ -36,7 +36,9 @@ app.get("/food", (req, res) =>{
   res.render("food"); //views/food.ejs
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+//const PORT = process.env.PORT || 8080;
+//app.listen(PORT, () => {
+//  console.log(`Server running at http://localhost:${PORT}`);
+//});
+
+export default app;
