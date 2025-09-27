@@ -18,9 +18,14 @@ app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
 
 app.use("/bookingManagement", bookingRoutes);
 app.use('/cats', catRoutes);
+app.use("/adoption", adoptionRoutes);
+app.use("/catprofile", catRoute);
+
+app.get('/catprofile', (req, res) => res.render('catProfile')); 
 
 app.get("/", (req, res) => {
 	res.render("index");
