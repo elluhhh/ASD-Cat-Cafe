@@ -1,15 +1,18 @@
 {
   "name": "asd-cat-cafe",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js",
+    "start": "node index.js",
     "lint": "eslint . --ext .js --max-warnings=0",
-    "smoke": "start-server-and-test \"node server.js\" http://localhost:8080 \"curl -fsS http://localhost:8080/ && curl -fsS http://localhost:8080/food\""
+    "smoke": "start-server-and-test \"node index.js\" http://localhost:8080 \"curl -fsS http://localhost:8080/ && curl -fsS http://localhost:8080/food\"",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "coverage": "cross-env NODE_ENV=test nyc --reporter=text --reporter=lcov --reporter=cobertura jest"
   },
   "dependencies": {
     "ejs": "^3.1.10",
-    "express": "^4.19.2"
+    "express": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
@@ -20,5 +23,24 @@
     "nyc": "^17.1.0",
     "start-server-and-test": "^2.0.13",
     "supertest": "^7.1.4"
+  },
+  "jest": {
+    "testMatch": ["**/__tests__/**/*.test.js"],
+    "testEnvironment": "node",
+    "coverageProvider": "v8"
+  },
+  "nyc": {
+    "all": true,
+    "include": ["**/*.js"],
+    "exclude": ["node_modules/**", "**/__tests__/**", "public/**"],
+    "checkCoverage": true,
+    "branches": 70,
+    "functions": 70,
+    "lines": 70,
+    "statements": 70
+  },
+  "engines": {
+    "node": ">=18 <23",
+    "npm": ">=9"
   }
 }
