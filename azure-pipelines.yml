@@ -15,9 +15,11 @@ steps:
 
 - script: npm ci
   displayName: 'Install dependencies'
+  workingDirectory: main
 
 - script: npm run lint
   displayName: 'Lint'
+  workingDirectory: main
 
 - script: echo running cat display tests
   displayName: 'Cat Display Tests'
