@@ -5,6 +5,7 @@ const path = require("path");
 const bookingRoutes = require("./routes/bookingRoutes");
 const catRoutes = require("./routes/catRoutes.js");
 const adoptionRoutes = require("./routes/adoptionRoute"); 
+require('dotenv').config();
 
 const app = express();
 
@@ -22,10 +23,10 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/catcafe")
   .catch(err => console.error("DB connection error", err));
 
 // Routes
-app.use("/cats", require("./routes/catRoute"));
 app.use("/bookingManagement", bookingRoutes);
 app.use("/cats", catRoutes);
 app.use("/adoption", adoptionRoutes);
+app.use("/cats", require("./routes/catRoute"));
 
 app.get("/", (req, res) => {
   res.render("index");
