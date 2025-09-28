@@ -9,3 +9,4 @@ router.patch('/:id', ctl.patch);
 router.delete('/:id', ctl.remove);
 
 module.exports = router;
+console.log('Controller loaded:', ctl);

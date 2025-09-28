@@ -1,7 +1,7 @@
 const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
-const { AdoptionRequest } = require('../main/model/AdoptionRequest');
+const { AdoptionRequest } = require('../models/adoptionRequest');
 
 // Short tracking code
 const makeCode = () => crypto.randomBytes(6).toString('base64url');
