@@ -16,7 +16,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/add', upload.single('image'), createCat);
-router.get('/:id', getCat);
+router.get('/:id', async (req, res) => {
+    const cat = await Cat.findById(req.params.id);
+    res.render('cat-profile', { cat });
+});
 
 router.get('/', async (req, res) => {
     const { name, age, gender } = req.query;
