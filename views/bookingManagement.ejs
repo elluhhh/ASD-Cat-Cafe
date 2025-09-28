@@ -11,27 +11,18 @@
 		<h1>Booking Management</h1>
 			<h2>Booking Lookup</h3>
 			<div>
-				<form action="bookingManagement/search" method="GET">
+				<form action="bookingManagement" method="POST">
 					<label for="id">Booking ID:</label>
-					<input type="text" placeholder="123567890" id="idInput"/>
+					<input type="text" placeholder="123567890" name="id"/>
 					<label for="email">Email:</label>
-					<input type="text" placeholder="email@email.com" />
+					<input type="text" placeholder="email@email.com" name="email"/>
 					<label for="date">Date:</label>
-					<input type="date"/>
+					<input type="date" name="date"/>
 					<input type="submit" value="Search" />
 				</form>
 			</div>
-
-            <ul>
-                <!-- <%//bookingSearch.forEach(booking => {%>
-                    <li>
-                        <=%booking._id%>
-                    </li>
-                <% //}); %> -->
-            </ul>
-
 		
-			<h2>All Bookings</h2>
+			<h2>Bookings</h2>
             <table>
 				<th>ID</th>
 				<th>First Name</th>
@@ -42,6 +33,11 @@
 				<th>Attendees No.</th>
                 <th>Total Paid</th>
                 <th></th><th></th>
+				<% if(typeof booking !== 'undefined') { %>
+					<tr>
+						<td><%=booking._id%></td>
+					</tr>
+				<% } %>
 				<% bookings.forEach(booking => { %>
 				<tr>
 					<td><%= booking._id %></td>
@@ -60,7 +56,7 @@
                     <td><%='$'+booking.total_price%></td>
                     <td><button id="edit">Edit</button></td>
                     <td>
-						<form action="bookingManagement/<%=booking._id%>" method="POST">
+						<form action="bookingManagement/delete/<%=booking._id%>" method="POST">
 						<button id="cancel" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</button>
 						</form>
 					</td>
