@@ -20,12 +20,12 @@ const deleteBooking = async (req, res) => {
 
 const findBookings = async (req, res) => {
 	try {
-		const { _id, email } = req.body;
-		const bookingSearch = await Booking.find({
-			_id: _id,
-			email: email
-		}).exec();
-		res.render("bookingManagement", { bookingSearch });
+		const bookings = await Booking.find().or([
+			{_id: req.body.id},
+			{email: req.body.email},
+			{date_time: req.body.date}
+		]).exec();
+		res.render("bookingManagement", { bookings });
 	} catch (err) {
 		res.status(500).send(err);
 	}
