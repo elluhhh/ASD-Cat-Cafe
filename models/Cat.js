@@ -14,6 +14,16 @@ const catSchema = new mongoose.Schema({
     isAdopted: { type: Boolean, default: false },
 }, { timestamps: true }); // Adds createdAt & updatedAt automatically
 
+// create ageMonths variable upon creation/update of cat based on date of birth
+catSchema.pre('save', function (next) {
+    if (this.dob) {
+        const now = new Date();
+        const dobDate = new Date(this.dob);
+        this.ageMonths = (now.getFullYear() - dobDate.getFullYear()) * 12 + (now.getMonth() - dobDate.getMonth());
+    }
+    next();
+});
+
 //It takes ageMonths, divides by 12, and formats to 1 decimal place (e.g. 14 months → 1.2 years). 
 // If ageMonths is missing or invalid, it returns null.
 catSchema.virtual('ageYears').get(function () {
