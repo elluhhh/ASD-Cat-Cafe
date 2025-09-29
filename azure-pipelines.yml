@@ -1,19 +1,44 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  '*'
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- checkout: self
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: NodeTool@0
+  displayName: 'Use Node.js 22.x'
+  inputs:
+    versionSpec: '22.x'
+
+- script: npm ci
+  workingDirectory: $(workingDirectory)
+  displayName: 'Install dependencies'
+
+- script: npm run lint
+  workingDirectory: $(workingDirectory)
+  displayName: 'ESLint'
+  #continueOnError: true
+
+# Run Jest and produce JUnit for Azure Test tab
+- script: npm run test:report
+  workingDirectory: $(workingDirectory)
+  displayName: 'Run Jest (with JUnit)'
+  env:
+    CI: 'true'
+
+- task: PublishTestResults@2
+  displayName: 'Publish jest-junit results'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '$(workingDirectory)/test-results/jest/junit.xml'
+    failTaskOnFailedTests: true
+    testRunTitle: 'cat-detail tests'
+
+# - task: PublishBuildArtifacts@1
+#   displayName: 'Publish coverage artifact'
+#   inputs:
+#     PathtoPublish: '$(workingDirectory)/coverage'
+#     ArtifactName: 'coverage'
+#     publishLocation: 'Container'
