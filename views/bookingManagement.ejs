@@ -20,6 +20,9 @@
 					<input type="date" name="date"/>
 					<input type="submit" value="Search" />
 				</form>
+				<form action="bookingManagement" method="GET">
+					<input type="submit" value="Clear Search">
+				</form>
 			</div>
 		
 			<h2>Bookings</h2>
@@ -33,14 +36,9 @@
 				<th>Attendees No.</th>
                 <th>Total Paid</th>
                 <th></th><th></th>
-				<% if(typeof booking !== 'undefined') { %>
-					<tr>
-						<td><%=booking._id%></td>
-					</tr>
-				<% } %>
 				<% bookings.forEach(booking => { %>
 				<tr>
-					<td><%= booking._id %></td>
+					<td><%=booking._id %></td>
 					<td><%=booking.f_name%></td>
 					<td><%=booking.l_name%></td>
 					<td><%=booking.email%></td>
