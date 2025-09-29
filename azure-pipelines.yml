@@ -1,5 +1,7 @@
 trigger:
-  '*'
+  branches:
+    include:
+      - adoptionrequest 
 
 pool:
   vmImage: ubuntu-latest
