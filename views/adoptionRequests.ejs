@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>View Adoption Requests</title>
+  <link rel="stylesheet" href="/cat-display.css">
+</head>
+
+<body>
+    <h1>View all adoption requests</h1>
+      
+    <!-- cat name, person name?, status, date/time submitted? -->
+      <div class="container" id="requestList">
+        <% if (requests.length > 0 ) { %>
+            <% requests.forEach(request => { %>
+                <a href="/requests/<%= request._id %>"><div class="cat-card">
+                    <h2><%= request.applicant.name %></h2>
+                    <p class="cat-info">Enquiry for: <%= request.catId.name %></p>
+                    <p class="cat-info">Current Status: <%= request.status %></p>
+                    <p class="cat-info">Staff Notes: <%= request.staffNotes || 'N/A' %></p>
+                    <p class="cat-info">Latest Update: <%= request.updatedAt %></p>
+                </div></a>
+            <% }) %>
+        <% } else { %>
+            <p class="intro">No Adoption Requests Found</p>
+        <% } %>
+    </div>
+</body>
+
+</html>
