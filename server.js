@@ -14,6 +14,15 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// add for automated testing
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+app.get('/api/health', (_req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.get("/api/menu", async (req, res) => {
   try {
     const data = await fs.readFile(path.join(__dirname, "data", "menu.json"), "utf-8");
@@ -24,10 +33,6 @@ app.get("/api/menu", async (req, res) => {
   }
 });
 
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "public", "index.html"));
-// });
-
 app.get("/", (req, res) => {
   res.render("index"); // views/index.ejs
 });
@@ -36,9 +41,10 @@ app.get("/food", (req, res) =>{
   res.render("food"); //views/food.ejs
 });
 
-//const PORT = process.env.PORT || 8080;
-//app.listen(PORT, () => {
-//  console.log(`Server running at http://localhost:${PORT}`);
-//});
+app.use((req, res) => res.status(404).send("Not Found"));
+app.use((err, req, res, _next) => {
+  console.error(err);
+  res.status(500).send("Internal Server Error");
+});
 
 export default app;
