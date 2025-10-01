@@ -1,29 +1,36 @@
 trigger:
   branches:
-    include:
-      - main
-      - food-page
+    include: [ main, food-page ]
 
 pr:
   branches:
-    include:
-      - main
-      - food-page
+    include: [ main, food-page ]
 
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  NODE_VERSION: '20.x'
+
 steps:
+  - checkout: self
+
   - task: NodeTool@0
+    displayName: 'Use Node $(NODE_VERSION)'
     inputs:
-      versionSpec: '20.x'
-    displayName: Use Node.js
+      versionSpec: '$(NODE_VERSION)'
+
+  - script: node -v && npm -v
+    displayName: 'Show Node & npm'
+
+  - script: npm ci
+    displayName: 'Install deps (npm ci)'
 
   - script: npm run lint
-    displayName: Lint
+    displayName: 'Lint'
 
   - script: npm test
-    displayName: Unit & integration tests
+    displayName: 'Unit & integration tests'
 
   - script: npm run smoke
-    displayName: Smoke test
+    displayName: 'Smoke test'
