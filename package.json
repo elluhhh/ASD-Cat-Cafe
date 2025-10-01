@@ -1,21 +1,29 @@
 {
-  "name": "server",
+  "name": "cat-cafe-food-management",
   "version": "1.0.0",
   "type": "commonjs",
-  "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "node test.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint . --ext .js,.cjs --max-warnings=0",
+    "test": "cross-env NODE_ENV=test jest --config jest.config.cjs --runInBand",
+    "smoke": "start-server-and-test \"node index.js\" http://localhost:8000 \"curl -fsS http://localhost:8000/health\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "ejs": "^3.1.10",
     "express": "^5.1.0",
-    "mongoose": "^8.18.0"
+    "mongoose": "^8.18.1",
+    "ejs": "^3.1.10",
+    "body-parser": "^1.20.2",
+    "dotenv": "^17.2.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "cross-env": "^10.1.0",
+    "eslint": "^9.34.0",
+    "globals": "^16.3.0",
+    "jest": "^30.1.3",
+    "nodemon": "^3.0.1",
+    "start-server-and-test": "^2.0.13",
+    "supertest": "^7.1.4"
   }
 }
