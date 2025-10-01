@@ -61,11 +61,11 @@ function setupFilter({ formSelector, listSelector, endpoint, fields }) {
 }
 
 // for tests
-module.exports = {
-    getFilterValues,
-    updateFilterList,
-    setupFilter
-};
+// module.exports = {
+//     getFilterValues,
+//     updateFilterList,
+//     setupFilter
+// };
 
 // for live filtering
-// export { getFilterValues, updateFilterList, setupFilter };
+export { getFilterValues, updateFilterList, setupFilter };
