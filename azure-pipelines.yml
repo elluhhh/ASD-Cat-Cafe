@@ -1,23 +1,32 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- food-management
+  branches:
+    include: [ main, food-management, dev ]
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
-jobs:
-  - job: FMBuild
-    displayName: 'Install dependencies and Node.js'
-    steps:
-      - task: NodeTool@0
-        inputs: 
-          versionSpec: '22.x'
-      - script: npm ci
-  - job: FMTests
-    displayName: 'Food Management Tests'
-    steps:
-      - script: echo running food management tests
+variables:
+  NODE_VERSION: '22.x'
+
+steps:
+  - checkout: self
+
+  - task: NodeTool@0
+    displayName: 'Use Node $(NODE_VERSION)'
+    inputs:
+      versionSpec: '$(NODE_VERSION)'
+
+  - script: node -v && npm -v
+    displayName: 'Show Node & npm versions'
+
+  - script: npm ci
+    displayName: 'Install dependencies (npm ci)'
+
+  - script: npm run lint
+    displayName: 'Run ESLint'
+
+  - script: npm test
+    displayName: 'Run unit tests'
+
+  - script: npm run smoke
+    displayName: 'Run smoke test'
