@@ -5,7 +5,7 @@ const fs = require("fs").promises;
 
 // const bookingRoutes = require("./routes/bookingRoutes");
 // const catRoutes = require("./routes/catRoutes.js");
-const adoptionRoutes = require("./main/routes/adoptionRoute"); // ← ADD THIS
+// const adoptionRoutes = require("./main/routes/adoptionRoute");
 
 const app = express();
 
@@ -20,20 +20,16 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/adoption/static", express.static(path.join(__dirname, "main", "adoption")));
+// app.use("/adoption/static", express.static(path.join(__dirname, "main", "adoption")));
 
-// implement ejs
 app.set("view engine", "ejs");
-app.set("views", [
-  path.join(__dirname, "views"),
-  path.join(__dirname, "main", "views"),
-]);
+app.set("views", path.join(__dirname, "views"));
 
 // app.use("/bookingManagement", bookingRoutes);
 // app.use("/cats", catRoutes);
-app.use("/adoption", adoptionRoutes);
+// app.use("/adoption", adoptionRoutes);
 
-// add for automated testing
+// health checks
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
@@ -42,6 +38,7 @@ app.get("/api/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
+// menu api
 app.get("/api/menu", async (_req, res) => {
   try {
     const data = await fs.readFile(
@@ -55,10 +52,7 @@ app.get("/api/menu", async (_req, res) => {
   }
 });
 
-/* app.get("/", (req, res) => {
-  res.render("index");
-}); */
-
+// pages
 app.get("/", (_req, res) => {
   res.render("index"); // views/index.ejs
 });
@@ -76,4 +70,3 @@ app.use((err, _req, res, _next) => {
 });
 
 module.exports = app;
-
