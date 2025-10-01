@@ -11,10 +11,10 @@
     <h1>🐾 Cat Profiles</h1>
     <p class="muted">Add / Edit / Delete</p>
 
-    <!-- Form -->
+    <!-- Form (native POST to /cats/add) -->
     <section class="panel">
       <h2 class="panel-title" id="form-title">Add Cat</h2>
-      <form id="cat-form" class="grid" enctype="multipart/form-data">
+      <form id="cat-form" class="grid" action="/cats/add" method="POST" enctype="multipart/form-data">
         <input type="hidden" id="id" name="id" />
         <label>Name
           <input id="name" name="name" required />
@@ -36,7 +36,7 @@
         </label>
         <div class="actions wide">
           <button type="submit" id="submit-btn" class="btn primary">Add Cat</button>
-          <button type="button" id="reset" class="btn" onclick="handleClear()">Clear</button>
+          <button type="button" id="clear-btn" class="btn">Clear</button>
         </div>
       </form>
     </section>
@@ -55,7 +55,7 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody><!-- injected --></tbody>
       </table>
       <p class="empty" id="empty">No cats yet. Add one above. Meow 🐱</p>
     </section>
@@ -64,130 +64,193 @@
   <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
+  // --- tiny helpers
   const $  = (s, r=document)=>r.querySelector(s);
   const $$ = (s, r=document)=>[...r.querySelectorAll(s)];
 
-  const form      = $('#cat-form');
+  // --- elements
+  const formEl    = $('#cat-form');
+  const titleEl   = $('#form-title');
   const submitBtn = $('#submit-btn');
-  const clearBtn  = $('#reset');
+  const clearBtn  = $('#clear-btn');              // <-- make sure the button id matches this
 
-  let mode = 'add';   // can be 'add' or 'edit'
+  const idEl      = $('#id');
+  const nameEl    = $('#name');
+  const breedEl   = $('#breed');
+  const ageEl     = $('#ageMonths');
+  const adoptedEl = $('#isAdopted');
+  const fileEl    = $('#image');
 
-  function setMode(next) {
-    mode = next;
-    $('#form-title').textContent = mode === 'add' ? 'Add Cat' : 'Edit Cat';
-    submitBtn.textContent        = mode === 'add' ? 'Add Cat' : 'Update Cat';
-    clearBtn.textContent         = mode === 'add' ? 'Clear'   : 'Cancel';
+  const tbodyEl   = $('#cats tbody');
+  const emptyEl   = $('#empty');
+
+  // --- state
+  let currentEditId = null;   // null = Add mode
+
+  // --- mode + UI
+  function setMode(mode) {
+    if (mode === 'edit') {
+      titleEl.textContent   = 'Edit Cat';
+      submitBtn.textContent = 'Update Cat';
+      clearBtn.textContent  = 'Cancel';
+    } else {
+      titleEl.textContent   = 'Add Cat';
+      submitBtn.textContent = 'Add Cat';
+      clearBtn.textContent  = 'Clear';
+    }
   }
 
-function resetForm() {
-  const formEl = document.getElementById('cat-form'); // get it fresh
-  if (formEl) formEl.reset();
-
-  $('#id').value = '';
-  $('#form-title').textContent = 'Add Cat';
-  submitBtn.textContent = 'Add Cat';
-  clearBtn.textContent  = 'Clear';
-  setMode('add');
-  if (document.activeElement) document.activeElement.blur();
-}
-  function handleClear() { resetForm(); }
-  window.handleClear = handleClear;
-
-  const row = c => `<tr>
-    <td><img class="thumb" src="${c.imageUrl || 'https://placehold.co/80x80?text=Cat'}" alt=""></td>
-    <td>${c.name || '-'}</td>
-    <td>${c.breed || '-'}</td>
-    <td>${c.ageMonths ?? '-'}</td>
-    <td><span class="badge ${c.isAdopted ? 'yes':'no'}">${c.isAdopted ? 'Yes':'No'}</span></td>
-    <td>
-      <button class="btn small" data-edit="${c._id}">Edit</button>
-      <button class="btn small danger" data-del="${c._id}">Delete</button>
-    </td>
-  </tr>`;
-
-  function renderRows(cats){
-    $('#cats tbody').innerHTML = cats.map(row).join('');
-    $('#empty').style.display = cats.length ? 'none' : 'block';
-    attachActions();
+  function resetForm() {
+    // IMPORTANT: now that our button id isn't "reset", the native reset works
+    if (typeof formEl.reset === 'function') formEl.reset();
+    idEl.value = '';
+    currentEditId = null;
+    setMode('add');
+    if (document.activeElement) document.activeElement.blur();
   }
 
+  // --- render
+  function rowTpl(c) {
+    return `
+      <tr data-id="${c._id}">
+        <td><img class="thumb" src="${c.imageUrl || 'https://placehold.co/80x80?text=Cat'}" alt=""></td>
+        <td>${c.name || '-'}</td>
+        <td>${c.breed || '-'}</td>
+        <td>${c.ageMonths ?? '-'}</td>
+        <td><span class="badge ${c.isAdopted ? 'yes':'no'}">${c.isAdopted ? 'Yes':'No'}</span></td>
+        <td>
+          <button class="btn small" data-action="edit">Edit</button>
+          <button class="btn small danger" data-action="del">Delete</button>
+        </td>
+      </tr>`;
+  }
+
+  function renderTable(list) {
+    tbodyEl.innerHTML = list.map(rowTpl).join('');
+    emptyEl.style.display = list.length ? 'none' : 'block';
+  }
+
+  // --- load from API
   async function loadCats() {
     try {
-      const res = await fetch('/cats', { headers: { 'Accept': 'application/json' }});
-      if (!res.ok) throw new Error('Failed to load cats');
-      const cats = await res.json();
-      renderRows(cats);
-    } catch (e) {
-      console.error('Load cats failed', e);
+      const res = await fetch('/cats', { headers: { 'Accept': 'application/json' } });
+      if (!res.ok) throw new Error(`GET /cats failed: ${res.status}`);
+      const data = await res.json();
+      renderTable(data);
+    } catch (err) {
+      console.error(err);
+      renderTable([]); // show empty state instead of leaving stale UI
     }
   }
 
-  function attachActions() {
-    $$("button[data-edit]").forEach(btn => {
-      btn.onclick = async () => {
-        const id = btn.dataset.edit;
-        try {
-          const res = await fetch(`/cats/${id}`, { headers: { 'Accept': 'application/json' }});
-          const cat = await res.json();
-          $("#id").value        = cat._id;
-          $("#name").value      = cat.name;
-          $("#breed").value     = cat.breed;
-          $("#ageMonths").value = cat.ageMonths;
-          $("#isAdopted").value = cat.isAdopted ? "true" : "false";
-          setMode('edit');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch {
-          alert("Could not load cat for editing.");
-        }
-      };
-    });
+  // --- events
+  // Clear / Cancel
+  clearBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    resetForm();
+  });
 
-    $$("button[data-del]").forEach(btn => {
-      btn.onclick = async () => {
-        const id = btn.dataset.del;
-        if (!confirm("Delete this cat?")) return;
-        const res = await fetch(`/cats/${id}`, { method: "DELETE" });
-        if (res.ok) {
-          loadCats();
-          if ($("#id").value === id) resetForm();
-        } else {
-          alert("Delete failed.");
-        }
-      };
-    });
-  }
-
-  // Submit: Add or Update
-  form.addEventListener('submit', async (e) => {
+  // Submit (Add or Update)
+  formEl.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const fd = new FormData(form);
-    const id = $('#id').value;
-    let url, method;
-
-    if (mode === 'edit' && id) {
-      url = `/cats/${id}`;
-      method = 'PUT';
-    } else {
-      url = '/cats/add';
-      method = 'POST';
+    // Required client-side checks
+    const name = nameEl.value.trim();
+    const breed = breedEl.value.trim();
+    const age = ageEl.value;
+    if (!name || !breed || age === '') {
+      alert('Please fill Name, Breed, and Age (months).');
+      return;
     }
 
     try {
-      const res = await fetch(url, { method, body: fd });
-      if (!res.ok) throw new Error('Save failed');
-      await loadCats();
-      resetForm();
+      if (currentEditId) {
+        // UPDATE (no image upload in edit for now)
+        const payload = {
+          name: name,
+          breed: breed,
+          ageMonths: Number(age),
+          isAdopted: adoptedEl.value === 'true'
+        };
+        const res = await fetch(`/cats/${currentEditId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(`PUT /cats/${currentEditId} failed: ${res.status}`);
+      } else {
+        // CREATE (supports image upload)
+        const fd = new FormData(formEl);          // contains file + fields
+        const res = await fetch('/cats/add', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' }, // tell server we want JSON back
+          body: fd
+        });
+        if (!res.ok) {
+          // Try to show a useful error message
+          let msg = `POST /cats/add failed: ${res.status}`;
+          try { const t = await res.text(); if (t) msg = t; } catch {}
+          throw new Error(msg);
+        }
+      }
+
+      await loadCats();   // refresh list after save
+      resetForm();        // back to Add mode
     } catch (err) {
       console.error(err);
-      alert('Could not save cat.');
+      alert('Could not save cat. Please try again.');
     }
   });
 
-  // Initial load
+  // Table action buttons (event delegation)
+  tbodyEl.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+
+    const tr = btn.closest('tr[data-id]');
+    const id = tr?.getAttribute('data-id');
+    if (!id) return;
+
+    const action = btn.getAttribute('data-action');
+
+    if (action === 'edit') {
+      // Load cat then populate form
+      try {
+        const res = await fetch(`/cats/${id}`, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error(`GET /cats/${id} failed: ${res.status}`);
+        const c = await res.json();
+
+        idEl.value      = c._id || '';
+        nameEl.value    = c.name || '';
+        breedEl.value   = c.breed || '';
+        ageEl.value     = c.ageMonths ?? '';
+        adoptedEl.value = c.isAdopted ? 'true' : 'false';
+        if (fileEl) fileEl.value = ''; // never pre-fill file fields
+
+        currentEditId = c._id || null;
+        setMode('edit');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        console.error(err);
+        alert('Could not load cat for editing.');
+      }
+    }
+
+    if (action === 'del') {
+      if (!confirm('Delete this cat?')) return;
+      try {
+        const res = await fetch(`/cats/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error(`DELETE /cats/${id} failed: ${res.status}`);
+        await loadCats();
+        if (currentEditId === id) resetForm();
+      } catch (err) {
+        console.error(err);
+        alert('Delete failed.');
+      }
+    }
+  });
+
+  // init
   setMode('add');
   loadCats();
 </script>
-</body>
-</html>
