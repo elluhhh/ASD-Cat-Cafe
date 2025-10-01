@@ -38,6 +38,26 @@ const findBookings = async (req, res) => {
 	}
 };
 
+const createBooking = async (req, res) => {
+	try {
+		const {date, time, attendees, total_price, f_name, l_name, email, phone} = req.body;
+		
+		await Booking.create({
+			f_name: f_name,
+			l_name: l_name,
+			email: email,
+			attendees_no: attendees,
+			date_time: new Date(date).setHours(Number(time)),
+			total_price: total_price,
+			phone: phone
+		});
+		
+		res.redirect("/booking");
+	} catch (err) {
+		res.status(500).send(err);
+	}
+};
+
 const getAvailableTimes = async (req, res) => {
 	try {
 		const today = new Date();
@@ -78,7 +98,7 @@ const getAvailableTimes = async (req, res) => {
 module.exports = {
 	getBookings,
 	deleteBooking,
-	findBookings
 	findBookings,
+	createBooking,
 	getAvailableTimes
 };
