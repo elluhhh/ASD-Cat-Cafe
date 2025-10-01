@@ -3,70 +3,47 @@ const mongoose = require("mongoose");
 const path = require("path");
 const fs = require("fs").promises;
 
-// const bookingRoutes = require("./routes/bookingRoutes");
-// const catRoutes = require("./routes/catRoutes.js");
-// const adoptionRoutes = require("./main/routes/adoptionRoute");
-
 const app = express();
 
 if (process.env.NODE_ENV !== "test") {
   mongoose
     .connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/catcafe")
-    .then(() => console.log("DB is connected"))
-    .catch((err) => console.error("DB connection error", err));
+    .then(() => {})
+    .catch(() => {});
 }
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use("/adoption/static", express.static(path.join(__dirname, "main", "adoption")));
-
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// app.use("/bookingManagement", bookingRoutes);
-// app.use("/cats", catRoutes);
-// app.use("/adoption", adoptionRoutes);
+const cartRoutes = require("./routes/cartRoutes");
+app.use("/api/cart", cartRoutes);
 
-// health checks
-app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "ok" });
-});
+app.get("/health", (_req, res) => res.status(200).json({ status: "ok" }));
+app.get("/api/health", (_req, res) => res.status(200).json({ status: "ok" }));
 
-app.get("/api/health", (_req, res) => {
-  res.status(200).json({ status: "ok" });
-});
-
-// menu api
 app.get("/api/menu", async (_req, res) => {
   try {
-    const data = await fs.readFile(
-      path.join(__dirname, "data", "menu.json"),
-      "utf-8"
-    );
+    const data = await fs.readFile(path.join(__dirname, "data", "menu.json"), "utf-8");
     res.json(JSON.parse(data));
-  } catch (err) {
-    console.error(err);
+  } catch {
     res.status(500).json({ error: "Failed to load menu data" });
   }
 });
 
-// pages
-app.get("/", (_req, res) => {
-  res.render("index"); // views/index.ejs
-});
-
-app.get("/food", (_req, res) => {
-  res.render("food"); // views/food.ejs
-});
-
-console.log("Views dir =", app.get("views"));
+app.get("/", (_req, res) => res.render("index"));
+app.get("/food", (_req, res) => res.render("food"));
 
 app.use((_req, res) => res.status(404).send("Not Found"));
-app.use((err, _req, res, _next) => {
-  console.error(err);
-  res.status(500).send("Internal Server Error");
+
+app.use((err, req, res, _next) => {
+  const status = err.status || 500;
+  const message = err.message || "Internal Server Error";
+  if (req.path.startsWith("/api/")) return res.status(status).json({ error: message });
+  return res.status(status).send(message);
 });
 
 module.exports = app;
