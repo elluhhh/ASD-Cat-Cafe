@@ -25,7 +25,95 @@ const seedFoods = async (req, res) => {
     }
 };
 
+// Add Food Item (U117)
+const addFood = async (req, res) => {
+    try {
+        const { name, category, price, description, stock, vegan } = req.body;
+        
+        // Validation
+        if (!name || !category || !price || !stock) {
+            return res.status(400).send("Missing required fields");
+        }
+        
+        const newFood = new Food({
+            name: name.trim(),
+            category: category.toLowerCase(),
+            price: parseFloat(price),
+            description: description || "",
+            status: parseInt(stock) > 0 ? "Available" : "Unavailable",
+            stock: parseInt(stock),
+            vegan: vegan === "on",
+            image: `/images/${name.toLowerCase().replace(/\s/g, '')}.png`
+        });
+        
+        await newFood.save();
+        res.redirect("/foodManagement");
+    } catch (err) {
+        console.error("Add food error:", err);
+        res.status(500).send("Failed to add food item");
+    }
+};
+
+// Update Food Item (U116)
+const updateFood = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, category, price, description, stock, vegan, status } = req.body;
+        
+        if (!id) {
+            return res.status(400).send("Missing food ID");
+        }
+        
+        const updateData = {
+            name: name.trim(),
+            category: category.toLowerCase(),
+            price: parseFloat(price),
+            description: description || "",
+            status: status || (parseInt(stock) > 0 ? "Available" : "Unavailable"),
+            stock: parseInt(stock),
+            vegan: vegan === "on"
+        };
+        
+        await Food.findByIdAndUpdate(id, updateData);
+        res.redirect("/foodManagement");
+    } catch (err) {
+        console.error("Update food error:", err);
+        res.status(500).send("Failed to update food item");
+    }
+};
+
+// Delete Food Item (U116)
+const deleteFood = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            return res.status(400).send("Missing food ID");
+        }
+        
+        await Food.findByIdAndDelete(id);
+        res.redirect("/foodManagement");
+    } catch (err) {
+        console.error("Delete food error:", err);
+        res.status(500).send("Failed to delete food item");
+    }
+};
+
+// API endpoint for testing
+const getFoodsAPI = async (req, res) => {
+    try {
+        const foods = await Food.find();
+        res.status(200).json(foods);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch foods" });
+    }
+};
+
 module.exports = {
     getFoods,
-    seedFoods
+    seedFoods,
+    addFood,
+    updateFood,
+    deleteFood,
+    getFoodsAPI
 };
