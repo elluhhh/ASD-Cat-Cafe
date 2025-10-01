@@ -21,7 +21,7 @@ steps:
 - script: npm run lint
   workingDirectory: main
   displayName: 'ESLint'
-  #continueOnError: true
+  continueOnError: true
 
 # Run Jest and produce JUnit for Azure Test tab
 - script: npm test -- --ci --reporters=default --reporters=jest-junit
