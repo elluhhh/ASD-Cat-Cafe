@@ -17,7 +17,7 @@ steps:
   - script: npm ci
     displayName: 'Install dependencies'
 
-  - script: echo still have to code tests
+  - script: npm test
     displayName: 'Run unit tests'
 
   - script: npm run lint
