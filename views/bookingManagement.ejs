@@ -31,6 +31,7 @@
 				<th>First Name</th>
 				<th>Last Name</th>
 				<th>Email</th>
+				<th>Phone</th>
 				<th>Date</th>
 				<th>Time</th>
 				<th>Attendees No.</th>
@@ -42,6 +43,7 @@
 					<td><%=booking.f_name%></td>
 					<td><%=booking.l_name%></td>
 					<td><%=booking.email%></td>
+					<td><%=booking.phone%></td>
 					<td>
 						<%=booking.date_time.toLocaleString([], {year:
 						'numeric', month: 'numeric', day:'numeric'})%>
