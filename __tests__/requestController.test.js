@@ -30,6 +30,34 @@ describe('getCatFilterValues', () => {
     })    
 })
 
+describe('getAdoptionRequestFilterValues', () => {
+    beforeEach(() => {
+        document.body.innerHTML = `
+        <form id="requestFilter">
+            <select name="status">
+                <option value="">All</option>
+                <option value="RECEIVED">Received</option>
+                <option value="UNDER_REVIEW">Under Review</option>
+                <option value="REJECTED">Rejected</option>
+                <option value="APPROVED">Approved</option>
+            <input type="select" name="status" />
+        </form>
+        `;
+
+        document.querySelector('select[name="status"]').value = 'RECEIVED';
+    });
+
+    test('if filter returns correct values for selected status', () => {
+        const form = document.getElementById('requestFilter');
+        const fields = [
+            { name: 'status', type: 'select' }
+        ];
+
+        const params = getFilterValues(form, fields);
+        expect(params.get('status')).toBe('RECEIVED');
+    })    
+})
+
 describe('validateAdoptionRequestUpdate', () => {
     test('if valid input returns no errors', () => {
         const result = validateAdoptionRequestUpdate({
