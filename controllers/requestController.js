@@ -2,20 +2,9 @@ const { AdoptionRequest, ADOPTION_STATUSES } = require('../models/adoptionReques
 
 const getAllRequests = async (req, res) => {
 	try {
+        // get requests first so cat fields can be searched
         const { search, status } = req.query;
-        // let filter = {};
-        
-        // if (search) {
-        //     const regex = new RegExp(search, 'i');
-        //     filter.$or = [
-        //         { 'applicant.name': regex },
-        //         { 'trackingCode': regex }
-        //     ];
-        // }
-        // if (status) filter.status = status;
-
         const requests = await AdoptionRequest.find({}).populate('catId');
-
         const regex = new RegExp(search, 'i');
 
         const filtered = requests.filter(req => 
@@ -23,7 +12,6 @@ const getAllRequests = async (req, res) => {
             (!status || req.status === status)
         );
 
-		// const requests = await AdoptionRequest.find(filter).populate('catId', 'name');
 		res.render("adoptionRequests", { requests: filtered, ADOPTION_STATUSES });
 	} catch (err) {
         console.error(err);

@@ -7,7 +7,10 @@
 </head>
 
 <body style="padding: 40px;">
-  <h1>Adoption Request for <%= request.catId.name %> </h1>
+  <h1>Adoption Request for <%= request.catId.name %></h1>
+  <p class="subtitle">Microchip ID: <%= request.catId.microchipId %></p>
+
+  <!-- display form input errors -->
   <% if (errors && errors.length > 0) { %>
     <h3 style="color: crimson;">ERROR</h3>
     <ul>
@@ -19,7 +22,7 @@
 
   <section class="panel">
     <h2 class="panel-title">Applicant details</h2>
-    <!-- /adoption/request to add -->
+    <!-- /adoption/request to add, /requests/update to update -->
     <form class="form" method="post" action="/requests/update" autocomplete="off">
       <div class="grid">
         <input type="hidden" name="id" value="<%= request._id %>">

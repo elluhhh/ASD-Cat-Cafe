@@ -9,23 +9,72 @@
 
 <body>
     <h1>View all adoption requests</h1>
+
+    <form id="requestFilter">
+        <input type="text" name="search" placeholder="Search by name or tracking code">
+
+        <label>Status:
+        <select name="status">
+            <option value="">Any</option>
+            <% ADOPTION_STATUSES.forEach(status => { %>
+                <option value="<%= status %>" ><%= status %></option>
+            <% }) %>
+        </select>
+        </label>
+    </form>
+
+    <button class="btn" style="padding: 10px; margin-top: 10px;" type="button" id="clearFilter">Clear Filters</button>
       
-    <!-- cat name, person name?, status, date/time submitted? -->
-      <div class="container" id="requestList">
+    <div class="adoption-container" id="requestList">
         <% if (requests.length > 0 ) { %>
             <% requests.forEach(request => { %>
-                <a href="/requests/<%= request._id %>"><div class="cat-card">
-                    <h2><%= request.applicant.name %></h2>
-                    <p class="cat-info">Enquiry for: <%= request.catId.name %></p>
-                    <p class="cat-info">Current Status: <%= request.status %></p>
-                    <p class="cat-info">Staff Notes: <%= request.staffNotes || 'N/A' %></p>
-                    <p class="cat-info">Latest Update: <%= request.updatedAt %></p>
+                <a href="/requests/<%= request._id %>"><div class="adoption-card">
+                    <h2>Adoption Request <%= request.trackingCode %></h2>
+                    <p class="cat-info" style="text-align: left;">
+                        <span class="underline">Applicant Name</span>: <%= request.applicant.name %><br>
+                        <span class="underline">Enquiry for</span>: <%= request.catId?.name || 'No cat linked' %><br><br>
+                        <span class="underline">Current Status</span>: <%= request.status %><br>
+                        <span class="underline">Staff Notes</span>: <%= request.staffNotes || 'N/A' %><br>
+                        <span class="underline">Latest Update</span>: <%= request.updatedAt %>
+                    </p>
                 </div></a>
             <% }) %>
         <% } else { %>
             <p class="intro">No Adoption Requests Found</p>
         <% } %>
     </div>
+
+    <a class="btn" href="/">Go Back Home</a>
+
+<script>
+    const form = document.getElementById('requestFilter');
+    
+    // update requests displayed dependent on filters
+    async function updateRequestList() {
+        const search = form.search.value;
+        const status = form.status?.value || '';
+
+        const res = await fetch(`/requests?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`);
+        const html = await res.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newList = doc.querySelector('#requestList');
+        document.querySelector('#requestList').innerHTML = newList.innerHTML;
+    };
+    // Live update for text search
+    form.search.addEventListener('input', updateRequestList);
+    form.status.addEventListener('change', updateRequestList);
+
+    // clear all filters
+    const clearButton = document.getElementById('clearFilter');
+    
+    clearButton.addEventListener('click', () => {
+        form.reset();
+        updateRequestList();
+    });
+
+</script>
 </body>
 
 </html>
