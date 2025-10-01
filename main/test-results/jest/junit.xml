@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="5" failures="0" errors="0" time="3.045">
-  <testsuite name="Adoption Form (server)" errors="0" failures="0" skipped="0" timestamp="2025-10-01T11:41:25" time="2.891" tests="5">
-    <testcase classname="Adoption Form (server) GET /adoption/request renders form" name="Adoption Form (server) GET /adoption/request renders form" time="0.03">
+<testsuites name="jest tests" tests="5" failures="0" errors="0" time="3.6">
+  <testsuite name="Adoption Form (server)" errors="0" failures="0" skipped="0" timestamp="2025-10-01T12:03:48" time="3.446" tests="5">
+    <testcase classname="Adoption Form (server) GET /adoption/request renders form" name="Adoption Form (server) GET /adoption/request renders form" time="0.041">
     </testcase>
-    <testcase classname="Adoption Form (server) POST /adoption/request creates request and redirects" name="Adoption Form (server) POST /adoption/request creates request and redirects" time="0.026">
+    <testcase classname="Adoption Form (server) POST /adoption/request creates request and redirects" name="Adoption Form (server) POST /adoption/request creates request and redirects" time="0.028">
     </testcase>
-    <testcase classname="Adoption Form (server) GET /adoption/status/:code renders status (found)" name="Adoption Form (server) GET /adoption/status/:code renders status (found)" time="0.022">
+    <testcase classname="Adoption Form (server) GET /adoption/status/:code renders status (found)" name="Adoption Form (server) GET /adoption/status/:code renders status (found)" time="0.037">
     </testcase>
     <testcase classname="Adoption Form (server) GET /adoption/status/:code returns 404 when missing" name="Adoption Form (server) GET /adoption/status/:code returns 404 when missing" time="0.002">
     </testcase>

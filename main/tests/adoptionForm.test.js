@@ -1,4 +1,4 @@
-// main/tests/adoptionForm.test.js
+/* eslint-env jest, node */
 process.env.NODE_ENV = 'test';
 
 jest.mock('../models/adoptionRequest', () => {
