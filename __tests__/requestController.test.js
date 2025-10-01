@@ -1,5 +1,6 @@
 /** @jest-environment jsdom */
 const { getFilterValues } = require('../public/js/filterUtils.js');
+const { validateAdoptionRequestUpdate } = require('../public/js/requestValidator.js');
 
 describe('getCatFilterValues', () => {
     beforeEach(() => {
@@ -27,4 +28,26 @@ describe('getCatFilterValues', () => {
         expect(params.get('name')).toBe('Whiskers');
         expect(params.get('gender')).toBe('male');
     })    
+})
+
+describe('validateAdoptionRequestUpdate', () => {
+    test('if valid input returns no errors', () => {
+        const result = validateAdoptionRequestUpdate({
+            name: 'Susy May',
+            email: 'susy@email.com',
+            address: '78 Greenway Blvd, Sydney NSW',
+            whyAdopt: 'I really, really want a cat'
+        });
+        expect(result).toEqual([]);
+    });
+
+    it('should catch invalid name', () => {
+        const result = validateAdoptionRequestUpdate({
+            name: 'Susy May7!',
+            email: 'susymay7@email.com',
+            address: '78 Greenway Blvd, Sydney NSW',
+            whyAdopt: 'I love cats so bad'
+        });
+        expect(result).toContain('Name contains invalid characters');
+    });
 })
