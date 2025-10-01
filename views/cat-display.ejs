@@ -50,40 +50,20 @@
     <!-- links back to index page -->
     <a class="btn" href="/">Go Back Home</a>
 
-<script>
-    const form = document.getElementById('catFilter');
-    
-    // update cats displayed dependent on filters
-    async function updateCatList() {
-        const name = form.name.value;
-        const age = form.age?.value || '';
-        const selected = document.querySelector('input[name="gender"]:checked');
-        const gender = selected ? selected.value : '';
+<script type="module">
+    // filter cats
+    import { setupFilter } from '/js/filterUtils.js';
 
-        const res = await fetch(`/cats?name=${encodeURIComponent(name)}&age=${age}&gender=${gender}`);
-        const html = await res.text();
-
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const newList = doc.querySelector('#catList');
-        document.querySelector('#catList').innerHTML = newList.innerHTML;
-    };
-    // Live update for gender radio
-    document.querySelectorAll('input[name="gender"]').forEach(radio => {
-        radio.addEventListener('change', updateCatList);
+    setupFilter({
+        formSelector: '#catFilter',
+        listSelector: '#catList',
+        endpoint: '/cats',
+        fields: [
+            { name: 'name', type: 'text', live: 'input' },
+            { name: 'age', type: 'select', live: 'change' },
+            { name: 'gender', type: 'radio' }
+        ]
     });
-    // Live update for text search
-    form.name.addEventListener('input', updateCatList);
-    form.age.addEventListener('change', updateCatList);
-
-    // clear all filters
-    const clearButton = document.getElementById('clearFilter');
-    
-    clearButton.addEventListener('click', () => {
-        form.reset();
-        updateCatList();
-    });
-
 </script>
 
 </body>

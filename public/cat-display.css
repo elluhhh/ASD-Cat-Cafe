@@ -72,7 +72,7 @@ input[type=text] {
     border-radius: 10px;
     text-decoration: none;
     color: black;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .btn:hover {
@@ -107,4 +107,37 @@ a {
 
 .details {
     flex: 2;
+}
+
+.adoption-card {
+    text-align: center;
+    flex-direction: row;
+    padding: 20px;
+    border: 2px #e6cfc3 solid;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border-radius: 20px;
+    background: #fff8f0;
+}
+
+.adoption-card:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s ease;
+    cursor: grab;
+}
+
+.adoption-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+    gap: 1rem;
+    padding: 50px;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+select {
+    padding: 10px;
+    border: 2px solid #e6cfc3;
+    border-radius: 10px;
 }
