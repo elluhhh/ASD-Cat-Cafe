@@ -14,7 +14,7 @@ steps:
   inputs:
     versionSpec: '22.x'
 
-- script: npm ci
+- script: npm install
   displayName: 'Install dependencies'
 
 - script: npm run lint
