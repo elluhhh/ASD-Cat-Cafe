@@ -8,6 +8,7 @@ module.exports = {
     'controller/**/*.js',
     'route/**/*.js',
     'model/**/*.js',
+    'public/js/**/*.js',
     '!**/node_modules/**',
   ],
   coverageDirectory: 'coverage',
