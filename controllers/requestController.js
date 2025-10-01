@@ -1,4 +1,5 @@
 const { AdoptionRequest, ADOPTION_STATUSES } = require('../models/adoptionRequest.js');
+const { validateAdoptionRequestUpdate } = require('../public/js/requestValidator.js');
 
 const getAllRequests = async (req, res) => {
 	try {
@@ -46,18 +47,7 @@ const updateRequest = async (req, res) => {
             staffNotes
         } = req.body;
         
-        const errors = [];
-        if (!name || name.trim().length < 2) {
-            errors.push('Name must be at least 2 characters');
-        }
-
-        if (!email || !email.includes('@')) {
-            errors.push('Please enter a valid email address');
-        }
-
-        if (whyAdopt && whyAdopt.length > 1000) {
-            errors.push('Adoption reason must be less than 1000 characters');
-        }
+        const errors = validateAdoptionRequestUpdate({ name, email, whyAdopt, address });
 
         // if errors exist, show on form and reject update
         if (errors.length > 0) {
