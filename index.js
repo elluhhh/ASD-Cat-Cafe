@@ -1,4 +1,4 @@
-import app from "./server.js";
+const app = require("./server");
 
 const PORT = process.env.PORT || 8080;
 
@@ -7,9 +7,3 @@ if (process.env.NODE_ENV !== "test") {
     console.log(`Server running at http://localhost:${PORT}`);
   });
 }
-
-// app.listen(PORT, () => {
-//   console.log(`Server running at http://localhost:${PORT}`);
-// });
-
-//export default server;

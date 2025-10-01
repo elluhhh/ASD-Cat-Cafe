@@ -1,11 +1,8 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs/promises";
+const express = require("express");
+const path = require("path");
+const fs = require("fs").promises;
 
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 app.use(express.json());
 app.use(express.static("public"));
@@ -19,8 +16,8 @@ app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-app.get('/api/health', (_req, res) => {
-  res.status(200).json({ status: 'ok' });
+app.get("/api/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
 });
 
 app.get("/api/menu", async (req, res) => {
@@ -37,8 +34,8 @@ app.get("/", (req, res) => {
   res.render("index"); // views/index.ejs
 });
 
-app.get("/food", (req, res) =>{
-  res.render("food"); //views/food.ejs
+app.get("/food", (req, res) => {
+  res.render("food"); // views/food.ejs
 });
 
 app.use((req, res) => res.status(404).send("Not Found"));
@@ -47,4 +44,4 @@ app.use((err, req, res, _next) => {
   res.status(500).send("Internal Server Error");
 });
 
-export default app;
+module.exports = app;   

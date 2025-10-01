@@ -1,7 +1,8 @@
-export const toCents = (n) => Math.round(Number(n || 0) * 100);
-export const money = (cents) => (Number(cents || 0) / 100).toFixed(2);
+const toCents = (n) => Math.round(Number(n || 0) * 100);
 
-export function nextCart(cartMap, action) {
+const money = (cents) => (Number(cents || 0) / 100).toFixed(2);
+
+function nextCart(cartMap, action) {
   const cart = new Map(cartMap);
   switch (action.type) {
     case "add": {
@@ -29,7 +30,7 @@ export function nextCart(cartMap, action) {
   }
 }
 
-export function computeTotals(cartMap, taxRate = 0.10) {
+function computeTotals(cartMap, taxRate = 0.10) {
   let subtotal = 0;
   for (const { priceCents, qty } of cartMap.values()) {
     subtotal += priceCents * qty;
@@ -38,3 +39,10 @@ export function computeTotals(cartMap, taxRate = 0.10) {
   const total = subtotal + tax;
   return { subtotal, tax, total };
 }
+
+module.exports = {
+  toCents,
+  money,
+  nextCart,
+  computeTotals
+};

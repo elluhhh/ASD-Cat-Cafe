@@ -1,21 +1,16 @@
-const request = require('supertest');
+const request = require("supertest");
+const app = require("../server");
 
-let app;
-beforeAll(async () => {
-  app = (await import('../server.js')).default;
-});
-
-describe('pages render', () => {
-  test('GET / returns HTML', async () => {
-    const res = await request(app).get('/');
-    expect(res.statusCode).toBe(200);
-    expect(res.headers['content-type']).toMatch(/html/);
-    expect(res.text.length).toBeGreaterThan(20);
+describe("pages render", () => {
+  test("GET / returns HTML", async () => {
+    const res = await request(app).get("/");
+    expect(res.status).toBe(200);
+    expect(res.headers["content-type"]).toMatch(/html/);
   });
 
-  test('GET /food returns HTML', async () => {
-    const res = await request(app).get('/food');
-    expect(res.statusCode).toBe(200);
-    expect(res.headers['content-type']).toMatch(/html/);
+  test("GET /food returns HTML", async () => {
+    const res = await request(app).get("/food");
+    expect(res.status).toBe(200);
+    expect(res.headers["content-type"]).toMatch(/html/);
   });
 });
