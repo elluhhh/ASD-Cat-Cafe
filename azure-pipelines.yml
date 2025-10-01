@@ -32,7 +32,7 @@ steps:
   displayName: 'Publish jest-junit results'
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: 'test-results/jest/junit.xml'
+    testResultsFiles: '**/test-results/jest/junit.xml'
     failTaskOnFailedTests: true
     testRunTitle: 'cat-detail tests'
 
