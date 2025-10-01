@@ -6,12 +6,17 @@ const path = require("path");
 const app = express();
 
 // Middleware
+app.use(express.json());   
 app.use(express.static(path.join(__dirname, "public")));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+// Routes
+app.use("/cats", require("./routes/catRoute"));
 
 app.get('/catprofile', (req, res) => {
   res.render('catProfile');          
@@ -26,8 +31,6 @@ mongoose
 		console.log("DB is connected");
 	});
 
-// Routes
-app.use("/cats", require("./route/catRoute"));
 //app.use("/adoption", require("./routes/adoptionRoute"));
 
 // Default

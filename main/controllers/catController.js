@@ -1,4 +1,4 @@
-const { Cat } = require('../model/Cat'); 
+const { Cat } = require('../models/Cat'); 
 
 exports.list = async (req, res, next) => {
   try {
