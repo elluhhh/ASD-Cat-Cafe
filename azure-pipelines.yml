@@ -15,20 +15,15 @@ steps:
     versionSpec: '22.x'
 
 - script: npm ci
-  workingDirectory: $(workingDirectory)
   displayName: 'Install dependencies'
 
 - script: npm run lint
-  workingDirectory: $(workingDirectory)
   displayName: 'ESLint'
   #continueOnError: true
 
 # Run Jest and produce JUnit for Azure Test tab
-- script: npm run test:report
-  workingDirectory: $(workingDirectory)
-  displayName: 'Run Jest (with JUnit)'
-  env:
-    CI: 'true'
+- script: npm test -- --ci --reporters=default --reporters=jest-junit
+  displayName: 'Run Jest tests'
 
 - task: PublishTestResults@2
   displayName: 'Publish jest-junit results'
