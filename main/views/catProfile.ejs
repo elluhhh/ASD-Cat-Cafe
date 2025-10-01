@@ -72,7 +72,7 @@
   const formEl    = $('#cat-form');
   const titleEl   = $('#form-title');
   const submitBtn = $('#submit-btn');
-  const clearBtn  = $('#clear-btn');              // <-- make sure the button id matches this
+  const clearBtn  = $('#clear-btn');             
 
   const idEl      = $('#id');
   const nameEl    = $('#name');
@@ -187,7 +187,6 @@
           body: fd
         });
         if (!res.ok) {
-          // Try to show a useful error message
           let msg = `POST /cats/add failed: ${res.status}`;
           try { const t = await res.text(); if (t) msg = t; } catch {}
           throw new Error(msg);
