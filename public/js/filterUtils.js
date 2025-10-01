@@ -1,21 +1,22 @@
 // Used in the cat-display and adoptionRequests page to filter results
 
-export function getFilterValues(form, fields) {
+function getFilterValues(form, fields) {
     const params = new URLSearchParams();
     
     fields.forEach(field => {
         if (field.type === 'radio') {
-            const selected = document.querySelector(`input[name="${field.name}"]:checked`);
+            const selected = form.querySelector(`input[name="${field.name}"]:checked`);
             params.append(field.name, selected ? selected.value : '');
         } else {
-            const value = form[field.name]?.value || '';
+            const input = form.querySelector(`[name="${field.name}"]`);
+            const value = input?.value || '';
             params.append(field.name, value);
         }
     });
     return params;
 }
 
-export async function updateFilterList({ form, list, endpoint, fields, listSelector }) {
+async function updateFilterList({ form, list, endpoint, fields, listSelector }) {
     const params = getFilterValues(form, fields);
     const res = await fetch(`${endpoint}?${params.toString()}`);
     const html = await res.text();
@@ -26,7 +27,7 @@ export async function updateFilterList({ form, list, endpoint, fields, listSelec
     list.innerHTML = newList?.innerHTML || '';
 }
 
-export function setupFilter({ formSelector, listSelector, endpoint, fields }) {
+function setupFilter({ formSelector, listSelector, endpoint, fields }) {
     const form = document.querySelector(formSelector);
     const list = document.querySelector(listSelector);
     const updateList = () => updateFilterList({ form, list, endpoint, fields, listSelector });
@@ -58,3 +59,13 @@ export function setupFilter({ formSelector, listSelector, endpoint, fields }) {
 
     updateList();
 }
+
+// for tests
+module.exports = {
+    getFilterValues,
+    updateFilterList,
+    setupFilter
+};
+
+// for live filtering
+// export { getFilterValues, updateFilterList, setupFilter };
