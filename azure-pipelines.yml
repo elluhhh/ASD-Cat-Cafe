@@ -19,6 +19,7 @@ steps:
   displayName: 'Install dependencies'
 
 - script: npm run lint
+  workingDirectory: main
   displayName: 'ESLint'
   #continueOnError: true
 
