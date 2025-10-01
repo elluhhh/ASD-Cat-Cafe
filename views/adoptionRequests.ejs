@@ -46,34 +46,19 @@
 
     <a class="btn" href="/">Go Back Home</a>
 
-<script>
-    const form = document.getElementById('requestFilter');
-    
-    // update requests displayed dependent on filters
-    async function updateRequestList() {
-        const search = form.search.value;
-        const status = form.status?.value || '';
+<script type="module">
+    // filter requests
+    import { setupFilter } from '/js/filterUtils.js';
 
-        const res = await fetch(`/requests?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`);
-        const html = await res.text();
-
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const newList = doc.querySelector('#requestList');
-        document.querySelector('#requestList').innerHTML = newList.innerHTML;
-    };
-    // Live update for text search
-    form.search.addEventListener('input', updateRequestList);
-    form.status.addEventListener('change', updateRequestList);
-
-    // clear all filters
-    const clearButton = document.getElementById('clearFilter');
-    
-    clearButton.addEventListener('click', () => {
-        form.reset();
-        updateRequestList();
+    setupFilter({
+        formSelector: '#requestFilter',
+        listSelector: '#requestList',
+        endpoint: '/requests',
+        fields: [
+            { name: 'search', type: 'text', live: 'input' },
+            { name: 'status', type: 'select', live: 'change' }
+        ]
     });
-
 </script>
 </body>
 
