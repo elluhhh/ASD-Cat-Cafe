@@ -42,3 +42,53 @@ describe("Food Management Tests", () => {
         expect(res.headers["content-type"]).toMatch(/html/);
     });
 });
+
+// Add these tests to the existing file
+
+describe("Checkout & Payment Tests (F109)", () => {
+    
+    test("GET /checkout returns HTML page", async () => {
+        const res = await request(app).get("/checkout");
+        expect(res.status).toBe(200);
+        expect(res.headers["content-type"]).toMatch(/html/);
+    });
+
+    test("POST /checkout/process validates required fields", async () => {
+        const res = await request(app)
+            .post("/checkout/process")
+            .send({});
+        
+        expect(res.status).toBe(400);
+    });
+
+    test("POST /checkout/process accepts valid payment", async () => {
+        const res = await request(app)
+            .post("/checkout/process")
+            .send({
+                cardNumber: "1234567890123456",
+                cardName: "John Doe",
+                expiry: "12/25",
+                cvv: "123",
+                email: "test@example.com",
+                total: "25.00"
+            });
+        
+        expect(res.status).toBe(200);
+        expect(res.text).toMatch(/Payment Successful/);
+    });
+
+    test("POST /checkout/process rejects invalid email", async () => {
+        const res = await request(app)
+            .post("/checkout/process")
+            .send({
+                cardNumber: "1234567890123456",
+                cardName: "John Doe",
+                expiry: "12/25",
+                cvv: "123",
+                email: "invalid-email",
+                total: "25.00"
+            });
+        
+        expect(res.status).toBe(400);
+    });
+});
