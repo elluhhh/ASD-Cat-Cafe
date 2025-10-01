@@ -38,8 +38,47 @@ const findBookings = async (req, res) => {
 	}
 };
 
+const getAvailableTimes = async (req, res) => {
+	try {
+		const today = new Date();
+		const date = req.query.date == "" || req.query.date == null || req.query.date == today.toISOString().split('T')[0]? new Date() : new Date(req.query.date);
+		
+		const bookingsInDate = await Booking.find(
+			{date_time: {
+				$gte: date,
+				$lt: new Date(date.getTime() + 60 * 60 * 34 * 1000)
+			}}
+		).exec();
+		
+		const availBookingTimes = [10, 11, 12, 13, 14, 15];
+
+		//removes times that have bookings
+		bookingsInDate.forEach(booking => {
+			const index = availBookingTimes.indexOf(booking.date_time.getHours());
+			if(index > -1){
+				availBookingTimes.splice(index, 1);
+			}
+		});
+		
+		//remove times for today that before the current time e.g. it is 2pm therefore, <=2 should be unselectable
+		if(date == today && availBookingTimes.includes(date.getHours())){
+			availBookingTimes.splice(0, availBookingTimes.indexOf(date.getHours() + 1));
+		}
+		else if(date.getHours() >= 15){
+			availBookingTimes.splice(0, availBookingTimes.length);
+		}
+
+		res.render("booking", { availBookingTimes, date });
+		
+	} catch (err) {
+		res.status(500).send(err);
+	}
+};
+
 module.exports = {
 	getBookings,
 	deleteBooking,
 	findBookings
+	findBookings,
+	getAvailableTimes
 };
