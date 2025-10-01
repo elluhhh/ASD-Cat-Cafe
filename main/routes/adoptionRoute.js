@@ -1,7 +1,7 @@
 const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
-const { AdoptionRequest } = require('../model/AdoptionRequest');
+const { AdoptionRequest } = require('../models/adoptionRequest');
 
 // Short tracking code
 const makeCode = () => crypto.randomBytes(6).toString('base64url');
@@ -35,12 +35,38 @@ router.post('/request', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-router.get('/status/:code', async (req, res, next) => {
+/*router.get('/status/:code', async (req, res, next) => {
   try {
     const doc = await AdoptionRequest.findOne({ trackingCode: req.params.code }).lean();
     if (!doc) return res.status(404).render('adoptionStatus', { notFound: true, code: req.params.code });
     res.render('adoptionStatus', { notFound: false, reqDoc: doc });
   } catch (e) { next(e); }
+});*/
+router.get('/status/:code', async (req, res, next) => {
+  try {
+    const code = req.params.code;
+    const doc = await AdoptionRequest.findOne({ trackingCode: code });
+    if (!doc) {
+      return res.status(404).render('adoptionStatus', {
+        notFound: true,
+        code,
+        reqDoc: null,
+      });
+    }
+    res.render('adoptionStatus', {
+      notFound: false,
+      reqDoc: {
+        trackingCode: doc.trackingCode,
+        status: doc.status,
+        applicant: doc.applicant || {},
+        createdAt: doc.createdAt || new Date(),
+        updatedAt: doc.updatedAt || new Date(),
+        catId: doc.catId || null,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
 });
 
 
