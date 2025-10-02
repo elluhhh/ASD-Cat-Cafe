@@ -16,5 +16,5 @@ jobs:
   - job: BookingTests
     displayName: 'Booking Tests'
     steps:
-    - script: npm test
+    - script: npm test:ci
       
