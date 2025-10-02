@@ -1,6 +1,10 @@
 module.exports = {
   testEnvironment: 'node',
-  testMatch: ['**/__tests__/**/*.test.js'],
+  testMatch: ['**/__tests__/**/*.(test|spec).(js|cjs)'],
+  transform: {
+    '^.+\\.(js|cjs|mjs)$': 'babel-jest',
+  },
+  transformIgnorePatterns: ['/node_modules/'],
   collectCoverage: true,
   collectCoverageFrom: [
     'app.js',
@@ -9,7 +13,7 @@ module.exports = {
     'route/**/*.js',
     'model/**/*.js',
     'public/js/**/*.js',
-    '!**/node_modules/**',
+    '!**/node_modules/**'
   ],
   coverageDirectory: 'coverage',
   verbose: true,
