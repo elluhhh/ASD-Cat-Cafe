@@ -102,7 +102,7 @@ const getAvailableTimes = async (req, res) => {
 		
 		const bookingsInDate = await Booking.find(
 			{date_time: {
-				$gte: date,
+				$gte: date.setHours(0,0,0,0),
 				$lt: new Date(date.getTime() + 60 * 60 * 34 * 1000)
 			}}
 		).exec();
@@ -119,7 +119,7 @@ const getAvailableTimes = async (req, res) => {
 		
 		//remove times for today that before the current time e.g. it is 2pm therefore, <=2 should be unselectable
 		if(date == today && availBookingTimes.includes(date.getHours())){
-			availBookingTimes.splice(0, availBookingTimes.indexOf(date.getHours() + 1));
+			availBookingTimes.splice(0, availBookingTimes.indexOf(date.getHours())+1);
 		}
 		else if(date.getHours() >= 15){
 			availBookingTimes.splice(0, availBookingTimes.length);
