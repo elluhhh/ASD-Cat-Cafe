@@ -23,7 +23,7 @@ steps:
   displayName: 'ESLint'
   continueOnError: true
 
-# Run Jest and produce JUnit for Azure Test tab
+# Run Jest and produce JUnit for Azure Test
 - script: npm test -- --ci --reporters=default --reporters=jest-junit
   workingDirectory: main
   displayName: 'Run Jest tests'
