@@ -27,8 +27,25 @@
                 color: white;
             }
             button.edit {
+                background: var(--warning, #f59e0b);
+                color: white;
+            }
+            button.save {
                 background: var(--success);
                 color: white;
+            }
+            button.cancel {
+                background: #6b7280;
+                color: white;
+            }
+            .edit-row input, .edit-row select {
+                padding: 5px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            .action-buttons {
+                display: flex;
+                gap: 5px;
             }
         </style>
     </head>
@@ -104,7 +121,8 @@
                     </tr>
                 <% } else { %>
                     <% foods.forEach(food => { %>
-                    <tr style="<%= food.status === 'Unavailable' ? 'opacity: 0.6;' : '' %>">
+                    <!-- Normal View Row -->
+                    <tr id="view-<%= food._id %>" style="<%= food.status === 'Unavailable' ? 'opacity: 0.6;' : '' %>">
                         <td><strong><%= food.name %></strong></td>
                         <td><%= food.category.toUpperCase() %></td>
                         <td>$<%= food.price.toFixed(2) %></td>
@@ -119,11 +137,47 @@
                         <td><%= food.vegan ? '🌱 Yes' : 'No' %></td>
                         <td><%= food.description %></td>
                         <td>
-                            <form action="/foodManagement/delete/<%= food._id %>" method="POST" style="display: inline;">
-                                <button type="submit" class="btn small delete" 
-                                        onclick="return confirm('Delete <%= food.name %>?')">
-                                    Delete
+                            <div class="action-buttons">
+                                <button class="btn small edit" onclick="toggleEdit('<%= food._id %>')">
+                                    Edit
                                 </button>
+                                <form action="/foodManagement/delete/<%= food._id %>" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn small delete" 
+                                            onclick="return confirm('Delete <%= food.name %>?')">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Edit Form Row (Hidden by default) -->
+                    <tr id="edit-<%= food._id %>" class="edit-row" style="display: none;">
+                        <td colspan="8">
+                            <form action="/foodManagement/update/<%= food._id %>" method="POST" style="padding: 10px;">
+                                <div class="form-row">
+                                    <input type="text" name="name" value="<%= food.name %>" required>
+                                    <select name="category" required>
+                                        <option value="food" <%= food.category === 'food' ? 'selected' : '' %>>Food</option>
+                                        <option value="drink" <%= food.category === 'drink' ? 'selected' : '' %>>Drink</option>
+                                    </select>
+                                    <input type="number" name="price" value="<%= food.price %>" step="0.01" min="0" required>
+                                    <select name="status" required>
+                                        <option value="Available" <%= food.status === 'Available' ? 'selected' : '' %>>Available</option>
+                                        <option value="Unavailable" <%= food.status === 'Unavailable' ? 'selected' : '' %>>Unavailable</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <input type="text" name="description" value="<%= food.description %>" required>
+                                    <input type="number" name="stock" value="<%= food.stock %>" min="0" required>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" name="vegan" <%= food.vegan ? 'checked' : '' %>> Vegan
+                                    </label>
+                                </div>
+                                <div class="action-buttons">
+                                    <button type="submit" class="btn small save">Save</button>
+                                    <button type="button" class="btn small cancel" onclick="toggleEdit('<%= food._id %>')">Cancel</button>
+                                </div>
                             </form>
                         </td>
                     </tr>
@@ -131,5 +185,20 @@
                 <% } %>
             </tbody>
         </table>
+
+        <script>
+            function toggleEdit(id) {
+                const viewRow = document.getElementById('view-' + id);
+                const editRow = document.getElementById('edit-' + id);
+                
+                if (viewRow.style.display === 'none') {
+                    viewRow.style.display = '';
+                    editRow.style.display = 'none';
+                } else {
+                    viewRow.style.display = 'none';
+                    editRow.style.display = '';
+                }
+            }
+        </script>
     </body>
 </html>
