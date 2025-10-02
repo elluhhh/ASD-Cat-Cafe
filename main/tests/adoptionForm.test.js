@@ -8,16 +8,18 @@ jest.mock('../models/adoptionRequest', () => {
 });
 
 const request = require('supertest');
-const app = require('../server');   // <-- import app.js, not server.js
+const app = require('../server');   
 const { AdoptionRequest } = require('../models/adoptionRequest');
+
 
 describe("Adoption Form (server)", () => {
     test("GET /adoption/request renders form", async () => {
         const res = await request(app).get("/adoption/request");
         expect(res.status).toBe(200);
-        expect(res.text).toContain("<form"); // depends on your adoptionForm.ejs
+        expect(res.text).toContain("<form"); 
     });
 
+    // Creates request
     test("POST /adoption/request creates request and redirects", async () => {
         AdoptionRequest.create.mockResolvedValueOnce({ trackingCode: "TRACK123" });
 
@@ -29,6 +31,7 @@ describe("Adoption Form (server)", () => {
         expect(res.header.location).toContain("/adoption/status/TRACK123");
     });
 
+    // Renders status page (found)
     test("GET /adoption/status/:code renders status (found)", async () => {
         AdoptionRequest.findOne.mockResolvedValueOnce({
             trackingCode: "X1",
@@ -45,6 +48,7 @@ describe("Adoption Form (server)", () => {
         expect(res.text).toContain("X1");
     });
 
+    // Returns 404 when adoption request not found
     test("GET /adoption/status/:code returns 404 when missing", async () => {
         AdoptionRequest.findOne.mockResolvedValueOnce(null);
         const res = await request(app).get("/adoption/status/NOPE");
@@ -52,6 +56,7 @@ describe("Adoption Form (server)", () => {
         expect(res.text).toMatch(/not found/i);
     });
 
+    // Redirects to form
     test("GET / redirects to /adoption/request", async () => {
         const res = await request(app).get("/");
         expect(res.status).toBe(302);
