@@ -65,6 +65,21 @@ const getBooking = async (req, res) => {
 		res.status(500).send(err);
 	}
 }
+
+const updateBooking = async (req, res) => {
+	try {
+		const {id, date, time, attendees, total_price, f_name, l_name, email, phone} = req.body;
+		
+		await Booking.findOneAndUpdate({_id: id}, {
+			f_name: f_name,
+			l_name: l_name,
+			email: email,
+			attendees_no: attendees,
+			date_time: new Date(date).setHours(Number(time)),
+			total_price: total_price,
+			phone: phone
+		});
+	} catch (err) {
 		res.status(500).send(err);
 	}
 };
