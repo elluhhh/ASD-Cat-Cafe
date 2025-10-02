@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const foodRoutes = require("./routes/foodRoutes");
-const bookingRoutes = require("./routes/bookingRoutes");
+//const bookingRoutes = require("./routes/bookingRoutes");
 const checkoutRoutes = require("./routes/checkoutRoutes");
 
 const app = express();
@@ -42,7 +42,7 @@ app.get("/health", (req, res) => {
 
 // Routes
 app.use("/foodManagement", foodRoutes);
-app.use("/bookingManagement", bookingRoutes);
+//app.use("/bookingManagement", bookingRoutes);
 app.use("/checkout", checkoutRoutes);
 
 app.get("/", (req, res) => {
