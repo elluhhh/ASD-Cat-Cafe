@@ -1,11 +1,22 @@
 const getCheckout = async (req, res) => {
     try {
-        // for demo, rendering page with empty cart
+        // Demo: dummy cart items
+        const dummyCart = [
+            { name: "Cappuccino", price: 4.50, qty: 2 },
+            { name: "Croissant", price: 3.25, qty: 1 },
+            { name: "Cat Playtime (30 min)", price: 12.00, qty: 1 }
+        ];
+        
+        // Calculate totals
+        const subtotal = dummyCart.reduce((sum, item) => sum + (item.price * item.qty * 100), 0);
+        const tax = Math.round(subtotal * 0.10);
+        const total = subtotal + tax;
+        
         res.render("checkout", { 
-            cartItems: [],
-            subtotal: 0,
-            tax: 0,
-            total: 0
+            cartItems: dummyCart,
+            subtotal: subtotal,
+            tax: tax,
+            total: total
         });
     } catch (err) {
         res.status(500).send(err);
@@ -31,12 +42,18 @@ const processPayment = async (req, res) => {
             return res.status(400).send("Invalid email format");
         }
         
-        // demo: simulate successful payment
+        // Demo: dummy cart items (same as above for consistency)
+        const dummyCart = [
+            { name: "Cappuccino", price: 4.50, qty: 2 },
+            { name: "Croissant", price: 3.25, qty: 1 },
+            { name: "Cat Playtime (30 min)", price: 12.00, qty: 1 }
+        ];
         
         res.render("paymentSuccess", {
             orderNumber: `ORD-${Date.now()}`,
             email: email,
-            total: req.body.total || "0.00"
+            total: req.body.total || "0.00",
+            cartItems: dummyCart  // Pass cart items to success page
         });
     } catch (err) {
         console.error("Payment error:", err);

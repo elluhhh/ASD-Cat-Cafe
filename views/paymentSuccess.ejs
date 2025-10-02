@@ -17,6 +17,16 @@
             font-size: 80px;
             color: var(--success);
         }
+        .order-items {
+            text-align: left;
+            margin: 20px 0;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
@@ -24,11 +34,28 @@
         <div class="checkmark">✓</div>
         <h1>Payment Successful!</h1>
         <p>Thank you for your order.</p>
+        
         <div style="background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px;">
             <p><strong>Order Number:</strong> <%= orderNumber %></p>
-            <p><strong>Total Paid:</strong> $<%= total %></p>
             <p><strong>Confirmation sent to:</strong> <%= email %></p>
+            
+            <% if (cartItems && cartItems.length > 0) { %>
+                <div class="order-items">
+                    <h3 style="margin-top: 15px;">Items Ordered:</h3>
+                    <% cartItems.forEach(item => { %>
+                        <div class="order-item">
+                            <span><%= item.name %> × <%= item.qty %></span>
+                            <span>$<%= (item.price * item.qty).toFixed(2) %></span>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
+            
+            <p style="margin-top: 15px; font-size: 1.2em;">
+                <strong>Total Paid:</strong> $<%= total %>
+            </p>
         </div>
+        
         <p><a href="/" class="btn primary">Return Home</a></p>
     </div>
 </body>
