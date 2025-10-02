@@ -145,6 +145,7 @@ module.exports = {
 	getBookings,
 	deleteBooking,
 	findBookings,
+	updateBooking,
 	createBooking,
 	getAvailableTimes
 };
