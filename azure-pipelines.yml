@@ -4,17 +4,15 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-jobs:
-  - job: BMBuild
-    displayName: 'Install dependencies and Node.js'
-    steps:
-      - task: NodeTool@0
-        inputs: 
-          versionSpec: '22.x'
-      - script: npm ci
+steps:
+  - task: NodeTool@0
+    displayName: 'Install Dependencies'
+    inputs: 
+      versionSpec: '22.x'
+  - script: npm ci
 
-  - job: BookingTests
+  - task: PublishTestResults@2
     displayName: 'Booking Tests'
     steps:
-    - script: npm test:ci
+    - script: npm test
       
