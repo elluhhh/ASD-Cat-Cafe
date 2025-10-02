@@ -4,15 +4,25 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-  - task: NodeTool@0
-    displayName: 'Install Dependencies'
-    inputs: 
-      versionSpec: '22.x'
-  - script: npm ci
+stages:
+- stage: Test
+  displayName: "Run test cases using Jest"
+  jobs:
+    job: test
+    displayName: "Run test cases"
 
-  - task: PublishTestResults@2
-    displayName: 'Booking Tests'
     steps:
-    - script: npm test
+      - task: NodeTool@0
+        displayName: 'Install Dependencies'
+        inputs: 
+          versionSpec: '22.x'
+
+      - task: Npm@1
+        inputs:
+          command: 'install'
+
+      - task: Npm@1
+        inputs:
+          command: 'custom'
+          customCommand: 'run test'
       
