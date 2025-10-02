@@ -43,8 +43,6 @@ describe("Food Management Tests", () => {
     });
 });
 
-// Add these tests to the existing file
-
 describe("Checkout & Payment Tests (F109)", () => {
     
     test("GET /checkout returns HTML page", async () => {
@@ -91,4 +89,9 @@ describe("Checkout & Payment Tests (F109)", () => {
         
         expect(res.status).toBe(400);
     });
+});
+
+afterAll(async () => {
+  // Close any open handles
+  await new Promise(resolve => setTimeout(resolve, 500));
 });

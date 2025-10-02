@@ -11,7 +11,6 @@ const app = express();
 if (process.env.NODE_ENV !== "test") {
     mongoose
         .connect(
-            process.env.MONGODB_URI || 
             "mongodb+srv://admin:cFBUZU6hozSWFbfk@cat-cafe-website.kycc7fg.mongodb.net/cat-cafe?retryWrites=true&w=majority&appName=cat-cafe-website"
         )
         .then(() => {
@@ -21,14 +20,6 @@ if (process.env.NODE_ENV !== "test") {
             console.error("DB connection error:", err);
         });
 }
-
-mongoose
-    .connect(
-        "mongodb+srv://admin:cFBUZU6hozSWFbfk@cat-cafe-website.kycc7fg.mongodb.net/cat-cafe?retryWrites=true&w=majority&appName=cat-cafe-website"
-    )
-    .then(() => {
-        console.log("DB is connected");
-    });
 
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -60,6 +51,12 @@ app.use((err, req, res, _next) => {
     const message = err.message || "Internal Server Error";
     res.status(status).send(message);
 });
+
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`Server running`);
+  });
+}
 
 // Export for testing
 module.exports = app;
