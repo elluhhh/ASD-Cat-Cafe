@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const foodRoutes = require("./routes/foodRoutes");
-//const bookingRoutes = require("./routes/bookingRoutes");
 const checkoutRoutes = require("./routes/checkoutRoutes");
 
 const app = express();
@@ -33,7 +32,6 @@ app.get("/health", (req, res) => {
 
 // Routes
 app.use("/foodManagement", foodRoutes);
-//app.use("/bookingManagement", bookingRoutes);
 app.use("/checkout", checkoutRoutes);
 
 app.get("/", (req, res) => {
@@ -52,11 +50,5 @@ app.use((err, req, res, _next) => {
     res.status(status).send(message);
 });
 
-if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
-    console.log(`Server running`);
-  });
-}
-
-// Export for testing
+// Export for testing (this is correct)
 module.exports = app;
