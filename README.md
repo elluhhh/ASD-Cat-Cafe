@@ -9,7 +9,7 @@ Email: jiyun.choi@student.uts.edu.au
 
 ## Code Structure
 
-Cart
+Menu View & Cart
 - Reusable cart utilities: `toCents`, `money`, `nextCart`, `computeTotals` (`public/cart.js`)
 - Cart API routes with input validation(`routes/cartRoutes.js, utils/cartValidation.js`)
 - Front-end cart UI + client-side validation (`public/food.js, public/cart.js000`)
