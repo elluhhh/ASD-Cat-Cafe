@@ -54,9 +54,17 @@ const findBookings = async (req, res) => {
 		
 		res.render("bookingManagement", { bookings });
 	} catch (err) {
-		// add validation checks
-		// valid id
-		// valid date
+		res.status(500).send(err);
+	}
+};
+
+const getBooking = async (req, res) => {
+	try {
+		await Booking.findById(req.params.id);
+	} catch (err) {
+		res.status(500).send(err);
+	}
+}
 		res.status(500).send(err);
 	}
 };
