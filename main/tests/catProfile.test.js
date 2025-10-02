@@ -1,10 +1,10 @@
 process.env.NODE_ENV = 'test';
 
 const request = require('supertest');
-const app = require('../server'); // or '../app' if you separated
+const app = require('../server'); 
 const { Cat } = require('../models/Cat');
 
-// mock DB calls so Jest doesn’t touch real Mongo
+// mock DB calls
 jest.mock('../models/Cat', () => {
   const create = jest.fn();
   const find = jest.fn();
