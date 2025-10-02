@@ -55,7 +55,12 @@
 					</td>
                     <td>
 						<select id="timeInput<%=idCounter%>" style="display: none" value="<%=booking.date_time.getHours()%>">
-
+							<option>10:00 AM</option>
+							<option>11:00 AM</option>
+							<option>12:00 PM</option>
+							<option>13:00 PM</option>
+							<option>14:00 PM</option>
+							<option>15:00 PM</option>
 						</select>
                         <span id="timeSpan<%=idCounter%>">
 							<%=booking.date_time.toLocaleString([], {hour:
@@ -84,6 +89,8 @@
 					dateInput = document.getElementById("dateInput" + x);
 					timeInput = document.getElementById("timeInput" + x);
 
+					editBtn = document.getElementById("edit" + x);
+
 					dateSpan.style.display = "none";
 					timeSpan.style.display = "none";
 
@@ -91,6 +98,7 @@
 					timeInput.style.display = "inline";
 
 					dateInput.type = "date";
+					
 				}
 			</script>
 	</body>
