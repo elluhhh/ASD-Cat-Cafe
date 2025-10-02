@@ -1,7 +1,17 @@
+const toCents = (n) => Math.round(Number(n || 0) * 100);
+const money = (cents) => (Number(cents || 0) / 100).toFixed(2);
+let lastTotals = { subtotal: 0, tax: 0, total: 0 };
+
 let menu = [];
 let cart = new Map();
 
-const TAX_RATE = 0.10;
+function notify(msg) {
+  if (typeof window !== "undefined" && typeof window.showToast === "function") {
+    window.showToast(msg);
+  } else {
+    alert(msg);
+  }
+}
 
 const menuGrid = document.getElementById("menuGrid");
 const cartList = document.getElementById("cartList");
@@ -14,14 +24,12 @@ const searchInput = document.getElementById("search");
 const categorySelect = document.getElementById("category");
 const veganOnlyCheckbox = document.getElementById("veganOnly");
 
-const money = n => (Number(n) || 0).toFixed(2);
-
 async function loadMenu() {
   try {
     const res = await fetch("/api/menu");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    menu = Array.isArray(data) ? data : [];
+    menu = (Array.isArray(data) ? data : []).map((m) => ({ ...m, id: String(m.id) }));
   } catch (err) {
     console.error("menu load failed:", err);
     menuGrid.textContent = "Couldn't load menu. Please try again.";
@@ -30,14 +38,15 @@ async function loadMenu() {
 
 function applyFilters(list) {
   const q = (searchInput.value || "").trim().toLowerCase();
-  const cat = categorySelect.value;
-  const veganOnly = veganOnlyCheckbox.checked;
+  const sel = (categorySelect.value || "").toLowerCase();
+  const veganOnly = !!veganOnlyCheckbox.checked;
 
-  return (list || []).filter(({ name = "", description = "", category, vegan }) => {
-    const hit = (name + " " + description).toLowerCase().includes(q || "");
-    const catOk = !cat || category === cat;
+  return (list || []).filter(({ name = "", description = "", category = "", vegan }) => {
+    const text = (name + " " + description).toLowerCase();
+    const hit = !q || text.includes(q);
+    const catOk = !sel || String(category || "").toLowerCase() === sel;
     const veganOk = !veganOnly || vegan === true;
-    return (!q || hit) && catOk && veganOk;
+    return hit && catOk && veganOk;
   });
 }
 
@@ -56,11 +65,11 @@ function renderMenu(items) {
       <h3>${m.name}</h3>
       <p>${m.description || ""}</p>
       <div class="price-row">
-        <strong>$${money(m.price)}</strong>
+        <strong>$${money(toCents(m.price))}</strong>
         <button class="add">Add</button>
       </div>
     `;
-    el.querySelector(".add").onclick = () => addToCart(m.id);
+    el.querySelector(".add").onclick = () => addToCart(m.id, m.price);
     menuGrid.appendChild(el);
   }
 }
@@ -76,13 +85,13 @@ function renderCart() {
     return;
   }
 
-  cart.forEach((qty, id) => {
-    const item = menu.find(m => m.id === id);
+  cart.forEach(({ qty }, id) => {
+    const item = menu.find((m) => m.id === id);
     if (!item) return;
 
     const li = document.createElement("li");
     li.className = "cart-row";
-    const itemTotal = (Number(item.price) || 0) * qty;
+    const itemTotalCents = toCents(item.price) * qty;
 
     li.innerHTML = `
       <span class="cart-name">${item.name}</span>
@@ -91,7 +100,7 @@ function renderCart() {
         <span>${qty}</span>
         <button class="inc" aria-label="increase">+</button>
       </div>
-      <span class="cart-price">$${money(itemTotal)}</span>
+      <span class="cart-price">$${money(itemTotalCents)}</span>
       <button class="remove" aria-label="remove">✕</button>
     `;
 
@@ -105,49 +114,110 @@ function renderCart() {
   updateTotals();
 }
 
-function addToCart(id) {
-  const current = cart.get(id) || 0;
-  cart.set(id, current + 1);
-  renderCart();
+async function addToCart(id, price) {
+  const priceCents = toCents(price);
+  if (!Number.isInteger(priceCents) || priceCents <= 0) {
+    return notify("Invalid price data.");
+  }
+  try {
+    const data = await requestJSON("/api/cart/add", { id, qty: 1, priceCents });
+    cart = mapFromArrayPairs(data.cart);
+    lastTotals = data.totals || lastTotals;
+    renderCart();
+  } catch (err) {
+    console.error("addToCart failed:", err);
+  }
 }
 
-function changeQty(id, delta) {
-  const current = cart.get(id) || 0;
+async function changeQty(id, delta) {
+  const current = cart.get(id)?.qty || 0;
   const next = current + delta;
-  if (next <= 0) cart.delete(id);
-  else cart.set(id, next);
-  renderCart();
+
+  if (next <= 0) {
+    return removeFromCart(id);
+  }
+  if (!Number.isInteger(next) || next <= 0) {
+    return notify("Quantity must be at least 1.");
+  }
+
+  try {
+    const data = await requestJSON("/api/cart/setQty", { id, qty: next });
+    cart = mapFromArrayPairs(data.cart);
+    lastTotals = data.totals || lastTotals;
+    renderCart();
+  } catch (err) {
+    console.error("changeQty failed:", err);
+  }
 }
 
-function removeFromCart(id) {
-  cart.delete(id);
-  renderCart();
+async function removeFromCart(id) {
+  try {
+    const data = await requestJSON("/api/cart/remove", { id });
+    cart = mapFromArrayPairs(data.cart);
+    lastTotals = data.totals || lastTotals;
+    renderCart();
+  } catch (err) {
+    console.error("removeFromCart failed:", err);
+  }
 }
 
 function updateTotals() {
-  let subtotal = 0;
-  cart.forEach((qty, id) => {
-    const item = menu.find(m => m.id === id);
-    if (item) subtotal += (Number(item.price) || 0) * qty;
-  });
-  const tax = subtotal * TAX_RATE;
-  const total = subtotal + tax;
-
-  subtotalEl.textContent = `$${money(subtotal)}`;
-  taxEl.textContent = `$${money(tax)}`;
-  totalEl.textContent = `$${money(total)}`;
-
+  const t = lastTotals;
+  subtotalEl.textContent = `$${money(t.subtotal)}`;
+  taxEl.textContent = `$${money(t.tax)}`;
+  totalEl.textContent = `$${money(t.total)}`;
   checkoutBtn.disabled = cart.size === 0;
 }
 
+async function requestJSON(url, body) {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body || {})
+  });
+  let data = {};
+  try {
+  data = await res.json();
+  } catch (err) {
+  console.debug("No JSON body for", url, err);
+  data = {};
+  }
+  if (!res.ok) {
+    const msg = data.error || `Request failed: ${res.status}`;
+    notify(msg);
+    throw new Error(msg);
+  }
+  return data;
+}
+
+function mapFromArrayPairs(pairs) {
+  const m = new Map();
+  (pairs || []).forEach(([k, v]) => m.set(k, v));
+  return m;
+}
+
+function validateSearch(value) {
+  const v = String(value || "");
+  if (v.length > 80) return "Search is too long.";
+  const banned = /(--|\/\*|\*\/|;|<|>|['"]|drop\s+table|union\s+select|delete\s+from|insert\s+into|update\s+\w+\s+set|xp_)/i;
+  if (banned.test(v)) return "Please avoid special characters or SQL keywords in search.";
+  return "";
+}
+
 function bindEvents() {
-  searchInput.addEventListener("input", () => renderMenu(applyFilters(menu)));
+  searchInput.addEventListener("input", () => {
+    const err = validateSearch(searchInput.value);
+    if (err) {
+      notify(err);
+      searchInput.value = "";
+      renderMenu(menu);
+      return;
+    }
+    renderMenu(applyFilters(menu));
+  });
   categorySelect.addEventListener("change", () => renderMenu(applyFilters(menu)));
   veganOnlyCheckbox.addEventListener("change", () => renderMenu(applyFilters(menu)));
-
-  checkoutBtn.addEventListener("click", () => {
-    alert("Checkout flow is not implemented in this demo.");
-  });
+  checkoutBtn.addEventListener("click", () => alert("Checkout flow is not implemented in this demo."));
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
