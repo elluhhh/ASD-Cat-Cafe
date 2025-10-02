@@ -26,7 +26,7 @@
             <ul>
                 <%availBookingTimes.forEach(time => { %>
                     <%const ampm = time > 11 ? "PM" : "AM" %>
-                    <input type="radio" name="time" id="time" value="<%=time%>">
+                    <input type="radio" name="time" id="time" value="<%=time%>" required>
                     <label for="time"><%=time + ":00 " + ampm %></label>
                 <%})%>
             </ul>
