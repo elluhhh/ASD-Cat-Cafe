@@ -58,27 +58,17 @@ const findBookings = async (req, res) => {
 	}
 };
 
-const getBooking = async (req, res) => {
-	try {
-		await Booking.findById(req.params.id);
-	} catch (err) {
-		res.status(500).send(err);
-	}
-}
-
 const updateBooking = async (req, res) => {
 	try {
-		const {id, date, time, attendees, total_price, f_name, l_name, email, phone} = req.body;
+		const {date, time, attendees, total_price} = req.body;
+		const id = req.params.id;
 		
 		await Booking.findOneAndUpdate({_id: id}, {
-			f_name: f_name,
-			l_name: l_name,
-			email: email,
 			attendees_no: attendees,
-			date_time: new Date(date).setHours(Number(time)),
-			total_price: total_price,
-			phone: phone
+			date_time: new Date(date).setHours(Number(time), 0, 0),
+			total_price: total_price
 		});
+		res.redirect("/bookingManagement");
 	} catch (err) {
 		res.status(500).send(err);
 	}
@@ -98,7 +88,7 @@ const createBooking = async (req, res) => {
 			phone: phone
 		});
 		
-		res.redirect("/booking");
+		res.redirect("/");
 	} catch (err) {
 		res.status(500).send(err);
 	}
@@ -106,8 +96,9 @@ const createBooking = async (req, res) => {
 
 const getAvailableTimes = async (req, res) => {
 	try {
+		const id = typeof req.params.id == "undefined" ? "" : req.params.id;
 		const today = new Date();
-		const date = req.query.date == "" || req.query.date == null || req.query.date == today.toISOString().split('T')[0]? new Date() : new Date(req.query.date);
+		const date = req.query.date == "" || req.query.date == null || req.query.date == today.toISOString().split('T')[0]? today : new Date(req.query.date);
 		
 		const bookingsInDate = await Booking.find(
 			{date_time: {
@@ -134,7 +125,7 @@ const getAvailableTimes = async (req, res) => {
 			availBookingTimes.splice(0, availBookingTimes.length);
 		}
 
-		res.render("booking", { availBookingTimes, date });
+		res.render("booking", { availBookingTimes, date, id });
 		
 	} catch (err) {
 		res.status(500).send(err);
