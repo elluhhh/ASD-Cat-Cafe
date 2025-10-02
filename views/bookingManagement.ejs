@@ -47,59 +47,27 @@
 					<td><%=booking.email%></td>
 					<td><%=booking.phone%></td>
 					<td>
-						<input id="dateInput<%=idCounter%>" type="hidden" value="<%=booking.date_time%>">
-						<span id="dateSpan<%=idCounter%>">
-							<%=booking.date_time.toLocaleString([], {year:
-							'numeric', month: 'numeric', day:'numeric'})%>
-						</span>
+						<%=booking.date_time.toLocaleString([], {year:
+						'numeric', month: 'numeric', day:'numeric'})%>
 					</td>
                     <td>
-						<select id="timeInput<%=idCounter%>" style="display: none" value="<%=booking.date_time.getHours()%>">
-							<option>10:00 AM</option>
-							<option>11:00 AM</option>
-							<option>12:00 PM</option>
-							<option>13:00 PM</option>
-							<option>14:00 PM</option>
-							<option>15:00 PM</option>
-						</select>
-                        <span id="timeSpan<%=idCounter%>">
-							<%=booking.date_time.toLocaleString([], {hour:
-							'2-digit', minute:'2-digit', hour12: false})%>
-						</span>
+						<%=booking.date_time.toLocaleString([], {hour:
+						'2-digit', minute:'2-digit', hour12: false})%>
                     </td>
 					<td><%=booking.attendees_no%></td>
                     <td><%='$'+booking.total_price%></td>
                     <td>
-						<button id="edit" onclick="edit(<%=idCounter%>)">Edit</button>
+						<form action="booking/edit/<%=booking._id%>" method="GET">
+							<button id="edit">Edit</button>
+						</form>
 					</td>
                     <td>
 						<form action="bookingManagement/delete/<%=booking._id%>" method="POST">
-						<button id="cancel" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</button>
+							<button id="cancel" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</button>
 						</form>
 					</td>
 				</tr>
 				<% }); %>
 			</table>
-
-			<script>
-				async function edit(x) {
-					dateSpan = document.getElementById("dateSpan" + x);
-					timeSpan = document.getElementById("timeSpan" + x);
-
-					dateInput = document.getElementById("dateInput" + x);
-					timeInput = document.getElementById("timeInput" + x);
-
-					editBtn = document.getElementById("edit" + x);
-
-					dateSpan.style.display = "none";
-					timeSpan.style.display = "none";
-
-					dateInput.style.display = "inline";
-					timeInput.style.display = "inline";
-
-					dateInput.type = "date";
-					
-				}
-			</script>
 	</body>
 </html>
