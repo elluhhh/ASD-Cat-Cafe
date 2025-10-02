@@ -6,22 +6,24 @@ pool:
 
 stages:
 - stage: Test
-  displayName: "Run test cases using Jest"
+  displayName: "Run Test Cases Using Jest"
   jobs:
   - job: test
-    displayName: "Run test cases"
+    displayName: "Run Test Cases"
 
     steps:
       - task: NodeTool@0
-        displayName: 'Install Dependencies'
+        displayName: 'Install Node'
         inputs: 
           versionSpec: '22.x'
 
       - task: Npm@1
+        displayName: 'Install Npm'
         inputs:
           command: 'install'
 
       - task: Npm@1
+        displayName: 'Run Tests'
         inputs:
           command: 'custom'
           customCommand: 'run test'
