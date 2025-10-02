@@ -8,7 +8,7 @@ stages:
 - stage: Test
   displayName: "Run test cases using Jest"
   jobs:
-    job: test
+  - job: test
     displayName: "Run test cases"
 
     steps:
