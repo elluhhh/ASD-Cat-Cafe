@@ -21,14 +21,37 @@ const deleteBooking = async (req, res) => {
 
 const findBookings = async (req, res) => {
 	try {
-		const bookings = await Booking.find().or([
-			{_id: req.body.id},
-			{email: req.body.email},
-			{date_time: {
-				$gte: new Date(req.body.date),
-				$lt: new Date(new Date(req.body.date).getTime() + 60 * 60 * 34 * 1000)
-			}}
-		]).exec();
+		const {id, email, date} = req.body
+		var bookings = new Array();
+
+		if(mongoose.Types.ObjectId.isValid(id)) {
+			bookings.push(await Booking.findById(id));
+		}
+
+		if(email != "") {
+			bookings = bookings.concat(await Booking.find(
+				{email: email}
+			).exec());
+		}
+
+		if(date != "") {
+			bookings = bookings.concat(await Booking.find(
+				{date_time: {
+					$gte: new Date(req.body.date),
+					$lt: new Date(new Date(req.body.date).getTime() + 60 * 60 * 34 * 1000)
+				}}
+			).exec());
+		}
+
+		//remove empty arrays from bookings array
+		bookings = bookings.filter(e=> {
+			if(Array.isArray(e) && e.length == 0){
+				return false;
+			} else {
+				return true;
+			}
+		});
+		
 		res.render("bookingManagement", { bookings });
 	} catch (err) {
 		// add validation checks
