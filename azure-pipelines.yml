@@ -16,5 +16,6 @@ jobs:
   - job: BookingTests
     displayName: 'Booking Tests'
     steps:
+    - name: run Jest Tests
       run: npm test
       
