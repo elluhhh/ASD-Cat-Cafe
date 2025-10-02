@@ -30,6 +30,7 @@ app.get('/catprofile', (req, res) => {
 	.then(() => {
 		console.log("DB is connected");
 	});*/
+  const PORT = process.env.PORT || 8000;
   if (process.env.NODE_ENV !== 'test') {
   (async () => {
     try {

@@ -14,12 +14,15 @@ steps:
 
 - script: npm install
   displayName: 'Install dependencies'
+  workingDirectory: main
 
 - script: npm run lint
   displayName: 'ESLint'
+  workingDirectory: main
 
 - script: npm run test:report
   displayName: 'Run unit tests with Jest'
+  workingDirectory: main
 
 - task: PublishTestResults@2
   inputs:
