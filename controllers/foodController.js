@@ -105,7 +105,8 @@ const getFoodsAPI = async (req, res) => {
         const foods = await Food.find();
         res.status(200).json(foods);
     } catch (err) {
-        res.status(500).json({ error: "Failed to fetch foods" });
+        console.error("Delete food error:", err);
+        res.status(500).send("Failed to delete food item");
     }
 };
 
