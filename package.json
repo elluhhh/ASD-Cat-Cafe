@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "start:server": "node server.js",
-    "lint": "eslint . --ext .js,.cjs --max-warnings=0",
+    "lint": "eslint . --ext .js --ext .cjs --max-warnings=0",
     "smoke": "start-server-and-test \"node index.js\" http://localhost:8080 \"curl -fsS http://localhost:8080/ && curl -fsS http://localhost:8080/food\"",
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.js --runInBand",
     "coverage": "nyc --reporter=text --reporter=lcov --reporter=cobertura jest --config jest.config.js"
