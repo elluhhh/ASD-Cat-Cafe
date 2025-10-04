@@ -2,9 +2,8 @@ const express = require("express");
 const {
 	getBookings,
 	deleteBooking,
-	findBookings,
-	updateBooking
-} = require("../controllers/bookingController.js");
+	findBookings
+} = require("../controllers/bookingManagementController.js");
 
 const router = express.Router();
 
