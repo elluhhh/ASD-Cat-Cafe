@@ -23,6 +23,7 @@ const findBookings = async (req, res) => {
 	try {
 		const {id, email, date} = req.body
 		var bookings = new Array();
+		var dateObj = new Date(req.body.date);
 
 		if(mongoose.Types.ObjectId.isValid(id)) {
 			bookings.push(await Booking.findById(id));
@@ -37,8 +38,8 @@ const findBookings = async (req, res) => {
 		if(date != "") {
 			bookings = bookings.concat(await Booking.find(
 				{date_time: {
-					$gte: new Date(req.body.date),
-					$lt: new Date(new Date(req.body.date).getTime() + 60 * 60 * 34 * 1000)
+					$gte: dateObj,
+					$lt: dateObj.getTime() + 24 * 60 * 60 * 1000
 				}}
 			).exec());
 		}
