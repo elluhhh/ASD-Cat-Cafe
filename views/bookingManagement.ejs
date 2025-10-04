@@ -57,7 +57,7 @@
 					<td><%=booking.attendees_no%></td>
                     <td><%='$'+booking.total_price%></td>
                     <td>
-						<form action="booking/edit/<%=booking._id%>" method="GET">
+						<form action="booking/<%=booking._id%>" method="GET">
 							<button id="edit">Edit</button>
 						</form>
 					</td>
