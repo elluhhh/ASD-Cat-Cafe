@@ -8,11 +8,13 @@
 	</head>
 
 	<body>
+        <%const isEditing = booking != "";%>
+        <%const isDisabled = isEditing? "disabled" : ""%>
         <h1>Make a Booking</h1>
 
         <h2>Select Date and Time</h2>
         <% const today = new Date(); %>
-        <form action="/booking/<%=id%>" method="GET">
+        <form action="/booking/<%= isEditing? booking._id : ""%>" method="GET">
             <label for="date">Date</label>
             <input type="date" name="date" id="date" min="<%=today.toLocaleDateString("fr-CA", {year:"numeric", month: "2-digit", day:"2-digit"})%>" required>
             <input type="submit" value="Show Availability">
@@ -21,7 +23,7 @@
         <h3><%=date.toLocaleDateString("en-EN", {weekday: "long", day: "numeric", month: "long"})%></h3>
         <h3>Available Time Slots</h3>
 
-        <form action="<%=id == ""? "/booking/create" : "/booking/" + id%>" method="POST">
+        <form action="<%=isEditing? "/booking/" + booking._id : "/booking/create"%>" method="POST">
             <input type="hidden" name="date" value="<%=date%>"/>
             <ul>
                 <%availBookingTimes.forEach(time => { %>
@@ -44,17 +46,16 @@
                     document.getElementById("total_price").value = total;
                 }
             </script>
-            <% if (id == "") { %>
-                <h2>Contact Details</h2>
-                <label for="f_name">First Name</label>
-                <input type="text" placeholder="John" name="f_name" required/>
-                <label for="l_name">Last Name</label>
-                <input type="text" placeholder="Smith" name="l_name" required/>
-                <label for="email">Email</label>
-                <input type="email" placeholder="j.smith@example.com" name="email"/>
-                <label for="phone">Phone No.</label>
-                <input type="text" pattern="^((0)(2|4)){0,1}( |-){0,1}[0-9]{2}( |-){0,1}[0-9]{2}( |-){0,1}[0-9]{1}( |-){0,1}[0-9]{3}$" placeholder="0412 321 312" name="phone"/>
-            <% } %>
+            <h2>Contact Details</h2>
+            <label for="f_name">First Name</label>
+            <input type="text" placeholder="John" name="f_name" value="<%=booking.f_name%>" <%=isDisabled%> required/>
+            <label for="l_name">Last Name</label>
+            <input type="text" placeholder="Smith" name="l_name" value="<%=booking.l_name%>" <%=isDisabled%> required/>
+            <label for="email">Email</label>
+            <input type="email" placeholder="j.smith@example.com" value="<%=booking.email%>" name="email" <%=isDisabled%> required/>
+            <label for="phone">Phone No.</label>
+            <input type="text" pattern="^((0)(2|4)){0,1}( |-){0,1}[0-9]{2}( |-){0,1}[0-9]{2}( |-){0,1}[0-9]{1}( |-){0,1}[0-9]{3}$" placeholder="0412 321 312" name="phone" value="<%=booking.phone%>" <%=isDisabled%> required/>
+            
             <input type="submit" value="Book"/>
         </form>
 	</body>
