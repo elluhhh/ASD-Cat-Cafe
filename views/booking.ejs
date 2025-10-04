@@ -12,7 +12,7 @@
 
         <h2>Select Date and Time</h2>
         <% const today = new Date(); %>
-        <form action="booking" method="GET">
+        <form action="/booking/<%=id%>" method="GET">
             <label for="date">Date</label>
             <input type="date" name="date" id="date" min="<%=today.toLocaleDateString("fr-CA", {year:"numeric", month: "2-digit", day:"2-digit"})%>" required>
             <input type="submit" value="Show Availability">
@@ -21,7 +21,7 @@
         <h3><%=date.toLocaleDateString("en-EN", {weekday: "long", day: "numeric", month: "long"})%></h3>
         <h3>Available Time Slots</h3>
 
-        <form action="<%=id == ""? "/booking/create" : "/booking/edit/" + id%>" method="POST">
+        <form action="<%=id == ""? "/booking/create" : "/booking/" + id%>" method="POST">
             <input type="hidden" name="date" value="<%=date%>"/>
             <ul>
                 <%availBookingTimes.forEach(time => { %>
