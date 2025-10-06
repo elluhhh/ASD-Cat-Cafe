@@ -1,30 +1,24 @@
 trigger:
-- test/booking-management
+  branches:
+    include:
+      - '*'
 
 pool:
   vmImage: ubuntu-latest
 
-stages:
-- stage: Test
-  displayName: "Run Test Cases Using Jest"
-  jobs:
-  - job: test
-    displayName: "Run Test Cases"
+steps:
+  - checkout: self
 
-    steps:
-      - task: NodeTool@0
-        displayName: 'Install Node'
-        inputs: 
-          versionSpec: '22.x'
+  - task: NodeTool@0
+    displayName: 'Install Node.js 22.x'
+    inputs:
+      versionSpec: '22.x'
 
-      - task: Npm@1
-        displayName: 'Install Npm'
-        inputs:
-          command: 'install'
+  - script: npm ci
+    displayName: 'Install dependencies'
 
-      - task: Npm@1
-        displayName: 'Run Tests'
-        inputs:
-          command: 'custom'
-          customCommand: 'run test'
-      
+  - script: npm test
+    displayName: 'Run unit tests'
+
+  - script: npm run lint
+    displayName: 'Lint'
