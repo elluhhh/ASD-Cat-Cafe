@@ -11,55 +11,59 @@
 		<h1>Booking Management</h1>
 			<h2>Booking Lookup</h3>
 			<div>
-				<label for="id">Booking ID:</label>
-				<input type="text" placeholder="123567890" id="idInput"/>
-				<label for="email">Email:</label>
-				<input type="text" placeholder="email@email.com" />
-				<label for="date">Date:</label>
-				<input type="date"/>
-				<input type="submit" value="Search" />
+				<form action="bookingManagement" method="POST">
+					<label for="id">Booking ID:</label>
+					<input type="text" placeholder="123567890" name="id"/>
+					<label for="email">Email:</label>
+					<input type="text" placeholder="email@email.com" name="email"/>
+					<label for="date">Date:</label>
+					<input type="date" name="date"/>
+					<input type="submit" value="Search" />
+				</form>
+				<form action="bookingManagement" method="GET">
+					<input type="submit" value="Clear Search">
+				</form>
 			</div>
-
-            <ul>
-                <!-- <%//bookingSearch.forEach(booking => {%>
-                    <li>
-                        <=%booking._id%>
-                    </li>
-                <% //}); %> -->
-            </ul>
-
 		
-			<h2>All Bookings</h2>
+			<h2>Bookings</h2>
             <table>
 				<th>ID</th>
 				<th>First Name</th>
 				<th>Last Name</th>
 				<th>Email</th>
+				<th>Phone</th>
 				<th>Date</th>
 				<th>Time</th>
 				<th>Attendees No.</th>
                 <th>Total Paid</th>
                 <th></th><th></th>
+				<% var idCounter = 0; %>
 				<% bookings.forEach(booking => { %>
+					<% idCounter++; %>
 				<tr>
-					<td><%= booking._id %></td>
+					<td><%=booking._id %></td>
 					<td><%=booking.f_name%></td>
 					<td><%=booking.l_name%></td>
 					<td><%=booking.email%></td>
+					<td><%=booking.phone%></td>
 					<td>
 						<%=booking.date_time.toLocaleString([], {year:
 						'numeric', month: 'numeric', day:'numeric'})%>
 					</td>
                     <td>
-                        <%=booking.date_time.toLocaleString([], {hour:
+						<%=booking.date_time.toLocaleString([], {hour:
 						'2-digit', minute:'2-digit', hour12: false})%>
                     </td>
 					<td><%=booking.attendees_no%></td>
                     <td><%='$'+booking.total_price%></td>
-                    <td><button id="edit">Edit</button></td>
                     <td>
-						<form action="bookingManagement/<%=booking._id%>" method="POST">
-						<button id="cancel" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</button>
+						<form action="booking/<%=booking._id%>" method="GET">
+							<button id="edit">Edit</button>
+						</form>
+					</td>
+                    <td>
+						<form action="bookingManagement/delete/<%=booking._id%>" method="POST">
+							<button id="cancel" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</button>
 						</form>
 					</td>
 				</tr>
