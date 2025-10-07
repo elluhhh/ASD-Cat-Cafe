@@ -45,8 +45,8 @@ const getAvailableTimes = async (req, res) => {
 		
 		const bookingsInDate = await Booking.find(
 			{date_time: {
-				$gte: date.setHours(0,0,0,0),
-				$lt: new Date(date.getTime() + 60 * 60 * 34 * 1000)
+				$gte: new Date(date).setHours(0,0,0,0),
+				$lt: new Date(date).getTime() + 60 * 60 * 34 * 1000
 			}}
 		).exec();
 		
