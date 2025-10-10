@@ -37,7 +37,7 @@ describe("database functionality", () => {
 
         await Booking.findByIdAndDelete(booking._id);
 
-        fetchedBooking = await Booking.findById(booking._id);
+        var fetchedBooking = await Booking.findById(booking._id);
 
         expect(fetchedBooking).toBeNull();
     })
