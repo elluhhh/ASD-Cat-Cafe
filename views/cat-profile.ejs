@@ -11,7 +11,7 @@
     <h1>Meet <%= cat.name %> </h1>
     <div class="profile">
         <div class="left">
-            <img class="cat" src="<%= cat.imageUrl %>" >
+            <img class="cat" src="<%= cat.imageUrl %>" onerror="this.onerror=null;this.src='/uploads/UnavailableImageFallback.png';" >
             <!-- links back to cat display page -->
             <a class="btn" href="/cats">Go back to the Cats</a>
         </div>
