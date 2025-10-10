@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const path = require("path");
 const fs = require("fs").promises;
+const favicon = require("serve-favicon");
 const bookingRoutes = require("./routes/bookingRoutes");
 const catRoutes = require("./routes/catRoutes.js");
 const adoptionRoutes = require("./routes/adoptionRoute"); 
@@ -12,6 +13,7 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
