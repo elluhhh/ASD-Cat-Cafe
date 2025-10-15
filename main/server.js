@@ -27,23 +27,27 @@ app.get('/catprofile', (req, res) => {
 });
 app.get('/', (req, res) => res.redirect('/adoption/request'));
 
-const MONGO_URI =
-  "mongodb+srv://admin:cFBUZU6hozSWFbfk@cat-cafe-website.kycc7fg.mongodb.net/cat-cafe?retryWrites=true&w=majority&appName=cat-cafe-website";
+if (process.env.NODE_ENV !== "test") {
+  const MONGO_URI =
+    process.env.MONGODB_URI ||
+    "mongodb+srv://admin:cFBUZU6hozSWFbfk@cat-cafe-website.kycc7fg.mongodb.net/cat-cafe?retryWrites=true&w=majority&appName=cat-cafe-website";
 
-const PORT = process.env.PORT || 8000;
+  const PORT = process.env.PORT || 8000;
 
-(async () => {
-  try {
-    await mongoose.connect(MONGO_URI);
-    console.log("DB is connected");
-    app.listen(PORT, () =>
-      console.log(`Server running at http://localhost:${PORT}/`)
-    );
-  } catch (err) {
-    console.error("Startup error:", err);
-    process.exit(1);
-  }
-})();
+  (async () => {
+    try {
+      await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 10000 });
+      console.log("DB is connected");
+
+      app.listen(PORT, () =>
+        console.log(`Server running at http://localhost:${PORT}/`)
+      );
+    } catch (err) {
+      console.error("Startup error:", err);
+      process.exit(1);
+    }
+  })();
+}
 
 
 module.exports = app;
