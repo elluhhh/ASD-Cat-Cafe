@@ -7,8 +7,12 @@
 </head>
 
 <body style="padding: 40px;">
-  <h1>Adoption Request for <%= request.catId.name %></h1>
-  <p class="subtitle">Microchip ID: <%= request.catId.microchipId %></p>
+  <% if (request.catId != null) { %>
+    <h1>Adoption Request for <%= request.catId.name %></h1>
+    <p class="subtitle">Microchip ID: <%= request.catId.microchipId %></p>
+  <% } else { %>
+    <h1>Cat Unavailable</h1>
+  <% } %>
 
   <!-- display form input errors -->
   <% if (errors && errors.length > 0) { %>
