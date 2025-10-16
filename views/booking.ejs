@@ -7,56 +7,80 @@
 		<link rel="stylesheet" href="/css/style.css" />
 	</head>
 
-	<body>
-        <%const isEditing = booking != "";%>
-        <%const isDisabled = isEditing? "disabled" : ""%>
-        <h1>Make a Booking</h1>
+	<body id="booking-bod">
+        <div id="form-div">
+            <%const isEditing = booking != "";%>
+            <%const isDisabled = isEditing? "disabled" : ""%>
+            <h1>Make a Booking</h1>
 
-        <h2>Select Date and Time</h2>
-        <% const today = new Date(); %>
-        <form action="/booking/<%= isEditing? booking._id : ""%>" method="GET">
-            <label for="date">Date</label>
-            <input type="date" name="date" id="date" min="<%=today.toLocaleDateString("fr-CA", {year:"numeric", month: "2-digit", day:"2-digit"})%>" required>
-            <input type="submit" value="Show Availability">
-        </form>
+            <h2>Select Date and Time</h2>
+            <% const today = new Date(); %>
+            <form action="/booking/<%= isEditing? booking._id : ""%>" method="GET">
+                <input type="date" name="date" id="date" min="<%=today.toLocaleDateString("fr-CA", {year:"numeric", month: "2-digit", day:"2-digit"})%>" required>
+                <input type="submit" value="Show Availability">
+            </form>
 
-        <h3><%=date.toLocaleDateString("en-EN", {weekday: "long", day: "numeric", month: "long"})%></h3>
-        <h3>Available Time Slots</h3>
+            <h3><%=date.toLocaleDateString("en-EN", {weekday: "long", day: "numeric", month: "long"})%></h3>
+            <h3>Available Time Slots</h3>
 
-        <form action="<%=isEditing? "/booking/" + booking._id : "/booking/create"%>" method="POST">
-            <input type="hidden" name="date" value="<%=date%>"/>
-            <ul>
+            <form action="<%=isEditing? "/booking/" + booking._id : "/booking/create"%>" method="POST">
+                <input type="hidden" name="date" value="<%=date%>"/>
+
                 <%availBookingTimes.forEach(time => { %>
                     <%const ampm = time > 11 ? "PM" : "AM" %>
                     <input type="radio" name="time" id="time" value="<%=time%>" required>
                     <label for="time"><%=time + ":00 " + ampm %></label>
                 <%})%>
-            </ul>
-            <h3>Attendees</h3>
-            <input type="number" min="1" max="5" value="1" name="attendees" id="attendees" onclick="updateContent()">
-            <h3>Price</h3>
-            <span id="price">$28</span>
-            <h2>Total</h2>
-            <p id="total">$28</p>
-            <input type="hidden" id="total_price" name="total_price" value="28">
-            <script>
-                async function updateContent() {
-                    const total = Number(document.getElementById("attendees").value) * 28;
-                    document.getElementById("total").innerHTML = "$" + total;
-                    document.getElementById("total_price").value = total;
-                }
-            </script>
-            <h2>Contact Details</h2>
-            <label for="f_name">First Name</label>
-            <input type="text" placeholder="John" name="f_name" value="<%=booking.f_name%>" <%=isDisabled%> required/>
-            <label for="l_name">Last Name</label>
-            <input type="text" placeholder="Smith" name="l_name" value="<%=booking.l_name%>" <%=isDisabled%> required/>
-            <label for="email">Email</label>
-            <input type="email" placeholder="j.smith@example.com" value="<%=booking.email%>" name="email" <%=isDisabled%> required/>
-            <label for="phone">Phone No.</label>
-            <input type="text" pattern="^((0)(2|4)){0,1}( |-){0,1}[0-9]{2}( |-){0,1}[0-9]{2}( |-){0,1}[0-9]{1}( |-){0,1}[0-9]{3}$" placeholder="0412 321 312" name="phone" value="<%=booking.phone%>" <%=isDisabled%> required/>
-            
-            <input type="submit" value="Book"/>
-        </form>
+
+                <%if (availBookingTimes.length == 0) { %>
+                    <p>No available times</p>
+                <% } %>
+                <div id="booking-deets">
+                    <div>
+                        <h3>Attendees</h3>
+                        <input type="number" min="1" max="5" value="1" name="attendees" id="attendees" onclick="updateContent()">
+                    </div>
+                    <div>
+                        <h3>Price</h3>
+                        <span id="price">$28</span>
+                    </div>
+                    <div>
+                        <h3>Total</h3>
+                        <p id="total">$28</p>
+                    </div>
+                    <input type="hidden" id="total_price" name="total_price" value="28">
+                    <script>
+                        async function updateContent() {
+                            const total = Number(document.getElementById("attendees").value) * 28;
+                            document.getElementById("total").innerHTML = "$" + total;
+                            document.getElementById("total_price").value = total;
+                        }
+                    </script>
+                </div>
+                <h2>Contact Details</h2>
+                <div id="contact-deets">
+                    <div>
+                        <label for="f_name">First Name</label>
+                        <input type="text" placeholder="John" name="f_name" value="<%=booking.f_name%>" <%=isDisabled%> required/>
+                    </div>
+                    <div>
+                        <label for="l_name">Last Name</label>
+                        <input type="text" placeholder="Smith" name="l_name" value="<%=booking.l_name%>" <%=isDisabled%> required/>
+                    </div>
+                    <div>
+                        <label for="email">Email</label>
+                        <input type="email" placeholder="j.smith@example.com" value="<%=booking.email%>" name="email" <%=isDisabled%> required/>
+                    </div>
+                    <div>
+                        <label for="phone">Phone No.</label>
+                        <input type="text" pattern="^((0)(2|4)){0,1}( |-){0,1}[0-9]{2}( |-){0,1}[0-9]{2}( |-){0,1}[0-9]{1}( |-){0,1}[0-9]{3}$" placeholder="0412 321 312" name="phone" value="<%=booking.phone%>" <%=isDisabled%> required/>
+                    </div>
+                    <input id="book-btn" type="submit" value="Book"/>
+                </div>
+            </form>
+        </div>
+        <div>
+            <img id="cafe-img" src="https://media-cdn.tripadvisor.com/media/photo-o/0f/3f/58/24/caption.jpg">
+        </div>
 	</body>
 </html>
