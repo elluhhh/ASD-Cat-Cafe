@@ -8,7 +8,8 @@ const bookingRoutes = require("./routes/bookingRoutes");
 const bookingManagementRoutes = require("./routes/bookingManagementRoutes");
 const catRoutes = require("./routes/catRoutes.js");
 const adoptionRoutes = require("./routes/adoptionRoute"); 
-const adoptionRequestRoutes = require("./routes/adoptionRequestRoute.js"); 
+const adoptionRequestRoutes = require("./routes/adoptionRequestRoute.js");
+const staffLoginRoutes = require("./routes/staffLoginRoutes.js");
 require('dotenv').config();
 
 const app = express();
@@ -39,6 +40,7 @@ app.use("/adoption", adoptionRoutes);
 app.use("/requests", adoptionRequestRoutes);
 app.use("/cats", require("./routes/catRoute"));
 app.use("/api/cart", require("./routes/cartRoutes"));
+app.use("/staffLogin", staffLoginRoutes);
 
 app.get("/", (req, res) => {
   res.render("index");
