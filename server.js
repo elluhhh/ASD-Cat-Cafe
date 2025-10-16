@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs").promises;
 const favicon = require("serve-favicon");
 const bookingRoutes = require("./routes/bookingRoutes");
+const bookingManagementRoutes = require("./routes/bookingManagementRoutes");
 const catRoutes = require("./routes/catRoutes.js");
 const adoptionRoutes = require("./routes/adoptionRoute"); 
 const adoptionRequestRoutes = require("./routes/adoptionRequestRoute.js"); 
@@ -31,7 +32,8 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 // Routes
-app.use("/bookingManagement", bookingRoutes);
+app.use("/bookingManagement", bookingManagementRoutes);
+app.use("/booking", bookingRoutes);
 app.use("/cats", catRoutes);
 app.use("/adoption", adoptionRoutes);
 app.use("/requests", adoptionRequestRoutes);
