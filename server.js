@@ -26,7 +26,7 @@ app.set("views", path.join(__dirname, "views"));
 
 // MongoDB connection
 if (process.env.NODE_ENV !== "test") {
-  mongoose.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/catcafe")
+  mongoose.connect("mongodb+srv://admin:cFBUZU6hozSWFbfk@cat-cafe-website.kycc7fg.mongodb.net/cat-cafe?retryWrites=true&w=majority&appName=cat-cafe-website")
     .then(() => console.log("DB is connected"))
     .catch(err => console.error("DB connection error", err));
 }
