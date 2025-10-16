@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Adoption Request</title>
+  <link rel="stylesheet" href="/css/adoption.css">
+</head><body>
+<div class="wrap">
+  <h1>🐾 Cat Café — Adoption Request</h1>
+  <p class="subtitle">Submit your details and get a tracking code to check your status.</p>
+
+  <section class="panel">
+    <h2 class="panel-title">Your details</h2>
+    <form class="form" method="post" action="/adoption/request" autocomplete="off">
+      <div class="grid">
+        <label>Name<input name="name" required></label>
+        <label>Email<input name="email" type="email" required></label>
+        <label>Phone<input name="phone" type="tel"></label>
+        <label class="wide">Address<input name="address"></label>
+
+        <label>Live with children?
+          <div class="row">
+            <label class="chip"><input type="radio" name="livesWithChildren" value="yes"> Yes</label>
+            <label class="chip"><input type="radio" name="livesWithChildren" value="no" checked> No</label>
+          </div>
+        </label>
+
+        <label>Currently have pets?
+          <div class="row">
+            <label class="chip"><input type="radio" name="hasOtherPets" value="yes"> Yes</label>
+            <label class="chip"><input type="radio" name="hasOtherPets" value="no" checked> No</label>
+          </div>
+        </label>
+
+        <label class="wide">Why would you like to adopt?
+          <textarea name="whyAdopt" rows="4" required></textarea>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" type="submit">Submit Request</button>
+        <a class="btn" href="/catprofile">Back to Cats</a>
+      </div>
+    </form>
+  </section>
+</div>
+</body></html>

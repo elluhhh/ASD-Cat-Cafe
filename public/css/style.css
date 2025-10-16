@@ -1,0 +1,171 @@
+:root {
+    --bg: #faf7f3;
+    --card: #fff;
+    --ink: #2a1f1c;
+    --muted: #7b6d68;
+    --border: #eadfda;
+    --accent: #ff8c42;
+    --danger: #d84a4a;
+    --success: #2e8b57;
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    margin: 0 0 .25rem;
+    font-size: 2.1rem;
+    color: var(--accent);
+}
+
+input,
+select {
+    margin-top: 6px;
+    padding: 10px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(255, 140, 66, .25);
+}
+
+.btn {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all .2s ease;
+}
+
+.btn.primary {
+    background: var(--accent);
+    color: #fff
+}
+
+.btn.primary:hover {
+    background: #e6762f
+}
+
+.btn.small {
+    padding: 6px 10px
+}
+
+.btn:hover {
+    transform: translateY(-1px)
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+thead {
+    background: var(--accent);
+    color: #fff
+}
+
+th,
+td {
+    padding: 12px 10px;
+    text-align: center;
+    vertical-align: middle
+}
+
+th {
+    font-weight: 700;
+    font-size: .95rem;
+    background-color: bisque;
+}
+
+tbody tr:nth-child(odd) {
+    background: #fff
+}
+
+tbody tr:nth-child(even) {
+    background: #fef6f1
+}
+
+tbody tr:hover {
+    background: #ffe7d2
+}
+
+#booking-bod {
+    display: grid;
+    grid-template-columns: 45% 55%;
+}
+
+#form-div > * {
+    margin: 30px;
+}
+
+#cafe-img {
+    scale: 90%;
+    border-radius: 70px;
+    margin: 15px;
+}
+
+#booking-deets {
+    display: flex;
+    justify-items: center;
+    gap: 200px;
+}
+
+#contact-deets {
+    display:inline-grid;
+    grid-template-columns: 200px 200px;
+    /* justify-content: center; */
+    /* justify-items: center; */
+    grid-template-rows: 100px;
+    gap: 30px;
+    align-items: center;
+}
+
+#book-btn {
+    background: #e6762f;
+    border: 2px solid #e46617
+}
+
+#book-btn:hover {
+    opacity: 80%;
+}
+
+#edit {
+    background-color:darkseagreen;
+    border: 3;
+	border-color: rgb(83, 110, 83);
+	color: white;
+	padding: 8px 15px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#cancel {
+	background-color: rgb(235, 68, 68);
+	border: 3;
+	border-color: rgb(139, 41, 41);
+	color: white;
+	padding: 8px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#idInput {
+    width: 190px;
+}

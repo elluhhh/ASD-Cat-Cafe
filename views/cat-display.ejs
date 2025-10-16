@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Cats for Adoption</title>
+    <link rel="stylesheet" href="cat-display.css">
+</head>
+
+<body>
+    <h1>Meet the Cats!</h1>
+    <p class="intro">Browse the cats we have available for adoption below.</p>
+
+    <form id="catFilter">
+        <input type="text" name="name" placeholder="Search by name">
+
+        <select name="age">
+            <option value="">Any age</option>
+            <option value="kitten">Kitten: 0-1</option>
+            <option value="junior">Junior: 1-3</option>
+            <option value="adult">Adult: 4-8</option>
+            <option value="senior">Senior: 9+</option>
+        </select>
+
+        <input type="radio" value="female" name="gender">
+        <label for="femaleCat">Female</label>
+        <input type="radio" value="male" name="gender">
+        <label for="maleCat">Male</label>
+    </form>
+
+    <button class="btn" style="padding: 10px;" type="button" id="clearFilter">Clear Filters</button>
+
+    <div class="container" id="catList">
+        <% if (cats.length > 0 ) { %>
+            <% cats.forEach(cat => { %>
+                <a href="/cats/<%= cat._id %>"><div class="cat-card">
+                    <img src="<%= cat.imageUrl %>" onerror="this.onerror=null;this.src='/uploads/UnavailableImageFallback.png'">
+                    <h2><%= cat.name %></h2>
+                    <p class="cat-info"><%= cat.gender %></p>
+                    <p class="cat-info"><%= Math.floor(cat.ageMonths / 12) %> Years and <%= (cat.ageMonths % 12) %> months old</p>
+                </div></a>
+            <% }) %>
+        <% } else { %>
+            <p class="intro">No Cats Found :(</p>
+        <% } %>
+    </div>
+
+    <!-- links back to index page -->
+    <a class="btn" href="/">Go Back Home</a>
+
+<script type="module">
+    // filter cats
+    import { setupFilter } from '/js/filterUtils.js';
+
+    setupFilter({
+        formSelector: '#catFilter',
+        listSelector: '#catList',
+        endpoint: '/cats',
+        fields: [
+            { name: 'name', type: 'text', live: 'input' },
+            { name: 'age', type: 'select', live: 'change' },
+            { name: 'gender', type: 'radio' }
+        ]
+    });
+</script>
+
+</body>
+</html>
