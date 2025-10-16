@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
         }
     }
 
-    const cats = await Cat.find(filter);
+    const cats = await Cat.find(filter).sort({ name: 1 });
     res.render('cat-display', { cats });
 });
 
