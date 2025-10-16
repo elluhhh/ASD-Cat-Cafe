@@ -46,7 +46,7 @@ app.get('/catprofile', (req, res) => {
 });
 app.get("/food", (_req, res) => res.render("food"));
 
-//app.get('/', (req, res) => res.redirect('/adoption/request'));
+app.get('/', (req, res) => res.redirect('/adoption/request'));
 
 app.get("/health", (_req, res) => res.status(200).json({ status: "ok" }));
 app.get("/api/health", (_req, res) => res.status(200).json({ status: "ok" }));
