@@ -106,6 +106,46 @@ tbody tr:hover {
     background: #ffe7d2
 }
 
+#booking-bod {
+    display: grid;
+    grid-template-columns: 45% 55%;
+}
+
+#form-div > * {
+    margin: 30px;
+}
+
+#cafe-img {
+    scale: 90%;
+    border-radius: 70px;
+    margin: 15px;
+}
+
+#booking-deets {
+    display: flex;
+    justify-items: center;
+    gap: 200px;
+}
+
+#contact-deets {
+    display:inline-grid;
+    grid-template-columns: 200px 200px;
+    /* justify-content: center; */
+    /* justify-items: center; */
+    grid-template-rows: 100px;
+    gap: 30px;
+    align-items: center;
+}
+
+#book-btn {
+    background: #e6762f;
+    border: 2px solid #e46617
+}
+
+#book-btn:hover {
+    opacity: 80%;
+}
+
 #edit {
     background-color:darkseagreen;
     border: 3;
