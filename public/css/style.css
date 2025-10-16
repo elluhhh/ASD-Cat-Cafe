@@ -116,9 +116,9 @@ tbody tr:hover {
 }
 
 #cafe-img {
-    scale: 100%;
+    scale: 90%;
     border-radius: 70px;
-    margin: 30px;
+    margin: 15px;
 }
 
 #booking-deets {
