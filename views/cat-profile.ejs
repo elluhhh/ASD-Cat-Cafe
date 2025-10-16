@@ -18,7 +18,7 @@
 
         <div class="details">
             <h2> <%= cat.name %> </h2>
-            <p class="cat-info"><%= cat.gender %>, <%= Math.floor(cat.ageMonths / 12) %> Years Old</p>
+            <p class="cat-info"><%= cat.gender %>, <%= Math.floor(cat.ageMonths / 12) %> Years and <%= (cat.ageMonths % 12) %> months old</p>
             <p class="description"><%= cat.description %></p>
             <a class="btn" href="#">Request Adoption</a>
         </div>
