@@ -31,11 +31,11 @@
                 <a href="/requests/<%= request._id %>"><div class="adoption-card">
                     <h2>Adoption Request <%= request.trackingCode %></h2>
                     <p class="cat-info" style="text-align: left;">
-                        <span class="underline">Applicant Name</span>: <%= request.applicant.name %><br>
-                        <span class="underline">Enquiry for</span>: <%= request.catId?.name || 'No cat linked' %><br><br>
-                        <span class="underline">Current Status</span>: <%= request.status %><br>
-                        <span class="underline">Staff Notes</span>: <%= request.staffNotes || 'N/A' %><br>
-                        <span class="underline">Latest Update</span>: <%= request.updatedAt %>
+                        <strong>Applicant Name</strong>: <%= request.applicant.name %><br>
+                        <strong>Enquiry for</strong>: <%= request.catId?.name || 'Cat Unavailable' %><br><br>
+                        <strong>Current Status</strong>: <%= request.status %><br>
+                        <strong>Staff Notes</strong>: <%= request.staffNotes || 'N/A' %><br>
+                        <br><span style="color: grey; font-size: 16px;">Latest Update: <%= request.updatedAt %></span>
                     </p>
                 </div></a>
             <% }) %>
