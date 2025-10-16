@@ -25,17 +25,16 @@
 
             <form action="<%=isEditing? "/booking/" + booking._id : "/booking/create"%>" method="POST">
                 <input type="hidden" name="date" value="<%=date%>"/>
-                <ul>
-                    <%availBookingTimes.forEach(time => { %>
-                        <%const ampm = time > 11 ? "PM" : "AM" %>
-                        <input type="radio" name="time" id="time" value="<%=time%>" required>
-                        <label for="time"><%=time + ":00 " + ampm %></label>
-                    <%})%>
 
-                    <%if (availBookingTimes.length == 0) { %>
-                        <p>No available times</p>
-                    <% } %>
-                </ul>
+                <%availBookingTimes.forEach(time => { %>
+                    <%const ampm = time > 11 ? "PM" : "AM" %>
+                    <input type="radio" name="time" id="time" value="<%=time%>" required>
+                    <label for="time"><%=time + ":00 " + ampm %></label>
+                <%})%>
+
+                <%if (availBookingTimes.length == 0) { %>
+                    <p>No available times</p>
+                <% } %>
                 <div id="booking-deets">
                     <div>
                         <h3>Attendees</h3>
