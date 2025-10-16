@@ -8,9 +8,11 @@
     "dev": "NODE_ENV=development node server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "lint:ci": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "test": "cross-env NODE_ENV=test jest --runInBand",
-    "test:watch": "cross-env NODE_ENV=test jest --watch"
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test:report": "jest --runInBand --coverage --ci --reporters=default --reporters=jest-junit"
   },
   "jest-junit": {
     "outputDirectory": "test-results/jest",

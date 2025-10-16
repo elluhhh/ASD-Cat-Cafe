@@ -35,6 +35,13 @@ router.post('/request', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/*router.get('/status/:code', async (req, res, next) => {
+  try {
+    const doc = await AdoptionRequest.findOne({ trackingCode: req.params.code }).lean();
+    if (!doc) return res.status(404).render('adoptionStatus', { notFound: true, code: req.params.code });
+    res.render('adoptionStatus', { notFound: false, reqDoc: doc });
+  } catch (e) { next(e); }
+});*/
 router.get('/status/:code', async (req, res, next) => {
   try {
     const code = req.params.code;
