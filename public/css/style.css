@@ -106,13 +106,31 @@ tbody tr:hover {
     background: #ffe7d2
 }
 
+#booking-bod {
+    display: grid;
+    grid-template-columns: 40% 60%;
+}
+
+#cafe-img {
+    scale: 100%;
+    border-radius: 70px;
+    margin-left: 100px;
+    /* margin-right: 200px; */
+}
+
 #booking-deets {
     display: flex;
-    justify-content: space-around;
+    justify-items: center;
+    gap: 150px;
 }
 
 #contact-deets {
-    display:flex;
+    display:inline-grid;
+    grid-template-columns: 200px 200px;
+    /* justify-content: center; */
+    /* justify-items: center; */
+    grid-template-rows: 100px;
+    align-items: center;
 }
 
 #edit {
