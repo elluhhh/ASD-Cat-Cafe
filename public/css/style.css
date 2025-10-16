@@ -108,13 +108,13 @@ tbody tr:hover {
 
 #booking-bod {
     display: grid;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 45% 55%;
 }
 
 #cafe-img {
     scale: 100%;
     border-radius: 70px;
-    margin-left: 100px;
+    margin-left: 15px;
     /* margin-right: 200px; */
 }
 
