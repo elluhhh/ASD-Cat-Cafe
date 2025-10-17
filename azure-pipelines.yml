@@ -38,15 +38,6 @@ stages:
     - script: npm run lint
       displayName: 'Lint'
 
-  # Copy project files to artifact staging directory
-    - task: CopyFiles@2
-      inputs:
-        sourceFolder: '$(Build.SourcesDirectory)'
-        contents: |
-          public/**
-        targetFolder: '$(Build.ArtifactStagingDirectory)'
-      displayName: 'Copy project files'
-
   # Publish pipeline artifact
     - task: PublishPipelineArtifact@1
       inputs:
@@ -79,4 +70,4 @@ stages:
             inputs:
               azureSubscription: 'Resource Manager - ASD Cat Cafe'
               appName: '$(WebAppName)'
-              package: '$(Pipeline.Workspace)/**/*'
+              package: '$(Pipeline.Workspace)/drop'
