@@ -46,9 +46,8 @@ stages:
   # Publish pipeline artifact
     - task: PublishPipelineArtifact@1
       inputs:
-        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
         artifactName: 'drop'
-        publishLocation: 'Container'
       displayName: 'Publish pipeline artifact'
 
 - stage: 'Deploy'
