@@ -183,7 +183,8 @@ tbody tr:hover {
     gap: 15px;
     align-items: center;
     justify-content: center;
-    margin-left: 40%;
+    margin-left: 38%;
+    margin-top: 5%;
     background-color: #f8d2bc;
     width: 400px;
     border: 3px solid #f7ac7e;
