@@ -38,7 +38,7 @@ app.use("/booking", bookingRoutes);
 app.use("/cats", catRoutes);
 app.use("/adoption", adoptionRoutes);
 app.use("/requests", adoptionRequestRoutes);
-app.use("/cats", require("./routes/catRoute"));
+app.use("/cats", require("./routes/catProfileRoutes.js"));
 app.use("/api/cart", require("./routes/cartRoutes"));
 app.use("/staffLogin", staffLoginRoutes);
 
