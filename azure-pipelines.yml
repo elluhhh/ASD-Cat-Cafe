@@ -24,9 +24,6 @@ stages:
       inputs:
         verbose: false
 
-    - task: gulp@1
-      displayName: 'Run gulp tasks'
-
     - task: NodeTool@0
       displayName: 'Install Node.js 22.x'
       inputs:
