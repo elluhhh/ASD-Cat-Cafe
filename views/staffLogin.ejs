@@ -9,19 +9,14 @@
 
 <body>
     <h1>Staff Login</h1>
-    <div id="login-div">
-        <form action="/staffLogin" method="POST">
-            <div>
-                <label for="email">Email</label>
-                <input type="text" name="email">
-            </div>
-            <div>
-                <label for="password">Password</label>
-                <input type="password" name="password">
-            </div>
-            <input type="submit" value="Login">
-        </form>
-    </div>
+    <form id="login-div" action="/staffLogin" method="POST">
+        <img id="profile-img" src="/images/profile-img.png">
+        <label for="email">Email</label>
+        <input type="text" name="email">
+        <label for="password">Password</label>
+        <input type="password" name="password">
+        <input id="login-btn" type="submit" value="Login">
+    </form>
 </body>
 
 </html>

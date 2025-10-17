@@ -171,8 +171,36 @@ tbody tr:hover {
 }
 
 #login-div {
-    display: flex;
+    display: grid;
+    grid-template-areas:
+        'imgArea imgArea'
+        'imgArea imgArea'
+        'content content'
+        'content content'
+        'loginArea loginArea';
+    grid-template-columns: 100px 200px;
+    grid-template-rows: 50px 40px 50px;
+    gap: 15px;
+    align-items: center;
     justify-content: center;
-    vertical-align: middle;
-    margin-top: 15%;
+    margin-left: 40%;
+    background-color: #f8c3a2;
+    width: 400px;
+    border: 3px solid #f7ac7e;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+#profile-img {
+    align-self: center;
+    grid-area: imgArea;
+    justify-self: center;
+    scale: 20%;
+    padding: 30px;
+    border: 20px solid #e67a48;
+    border-radius: 50%;
+}
+
+#login-btn {
+    grid-area: loginArea;
 }
