@@ -32,14 +32,30 @@ stages:
     - script: npm ci
       displayName: 'Install dependencies'
 
+    - script: npm run build
+      displayName: 'Build project'
+
     - script: npm test
       displayName: 'Run unit tests'
 
     - script: npm run lint
       displayName: 'Lint'
 
-    - publish: '$(Build.ArtifactStagingDirectory)'
-      artifact: drop
+  # Copy project files to artifact staging directory
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)'
+      contents: |
+        public/**
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copy project files'
+
+  # Publish pipeline artifact
+  - task: PublishPipelineArtifact@1
+    inputs:
+      artifactName: 'nodejs-app'
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Publish pipeline artifact'
 
 - stage: 'Deploy'
   displayName: 'Deploy the web application'
@@ -62,4 +78,4 @@ stages:
             inputs:
               azureSubscription: 'Resource Manager - ASD Cat Cafe'
               appName: '$(WebAppName)'
-              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
+              package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
