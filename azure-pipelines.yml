@@ -40,7 +40,7 @@ stages:
 
     - script: |
         mkdir -p $(Build.ArtifactStagingDirectory)
-        cp - R ./* $(Build.ArtifactStagingDirectory)
+        cp -R ./* $(Build.ArtifactStagingDirectory)
       displayName: 'Copy files to ArtifactStagingDirectory'
 
   # Publish pipeline artifact
