@@ -38,6 +38,9 @@ stages:
     - script: npm run lint
       displayName: 'Lint'
 
+    - publish: '$(Build.ArtifactStagingDirectory)'
+    artifact: drop
+
 - stage: 'Deploy'
   displayName: 'Deploy the web application'
   dependsOn: Build
