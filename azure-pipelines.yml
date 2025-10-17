@@ -39,7 +39,7 @@ stages:
       displayName: 'Lint'
 
     - publish: '$(Build.ArtifactStagingDirectory)'
-    artifact: drop
+      artifact: drop
 
 - stage: 'Deploy'
   displayName: 'Deploy the web application'
