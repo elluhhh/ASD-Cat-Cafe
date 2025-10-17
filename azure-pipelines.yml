@@ -50,7 +50,7 @@ stages:
   # Publish pipeline artifact
     - task: PublishPipelineArtifact@1
       inputs:
-        artifactName: 'nodejs-app'
+        artifactName: 'drop'
         targetPath: '$(Build.ArtifactStagingDirectory)'
       displayName: 'Publish pipeline artifact'
 
