@@ -2,7 +2,8 @@ const Staff = require("../models/staffModel.js");
 
 const findStaff = async (req, res) => {
 	try {
-		const {email, password} = req.body
+		const {email, password} = req.body;
+        var errorMsg = "";
 
         const staff = await Staff.findOne({
             email: email,
@@ -10,7 +11,8 @@ const findStaff = async (req, res) => {
         }).exec();
 
         if(staff == null){
-            res.redirect("/staffLogin");
+            errorMsg = "Incorrect login details. Try again.";
+            res.render("staffLogin", {errorMsg});
         }
 		else {
             res.redirect("/");

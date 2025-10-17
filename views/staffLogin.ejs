@@ -8,9 +8,11 @@
 </head>
 
 <body>
+    <a href="/">back</a>
     <h1>Staff Login</h1>
     <form id="login-div" action="/staffLogin" method="POST">
         <img id="profile-img" src="/images/profile-img.png">
+        <p id="error-msg"><%=typeof(errorMsg) === 'undefined'? "" : errorMsg%></p>
         <label for="email">Email</label>
         <input type="text" name="email">
         <label for="password">Password</label>

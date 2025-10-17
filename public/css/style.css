@@ -174,17 +174,17 @@ tbody tr:hover {
     display: grid;
     grid-template-areas:
         'imgArea imgArea'
-        'imgArea imgArea'
+        'errorArea errorArea'
         'content content'
         'content content'
         'loginArea loginArea';
     grid-template-columns: 100px 200px;
-    grid-template-rows: 50px 40px 50px;
+    grid-template-rows: 120px 0px;
     gap: 15px;
     align-items: center;
     justify-content: center;
     margin-left: 40%;
-    background-color: #f8c3a2;
+    background-color: #f8d2bc;
     width: 400px;
     border: 3px solid #f7ac7e;
     border-radius: 20px;
@@ -192,7 +192,6 @@ tbody tr:hover {
 }
 
 #profile-img {
-    align-self: center;
     grid-area: imgArea;
     justify-self: center;
     scale: 20%;
@@ -203,4 +202,10 @@ tbody tr:hover {
 
 #login-btn {
     grid-area: loginArea;
+}
+
+#error-msg {
+    grid-area: errorArea;
+    text-align: center;
+    font-style: italic;
 }
