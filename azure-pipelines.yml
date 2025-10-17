@@ -64,10 +64,10 @@ stages:
             inputs:
               source: 'current'
               artifact: 'drop'
-              path: '$(Pipeline.Workspace)'
+              path: '$(Build.ArtifactStagingDirectory)'
 
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'Resource Manager - ASD Cat Cafe'
               appName: '$(WebAppName)'
-              package: '$(Pipeline.Workspace)/*'
+              package: '$(Build.ArtifactStagingDirectory)/drop'
