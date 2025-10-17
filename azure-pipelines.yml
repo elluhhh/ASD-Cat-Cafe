@@ -68,11 +68,15 @@ stages:
       runOnce:
         deploy:
           steps:
-          - download: current
-            artifact: drop
+            # download the artifact drop from the previous job
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              source: 'current'
+              artifact: 'drop'
+              path: '$(Pipeline.Workspace)'
+
           - task: AzureWebApp@1
-            displayName: 'Azure App Service Deploy: website'
             inputs:
               azureSubscription: 'Resource Manager - ASD Cat Cafe'
               appName: '$(WebAppName)'
-              package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+              package: '$(Pipeline.Workspace)/**/*.zip'
