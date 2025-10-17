@@ -42,20 +42,20 @@ stages:
       displayName: 'Lint'
 
   # Copy project files to artifact staging directory
-  - task: CopyFiles@2
-    inputs:
-      sourceFolder: '$(Build.SourcesDirectory)'
-      contents: |
-        public/**
-      targetFolder: '$(Build.ArtifactStagingDirectory)'
-    displayName: 'Copy project files'
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)'
+        contents: |
+          public/**
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
+      displayName: 'Copy project files'
 
   # Publish pipeline artifact
-  - task: PublishPipelineArtifact@1
-    inputs:
-      artifactName: 'nodejs-app'
-      targetPath: '$(Build.ArtifactStagingDirectory)'
-    displayName: 'Publish pipeline artifact'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        artifactName: 'nodejs-app'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+      displayName: 'Publish pipeline artifact'
 
 - stage: 'Deploy'
   displayName: 'Deploy the web application'
