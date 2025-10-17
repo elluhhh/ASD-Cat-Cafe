@@ -169,3 +169,10 @@ tbody tr:hover {
 #idInput {
     width: 190px;
 }
+
+#login-div {
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+    margin-top: 15%;
+}
