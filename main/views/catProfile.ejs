@@ -25,6 +25,20 @@
         <label>Age (months)
           <input id="ageMonths" name="ageMonths" type="number" min="0" required />
         </label>
+        <label>Microchip ID
+        <input id="microchipId" name="microchipId"
+         pattern="\d{5,20}" inputmode="numeric"
+         placeholder="e.g. 965987654321098" />
+      </label>
+
+      <label>Price ($)
+        <input id="price" name="price" type="number" min="0" step="1" required />
+      </label>
+
+      <label class="wide">Description
+       <textarea id="description" name="description" rows="3" maxlength="1000"
+            placeholder="Add notes..."></textarea>
+      </label>
         <label>Adopted?
           <select id="isAdopted" name="isAdopted">
             <option value="false" selected>No</option>
@@ -46,15 +60,18 @@
       <h2 class="panel-title">All cats</h2>
       <table id="cats" class="table">
         <thead>
-          <tr>
-            <th>Photo</th>
-            <th>Name</th>
-            <th>Breed</th>
-            <th>Age (m)</th>
-            <th>Adopted</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+  <tr>
+    <th>Photo</th>
+    <th>Name</th>
+    <th>Breed</th>
+    <th>Age (m)</th>
+    <th>Microchip ID</th>
+    <th>Price ($)</th>
+    <th>Description</th>
+    <th>Adopted</th>
+    <th>Actions</th>
+  </tr>
+</thead>
         <tbody><!-- injected --></tbody>
       </table>
       <p class="empty" id="empty">No cats yet. Add one above. Meow 🐱</p>
@@ -72,12 +89,15 @@
   const formEl    = $('#cat-form');
   const titleEl   = $('#form-title');
   const submitBtn = $('#submit-btn');
-  const clearBtn  = $('#clear-btn');             
+  const clearBtn  = $('#clear-btn');
 
   const idEl      = $('#id');
   const nameEl    = $('#name');
   const breedEl   = $('#breed');
   const ageEl     = $('#ageMonths');
+  const microEl   = $('#microchipId');
+  const priceEl   = $('#price');
+  const descEl    = $('#description');
   const adoptedEl = $('#isAdopted');
   const fileEl    = $('#image');
 
@@ -101,7 +121,6 @@
   }
 
   function resetForm() {
-    // IMPORTANT: now that our button id isn't "reset", the native reset works
     if (typeof formEl.reset === 'function') formEl.reset();
     idEl.value = '';
     currentEditId = null;
@@ -109,7 +128,7 @@
     if (document.activeElement) document.activeElement.blur();
   }
 
-  // --- render
+  // --- row template (includes microchip, price, description)
   function rowTpl(c) {
     return `
       <tr data-id="${c._id}">
@@ -117,6 +136,9 @@
         <td>${c.name || '-'}</td>
         <td>${c.breed || '-'}</td>
         <td>${c.ageMonths ?? '-'}</td>
+        <td>${c.microchipId || '-'}</td>
+        <td>${c.price != null ? `$${c.price}` : '-'}</td>
+        <td>${c.description || '-'}</td>
         <td><span class="badge ${c.isAdopted ? 'yes':'no'}">${c.isAdopted ? 'Yes':'No'}</span></td>
         <td>
           <button class="btn small" data-action="edit">Edit</button>
@@ -133,17 +155,16 @@
   // --- load from API
   async function loadCats() {
     try {
-      const res = await fetch('/cats', { headers: { 'Accept': 'application/json' } });
-      if (!res.ok) throw new Error(`GET /cats failed: ${res.status}`);
-      const data = await res.json();
-      renderTable(data);
-    } catch (err) {
-      console.error(err);
-      renderTable([]); // show empty state instead of leaving stale UI
+      const res = await fetch('/cats', { headers: { 'Accept': 'application/json' }});
+      if (!res.ok) throw new Error('Failed to load cats');
+      const cats = await res.json();
+      renderTable(cats);
+    } catch (e) {
+      console.error('Load cats failed', e);
+      renderTable([]); // show empty state on error
     }
   }
 
-  // --- events
   // Clear / Cancel
   clearBtn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -154,7 +175,6 @@
   formEl.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Required client-side checks
     const name = nameEl.value.trim();
     const breed = breedEl.value.trim();
     const age = ageEl.value;
@@ -165,12 +185,15 @@
 
     try {
       if (currentEditId) {
-        // UPDATE (no image upload in edit for now)
+        // UPDATE (JSON)
         const payload = {
-          name: name,
-          breed: breed,
-          ageMonths: Number(age),
-          isAdopted: adoptedEl.value === 'true'
+          name: nameEl.value.trim(),
+          breed: breedEl.value.trim(),
+          ageMonths: Number(ageEl.value),
+          microchipId: microEl.value.trim() || null,
+          price: priceEl.value ? Number(priceEl.value) : null,
+          description: descEl.value.trim() || '',
+          isAdopted: adoptedEl.value === 'true',
         };
         const res = await fetch(`/cats/${currentEditId}`, {
           method: 'PUT',
@@ -179,11 +202,11 @@
         });
         if (!res.ok) throw new Error(`PUT /cats/${currentEditId} failed: ${res.status}`);
       } else {
-        // CREATE (supports image upload)
-        const fd = new FormData(formEl);          // contains file + fields
+        // CREATE (multipart with optional image)
+        const fd = new FormData(formEl);
         const res = await fetch('/cats/add', {
           method: 'POST',
-          headers: { 'Accept': 'application/json' }, // tell server we want JSON back
+          headers: { 'Accept': 'application/json' },
           body: fd
         });
         if (!res.ok) {
@@ -201,7 +224,7 @@
     }
   });
 
-  // Table action buttons (event delegation)
+  // Table action buttons (Edit/Delete via event delegation)
   tbodyEl.addEventListener('click', async (e) => {
     const btn = e.target.closest('button[data-action]');
     if (!btn) return;
@@ -213,18 +236,20 @@
     const action = btn.getAttribute('data-action');
 
     if (action === 'edit') {
-      // Load cat then populate form
       try {
         const res = await fetch(`/cats/${id}`, { headers: { 'Accept': 'application/json' } });
         if (!res.ok) throw new Error(`GET /cats/${id} failed: ${res.status}`);
         const c = await res.json();
 
-        idEl.value      = c._id || '';
-        nameEl.value    = c.name || '';
-        breedEl.value   = c.breed || '';
-        ageEl.value     = c.ageMonths ?? '';
-        adoptedEl.value = c.isAdopted ? 'true' : 'false';
-        if (fileEl) fileEl.value = ''; // never pre-fill file fields
+        idEl.value        = c._id || '';
+        nameEl.value      = c.name || '';
+        breedEl.value     = c.breed || '';
+        ageEl.value       = c.ageMonths ?? '';
+        microEl.value     = c.microchipId || '';
+        priceEl.value     = (c.price != null ? c.price : '');
+        descEl.value      = c.description || '';
+        adoptedEl.value   = c.isAdopted ? 'true' : 'false';
+        if (fileEl) fileEl.value = ''; // clear file input
 
         currentEditId = c._id || null;
         setMode('edit');
@@ -251,5 +276,5 @@
 
   // init
   setMode('add');
-  loadCats();
+  document.addEventListener('DOMContentLoaded', loadCats);
 </script>
