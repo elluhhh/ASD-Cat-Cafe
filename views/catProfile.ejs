@@ -1,44 +1,56 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
-  <title>Cat Café — Cat Profiles</title>
+  <title>Cat Café — Edit Cat Profiles</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="/css/catProfile.css">
 </head>
-
 <body>
   <div class="wrap">
-
     <h1>🐾 Cat Profiles</h1>
     <p class="muted">Add / Edit / Delete</p>
 
-    <!-- Form -->
+    <!-- Form (native POST to /cats/add) -->
     <section class="panel">
-<h2 class="panel-title" id="form-title">Add Cat</h2>      <form id="cat-form" class="grid">
-        <input type="hidden" id="id" />
+      <h2 class="panel-title" id="form-title">Add Cat</h2>
+      <form id="cat-form" class="grid" action="/cats/add" method="POST" enctype="multipart/form-data">
+        <input type="hidden" id="id" name="id" />
         <label>Name
-          <input id="name" required />
+          <input id="name" name="name" required />
         </label>
         <label>Breed
-          <input id="breed" />
+          <input id="breed" name="breed" required />
         </label>
         <label>Age (months)
-          <input id="ageMonths" type="number" min="0" />
+          <input id="ageMonths" name="ageMonths" type="number" min="0" required />
         </label>
+        <label>Microchip ID
+        <input id="microchipId" name="microchipId"
+         pattern="\d{5,20}" inputmode="numeric"
+         placeholder="e.g. 965987654321098" />
+      </label>
+
+      <label>Price ($)
+        <input id="price" name="price" type="number" min="0" step="1" required />
+      </label>
+
+      <label class="wide">Description
+       <textarea id="description" name="description" rows="3" maxlength="1000"
+            placeholder="Add notes..."></textarea>
+      </label>
         <label>Adopted?
-          <select id="isAdopted">
+          <select id="isAdopted" name="isAdopted">
             <option value="false" selected>No</option>
             <option value="true">Yes</option>
           </select>
         </label>
-        <label class="wide">Photo URL
-          <input id="imageUrl" placeholder="https://…" />
+        <label class="wide">Photo Upload
+          <input type="file" id="image" name="image" accept="image/*" />
         </label>
         <div class="actions wide">
-          <button type="submit" class="btn primary">Save</button>
-          <button type="button" id="reset" class="btn">Clear</button>
+          <button type="submit" id="submit-btn" class="btn primary">Add Cat</button>
+          <button type="button" id="clear-btn" class="btn">Clear</button>
         </div>
       </form>
     </section>
@@ -48,122 +60,219 @@
       <h2 class="panel-title">All cats</h2>
       <table id="cats" class="table">
         <thead>
-          <tr>
-            <th>Photo</th>
-            <th>Name</th>
-            <th>Breed</th>
-            <th>Age (m)</th>
-            <th>Adopted</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody><!-- new rows injected when cats added :D--></tbody>
+  <tr>
+    <th>Photo</th>
+    <th>Name</th>
+    <th>Breed</th>
+    <th>Age (m)</th>
+    <th>Microchip ID</th>
+    <th>Price ($)</th>
+    <th>Description</th>
+    <th>Adopted</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+        <tbody><!-- injected --></tbody>
       </table>
       <p class="empty" id="empty">No cats yet. Add one above. Meow 🐱</p>
     </section>
-
   </div>
 
   <div id="toast" role="status" aria-live="polite"></div>
-  <script>
-    const $ = (s, r = document) => r.querySelector(s);
-    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-    const uid = () => 'id-' + Math.random().toString(36).slice(2, 10);
 
-    // --- storage
-    const KEY = 'cats';
-    const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
-    const save = (arr) => localStorage.setItem(KEY, JSON.stringify(arr));
+<script>
+  const $  = (s, r=document)=>r.querySelector(s);
+  const $$ = (s, r=document)=>[...r.querySelectorAll(s)];
 
-    // --- state
-    let cats = load();           
-    let currentEditId = null;     // track which row is being edited
+  // --- elements
+  const formEl    = $('#cat-form');
+  const titleEl   = $('#form-title');
+  const submitBtn = $('#submit-btn');
+  const clearBtn  = $('#clear-btn');
 
-    // --- view
-    const row = c => `<tr>
-    <td><img class="thumb" src="${c.imageUrl || 'https://placehold.co/80x80?text=Cat'}" alt=""></td>
-    <td>${c.name || '-'}</td>
-    <td>${c.breed || '-'}</td>
-    <td>${c.ageMonths ?? '-'}</td>
-    <td><span class="badge ${c.isAdopted ? 'yes' : 'no'}">${c.isAdopted ? 'Yes' : 'No'}</span></td>
-    <td>
-      <button data-edit="${c._id}" class="btn small">Edit</button>
-      <button data-del="${c._id}" class="btn small danger">Delete</button>
-    </td>
-  </tr>`;
+  const idEl      = $('#id');
+  const nameEl    = $('#name');
+  const breedEl   = $('#breed');
+  const ageEl     = $('#ageMonths');
+  const microEl   = $('#microchipId');
+  const priceEl   = $('#price');
+  const descEl    = $('#description');
+  const adoptedEl = $('#isAdopted');
+  const fileEl    = $('#image');
 
-    function render() {
-      $('#cats tbody').innerHTML = cats.map(row).join('');
-      $('#empty').style.display = cats.length ? 'none' : 'block';
-      $$('button[data-edit]').forEach(b => b.onclick = () => loadIntoForm(b.dataset.edit));
-      $$('button[data-del]').forEach(b => b.onclick = () => removeCat(b.dataset.del));
+  const tbodyEl   = $('#cats tbody');
+  const emptyEl   = $('#empty');
+
+  // --- state
+  let currentEditId = null;  
+
+  // --- mode + UI
+  function setMode(mode) {
+    if (mode === 'edit') {
+      titleEl.textContent   = 'Edit Cat';
+      submitBtn.textContent = 'Update Cat';
+      clearBtn.textContent  = 'Cancel';
+    } else {
+      titleEl.textContent   = 'Add Cat';
+      submitBtn.textContent = 'Add Cat';
+      clearBtn.textContent  = 'Clear';
+    }
+  }
+
+  function resetForm() {
+    if (typeof formEl.reset === 'function') formEl.reset();
+    idEl.value = '';
+    currentEditId = null;
+    setMode('add');
+    if (document.activeElement) document.activeElement.blur();
+  }
+
+  function rowTpl(c) {
+    return `
+      <tr data-id="${c._id}">
+        <td><img class="thumb" src="${c.imageUrl || 'https://placehold.co/80x80?text=Cat'}" alt=""></td>
+        <td>${c.name || '-'}</td>
+        <td>${c.breed || '-'}</td>
+        <td>${c.ageMonths ?? '-'}</td>
+        <td>${c.microchipId || '-'}</td>
+        <td>${c.price != null ? `$${c.price}` : '-'}</td>
+        <td>${c.description || '-'}</td>
+        <td><span class="badge ${c.isAdopted ? 'yes':'no'}">${c.isAdopted ? 'Yes':'No'}</span></td>
+        <td>
+          <button class="btn small" data-action="edit">Edit</button>
+          <button class="btn small danger" data-action="del">Delete</button>
+        </td>
+      </tr>`;
+  }
+
+  function renderTable(list) {
+    tbodyEl.innerHTML = list.map(rowTpl).join('');
+    emptyEl.style.display = list.length ? 'none' : 'block';
+  }
+
+  // --- load from API
+  async function loadCats() {
+    try {
+      const res = await fetch('/cats', { headers: { 'Accept': 'application/json' }});
+      if (!res.ok) throw new Error('Failed to load cats');
+      const cats = await res.json();
+      renderTable(cats);
+    } catch (e) {
+      console.error('Load cats failed', e);
+      renderTable([]); // show empty state on error
+    }
+  }
+
+  // Clear / Cancel
+  clearBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    resetForm();
+  });
+
+  // Submit (Add or Update)
+  formEl.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = nameEl.value.trim();
+    const breed = breedEl.value.trim();
+    const age = ageEl.value;
+    if (!name || !breed || age === '') {
+      alert('Please fill Name, Breed, and Age (months).');
+      return;
     }
 
-    // --- CRUD
-    function upsert(payload) {
-      const i = cats.findIndex(c => c._id === payload._id);
-      if (i >= 0) cats[i] = payload; else cats.push(payload);
-      save(cats);
-      render();                 // <— re-render immediately so no need to refresh
-    }
+    try {
+      if (currentEditId) {
+        // UPDATE (JSON)
+        const payload = {
+          name: nameEl.value.trim(),
+          breed: breedEl.value.trim(),
+          ageMonths: Number(ageEl.value),
+          microchipId: microEl.value.trim() || null,
+          price: priceEl.value ? Number(priceEl.value) : null,
+          description: descEl.value.trim() || '',
+          isAdopted: adoptedEl.value === 'true',
+        };
+        const res = await fetch(`/cats/${currentEditId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(`PUT /cats/${currentEditId} failed: ${res.status}`);
+      } else {
+        // CREATE 
+        const fd = new FormData(formEl);
+        const res = await fetch('/cats/add', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: fd
+        });
+        if (!res.ok) {
+          let msg = `POST /cats/add failed: ${res.status}`;
+          try { const t = await res.text(); if (t) msg = t; } catch {}
+          throw new Error(msg);
+        }
+      }
 
-    function removeCat(id) {
-      if (!confirm('Delete this cat?')) return;
-      cats = cats.filter(c => c._id !== id);
-      save(cats);
-      render();                 // <— show removal NOW!!!!!!
-      if (currentEditId === id) resetForm();
-    }
-    
-    // --- form
-    function collectForm() {
-      const id = currentEditId || $('#id').value || uid();   // keep same id when editing
-      return {
-        _id: id,
-        name: $('#name').value.trim(),
-        breed: $('#breed').value.trim() || '',
-        ageMonths: $('#ageMonths').value ? Number($('#ageMonths').value) : null,
-        isAdopted: $('#isAdopted').value === 'true',
-        imageUrl: $('#imageUrl').value.trim() || ''
-      };
-    }
-
-    function loadIntoForm(id) {
-      const c = cats.find(x => x._id === id);
-      if (!c) return;
-      currentEditId = id;                // enter edit mode
-      $('#id').value = c._id;            
-      $('#name').value = c.name || '';
-      $('#breed').value = c.breed || '';
-      $('#ageMonths').value = c.ageMonths ?? '';
-      $('#isAdopted').value = c.isAdopted ? 'true' : 'false';
-      $('#imageUrl').value = c.imageUrl || '';
-      $('#form-title').textContent = 'Edit cat';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function resetForm() {
-      $('#cat-form').reset();
-      $('#id').value = '';
-      currentEditId = null;              // exit edit mode
-      $('#form-title').textContent = 'Add a cat';
-      if (document.activeElement) document.activeElement.blur();
-    }
-
-    // --- events
-    $('#cat-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const p = collectForm();
-      if (!p.name) { alert('Name is required'); return; }
-      upsert(p);          // saves + re-renders
+      await loadCats();   // refresh list after save
       resetForm();        // back to Add mode
-    });
-    $('#reset').addEventListener('click', resetForm);
-
-    // --- just dummy data for demo
-    if (cats.length === 0) {
-      cats = [{ _id: uid(), name: 'Mochi', breed: 'DSH', ageMonths: 12, isAdopted: false, imageUrl: '' }];
-      save(cats);
+    } catch (err) {
+      console.error(err);
+      alert('Could not save cat. Please try again.');
     }
-    render();
-  </script>
+  });
+
+  // Table action buttons (Edit/Delete via event delegation)
+  tbodyEl.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+
+    const tr = btn.closest('tr[data-id]');
+    const id = tr?.getAttribute('data-id');
+    if (!id) return;
+
+    const action = btn.getAttribute('data-action');
+
+    if (action === 'edit') {
+      try {
+        const res = await fetch(`/cats/${id}`, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error(`GET /cats/${id} failed: ${res.status}`);
+        const c = await res.json();
+
+        idEl.value        = c._id || '';
+        nameEl.value      = c.name || '';
+        breedEl.value     = c.breed || '';
+        ageEl.value       = c.ageMonths ?? '';
+        microEl.value     = c.microchipId || '';
+        priceEl.value     = (c.price != null ? c.price : '');
+        descEl.value      = c.description || '';
+        adoptedEl.value   = c.isAdopted ? 'true' : 'false';
+        if (fileEl) fileEl.value = ''; // clear file input
+
+        currentEditId = c._id || null;
+        setMode('edit');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        console.error(err);
+        alert('Could not load cat for editing.');
+      }
+    }
+
+    if (action === 'del') {
+      if (!confirm('Delete this cat?')) return;
+      try {
+        const res = await fetch(`/cats/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error(`DELETE /cats/${id} failed: ${res.status}`);
+        await loadCats();
+        if (currentEditId === id) resetForm();
+      } catch (err) {
+        console.error(err);
+        alert('Delete failed.');
+      }
+    }
+  });
+
+  // init
+  setMode('add');
+  document.addEventListener('DOMContentLoaded', loadCats);
+</script>
