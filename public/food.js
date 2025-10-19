@@ -222,9 +222,16 @@ function bindEvents() {
   });
   categorySelect.addEventListener("change", () => renderMenu(applyFilters(menu)));
   veganOnlyCheckbox.addEventListener("change", () => renderMenu(applyFilters(menu)));
-  checkoutBtn.addEventListener("click", () => {
-    window.location.href = "/checkout";
-  });
+  checkoutBtn.addEventListener("click", async () => {
+  try {
+    const res = await fetch("/api/orders", { method: "POST" });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Order failed");
+    window.location.href = `/checkout?orderId=${encodeURIComponent(data.orderId)}`;
+  } catch (e) {
+    notify(e.message);
+  }
+});
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

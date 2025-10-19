@@ -134,6 +134,7 @@
         <!-- Payment Form (U126) -->
         <h2>Payment Details</h2>
         <form action="/checkout/process" method="POST" class="payment-form">
+            <input type="hidden" name="orderId" value="<%= orderId %>">
             <input type="hidden" name="total" value="<%= (total / 100).toFixed(2) %>">
             
             <div class="form-group">

@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const path = require("path");
-const fs = require("fs").promises;
+const _fs = require("fs").promises;
 const favicon = require("serve-favicon");
 const bookingRoutes = require("./routes/bookingRoutes");
 const bookingManagementRoutes = require("./routes/bookingManagementRoutes");
@@ -11,6 +11,8 @@ const checkoutRoutes = require('./routes/checkoutRoutes');
 const adoptionRoutes = require("./routes/adoptionRoute"); 
 const adoptionRequestRoutes = require("./routes/adoptionRequestRoute.js");
 const staffLoginRoutes = require("./routes/staffLoginRoutes.js");
+const menuRoutes = require("./routes/menuRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 require('dotenv').config();
 
 const app = express();
@@ -43,6 +45,8 @@ app.use("/cats", require("./routes/catProfileRoutes.js"));
 app.use("/api/cart", require("./routes/cartRoutes"));
 app.use('/checkout', checkoutRoutes);
 app.use("/staffLogin", staffLoginRoutes);
+app.use("/api/menu", menuRoutes);       
+app.use("/api/orders", orderRoutes);
 
 app.get("/", (req, res) => {
   res.render("index");
@@ -56,15 +60,6 @@ app.get('/', (req, res) => res.redirect('/adoption/request'));
 
 app.get("/health", (_req, res) => res.status(200).json({ status: "ok" }));
 app.get("/api/health", (_req, res) => res.status(200).json({ status: "ok" }));
-
-app.get("/api/menu", async (_req, res) => {
-  try {
-    const data = await fs.readFile(path.join(__dirname, "data", "menu.json"), "utf-8");
-    res.json(JSON.parse(data));
-  } catch {
-    res.status(500).json({ error: "Failed to load menu data" });
-  }
-});
 
 app.use((_req, res) => res.status(404).send("Not Found"));
 app.use((err, req, res, _next) => {
