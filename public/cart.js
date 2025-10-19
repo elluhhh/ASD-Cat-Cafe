@@ -6,17 +6,21 @@ function nextCart(cartMap, action) {
   const cart = new Map(cartMap);
   switch (action.type) {
     case "add": {
-      const { id, priceCents, qty = 1 } = action;
-      const prev = cart.get(id) || { priceCents, qty: 0 };
-      cart.set(id, { priceCents, qty: prev.qty + qty });
+      const { id, priceCents, qty = 1, name } = action;
+      const prev = cart.get(id) || { priceCents, qty: 0, name: name || String(id) };
+      cart.set(id, {
+        priceCents: priceCents ?? prev.priceCents ?? 0,
+        qty: (prev.qty || 0) + qty,
+        name: name ?? prev.name ?? String(id)
+      });
       return cart;
     }
     case "setQty": {
       const { id, qty } = action;
       if (!cart.has(id)) return cart;
       if (qty <= 0) { cart.delete(id); return cart; }
-      const { priceCents } = cart.get(id);
-      cart.set(id, { priceCents, qty });
+      const prev = cart.get(id);
+      cart.set(id, { priceCents: prev.priceCents, qty, name: prev.name });
       return cart;
     }
     case "remove": {

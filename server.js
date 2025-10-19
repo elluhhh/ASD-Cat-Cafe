@@ -7,6 +7,7 @@ const favicon = require("serve-favicon");
 const bookingRoutes = require("./routes/bookingRoutes");
 const bookingManagementRoutes = require("./routes/bookingManagementRoutes");
 const catRoutes = require("./routes/catRoutes.js");
+const checkoutRoutes = require('./routes/checkoutRoutes');
 const adoptionRoutes = require("./routes/adoptionRoute"); 
 const adoptionRequestRoutes = require("./routes/adoptionRequestRoute.js");
 const staffLoginRoutes = require("./routes/staffLoginRoutes.js");
@@ -40,6 +41,7 @@ app.use("/adoption", adoptionRoutes);
 app.use("/requests", adoptionRequestRoutes);
 app.use("/cats", require("./routes/catProfileRoutes.js"));
 app.use("/api/cart", require("./routes/cartRoutes"));
+app.use('/checkout', checkoutRoutes);
 app.use("/staffLogin", staffLoginRoutes);
 
 app.get("/", (req, res) => {

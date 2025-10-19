@@ -5,9 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node index.js",
-    "start:server": "node server.js",
-    "lint": "eslint . --ext .js --ext .cjs --max-warnings=0",
-    "smoke": "start-server-and-test \"node index.js\" http://localhost:8080 \"curl -fsS http://localhost:8080/ && curl -fsS http://localhost:8080/food\"",
+    "lint": "eslint . --ext .js,.cjs --max-warnings=0",
+    "smoke": "start-server-and-test \"node index.js\" http://localhost:8000 \"curl -fsS http://localhost:8000/ && curl -fsS http://localhost:8000/food\"",
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config ./jest.config.js --runInBand",
     "coverage": "nyc --reporter=text --reporter=lcov --reporter=cobertura jest --config jest.config.js"
   },
@@ -17,11 +16,9 @@
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "mongoose": "^8.18.1",
-    "multer": "^2.0.2",
-    "serve-favicon": "^2.5.1"
+    "multer": "^2.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.4",
     "@babel/preset-env": "^7.28.3",
     "@eslint/js": "^9.34.0",
     "babel-jest": "^30.2.0",

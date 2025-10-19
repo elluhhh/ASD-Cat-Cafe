@@ -69,7 +69,7 @@ function renderMenu(items) {
         <button class="add">Add</button>
       </div>
     `;
-    el.querySelector(".add").onclick = () => addToCart(m.id, m.price);
+    el.querySelector(".add").onclick = () => addToCart(m.id, m.price, m.name);
     menuGrid.appendChild(el);
   }
 }
@@ -114,13 +114,18 @@ function renderCart() {
   updateTotals();
 }
 
-async function addToCart(id, price) {
+async function addToCart(id, price, name) {
   const priceCents = toCents(price);
   if (!Number.isInteger(priceCents) || priceCents <= 0) {
     return notify("Invalid price data.");
   }
   try {
-    const data = await requestJSON("/api/cart/add", { id, qty: 1, priceCents });
+    const data = await requestJSON("/api/cart/add", {
+      id,
+      name,
+      qty: 1,
+      priceCents
+    });
     cart = mapFromArrayPairs(data.cart);
     lastTotals = data.totals || lastTotals;
     renderCart();
@@ -177,10 +182,10 @@ async function requestJSON(url, body) {
   });
   let data = {};
   try {
-  data = await res.json();
+    data = await res.json();
   } catch (err) {
-  console.debug("No JSON body for", url, err);
-  data = {};
+    console.debug("No JSON body for", url, err);
+    data = {};
   }
   if (!res.ok) {
     const msg = data.error || `Request failed: ${res.status}`;
@@ -217,7 +222,9 @@ function bindEvents() {
   });
   categorySelect.addEventListener("change", () => renderMenu(applyFilters(menu)));
   veganOnlyCheckbox.addEventListener("change", () => renderMenu(applyFilters(menu)));
-  checkoutBtn.addEventListener("click", () => alert("Checkout flow is not implemented in this demo."));
+  checkoutBtn.addEventListener("click", () => {
+    window.location.href = "/checkout";
+  });
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
