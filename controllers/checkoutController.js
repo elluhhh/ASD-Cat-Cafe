@@ -29,6 +29,7 @@ const getCheckout = async (_req, res) => {
     const { subtotal, tax, total } = computeTotals(cart);
     return res.render("checkout", { cartItems, subtotal, tax, total });
   } catch (err) {
+    console.error("[getCheckout] error:", err);
     return res.status(500).send("Failed to load checkout");
   }
 };
@@ -56,6 +57,7 @@ const processPayment = async (req, res) => {
     replaceCart(new Map());
     return res.render("checkout", { cartItems, subtotal, tax, total, paid: true });
   } catch (err) {
+    console.error("[processPayment] error:", err);
     return res.status(500).send("Payment processing failed");
   }
 };
