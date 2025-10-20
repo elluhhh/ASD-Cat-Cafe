@@ -57,6 +57,8 @@ router.post('/add', upload.single('image'), async (req, res) => {
 // ---------- 4. UPDATE ----------
 router.put('/:id', upload.single('image'), async (req, res) => {
   try {
+    const isAdoptedValue = req.body.isAdopted === 'true' || req.body.isAdopted === true;
+
     const update = {
       name: req.body.name?.trim(),
       breed: req.body.breed?.trim(),
@@ -64,14 +66,20 @@ router.put('/:id', upload.single('image'), async (req, res) => {
       microchipId: req.body.microchipId?.trim(),
       price: req.body.price ? Number(req.body.price) : 0,
       description: req.body.description?.trim(),
-      isAdopted: req.body.isAdopted === 'true',
+      isAdopted: isAdoptedValue, 
     };
+
     if (req.file) update.imageUrl = `/uploads/${req.file.filename}`;
 
-    const cat = await Cat.findByIdAndUpdate(req.params.id, update, { new: true });
+    const cat = await Cat.findByIdAndUpdate(req.params.id, update, {
+      new: true,
+      runValidators: true,
+    });
+
     if (!cat) return res.status(404).json({ message: 'Cat not found' });
     res.json(cat);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Update failed', error: err.message });
   }
 });
