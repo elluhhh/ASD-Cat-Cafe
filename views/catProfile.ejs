@@ -11,10 +11,10 @@
     <h1>🐾 Cat Profiles</h1>
     <p class="muted">Add / Edit / Delete</p>
 
-    <!-- Form (native POST to /cats/add) -->
+    <!-- Form (posts to CatProfile API, not /cats) -->
     <section class="panel">
       <h2 class="panel-title" id="form-title">Add Cat</h2>
-      <form id="cat-form" class="grid" action="/cats/add" method="POST" enctype="multipart/form-data">
+      <form id="cat-form" class="grid" action="/catProfile/api/add" method="POST" enctype="multipart/form-data">
         <input type="hidden" id="id" name="id" />
         <label>Name
           <input id="name" name="name" required />
@@ -25,29 +25,33 @@
         <label>Age (months)
           <input id="ageMonths" name="ageMonths" type="number" min="0" required />
         </label>
+
         <label>Microchip ID
-        <input id="microchipId" name="microchipId"
-         pattern="\d{5,20}" inputmode="numeric"
-         placeholder="e.g. 965987654321098" />
-      </label>
+          <input id="microchipId" name="microchipId"
+                 pattern="\d{5,20}" inputmode="numeric"
+                 placeholder="e.g. 965987654321098" />
+        </label>
 
-      <label>Price ($)
-        <input id="price" name="price" type="number" min="0" step="1" required />
-      </label>
+        <label>Price ($)
+          <input id="price" name="price" type="number" min="0" step="1" required />
+        </label>
 
-      <label class="wide">Description
-       <textarea id="description" name="description" rows="3" maxlength="1000"
-            placeholder="Add notes..."></textarea>
-      </label>
+        <label class="wide">Description
+          <textarea id="description" name="description" rows="3" maxlength="1000"
+                    placeholder="Add notes..."></textarea>
+        </label>
+
         <label>Adopted?
           <select id="isAdopted" name="isAdopted">
             <option value="false" selected>No</option>
             <option value="true">Yes</option>
           </select>
         </label>
+
         <label class="wide">Photo Upload
           <input type="file" id="image" name="image" accept="image/*" />
         </label>
+
         <div class="actions wide">
           <button type="submit" id="submit-btn" class="btn primary">Add Cat</button>
           <button type="button" id="clear-btn" class="btn">Clear</button>
@@ -60,18 +64,18 @@
       <h2 class="panel-title">All cats</h2>
       <table id="cats" class="table">
         <thead>
-  <tr>
-    <th>Photo</th>
-    <th>Name</th>
-    <th>Breed</th>
-    <th>Age (m)</th>
-    <th>Microchip ID</th>
-    <th>Price ($)</th>
-    <th>Description</th>
-    <th>Adopted</th>
-    <th>Actions</th>
-  </tr>
-</thead>
+          <tr>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Breed</th>
+            <th>Age (m)</th>
+            <th>Microchip ID</th>
+            <th>Price ($)</th>
+            <th>Description</th>
+            <th>Adopted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody><!-- injected --></tbody>
       </table>
       <p class="empty" id="empty">No cats yet. Add one above. Meow 🐱</p>
@@ -81,10 +85,14 @@
   <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
+  // ---------- Config: use a separate API to avoid /cats conflicts ----------
+  const API_BASE = '/catProfile/api';
+
+  // ---------- helpers ----------
   const $  = (s, r=document)=>r.querySelector(s);
   const $$ = (s, r=document)=>[...r.querySelectorAll(s)];
 
-  // --- elements
+  // ---------- elements ----------
   const formEl    = $('#cat-form');
   const titleEl   = $('#form-title');
   const submitBtn = $('#submit-btn');
@@ -103,10 +111,9 @@
   const tbodyEl   = $('#cats tbody');
   const emptyEl   = $('#empty');
 
-  // --- state
-  let currentEditId = null;  
+  let currentEditId = null;
 
-  // --- mode + UI
+  // ---------- mode + UI ----------
   function setMode(mode) {
     if (mode === 'edit') {
       titleEl.textContent   = 'Edit Cat';
@@ -127,6 +134,7 @@
     if (document.activeElement) document.activeElement.blur();
   }
 
+  // ---------- table render ----------
   function rowTpl(c) {
     return `
       <tr data-id="${c._id}">
@@ -150,33 +158,29 @@
     emptyEl.style.display = list.length ? 'none' : 'block';
   }
 
-  // --- load from API
+  // ---------- API ----------
   async function loadCats() {
     try {
-      const res = await fetch('/cats', { headers: { 'Accept': 'application/json' }});
+      const res = await fetch(`${API_BASE}`, { headers: { 'Accept': 'application/json' }});
       if (!res.ok) throw new Error('Failed to load cats');
       const cats = await res.json();
       renderTable(cats);
     } catch (e) {
       console.error('Load cats failed', e);
-      renderTable([]); // show empty state on error
+      renderTable([]);
     }
   }
 
-  // Clear / Cancel
+  // ---------- events ----------
   clearBtn.addEventListener('click', (e) => {
     e.preventDefault();
     resetForm();
   });
 
-  // Submit (Add or Update)
   formEl.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const name = nameEl.value.trim();
-    const breed = breedEl.value.trim();
-    const age = ageEl.value;
-    if (!name || !breed || age === '') {
+    if (!nameEl.value.trim() || !breedEl.value.trim() || ageEl.value === '') {
       alert('Please fill Name, Breed, and Age (months).');
       return;
     }
@@ -193,36 +197,35 @@
           description: descEl.value.trim() || '',
           isAdopted: adoptedEl.value === 'true',
         };
-        const res = await fetch(`/cats/${currentEditId}`, {
+        const res = await fetch(`${API_BASE}/${currentEditId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error(`PUT /cats/${currentEditId} failed: ${res.status}`);
+        if (!res.ok) throw new Error(`PUT failed: ${res.status}`);
       } else {
-        // CREATE 
+        // CREATE (multipart with optional image)
         const fd = new FormData(formEl);
-        const res = await fetch('/cats/add', {
+        const res = await fetch(`${API_BASE}/add`, {
           method: 'POST',
           headers: { 'Accept': 'application/json' },
           body: fd
         });
         if (!res.ok) {
-          let msg = `POST /cats/add failed: ${res.status}`;
+          let msg = `POST failed: ${res.status}`;
           try { const t = await res.text(); if (t) msg = t; } catch {}
           throw new Error(msg);
         }
       }
 
-      await loadCats();   // refresh list after save
-      resetForm();        // back to Add mode
+      await loadCats();
+      resetForm();
     } catch (err) {
       console.error(err);
       alert('Could not save cat. Please try again.');
     }
   });
 
-  // Table action buttons (Edit/Delete via event delegation)
   tbodyEl.addEventListener('click', async (e) => {
     const btn = e.target.closest('button[data-action]');
     if (!btn) return;
@@ -235,8 +238,8 @@
 
     if (action === 'edit') {
       try {
-        const res = await fetch(`/cats/${id}`, { headers: { 'Accept': 'application/json' } });
-        if (!res.ok) throw new Error(`GET /cats/${id} failed: ${res.status}`);
+        const res = await fetch(`${API_BASE}/${id}`, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error(`GET failed: ${res.status}`);
         const c = await res.json();
 
         idEl.value        = c._id || '';
@@ -247,7 +250,7 @@
         priceEl.value     = (c.price != null ? c.price : '');
         descEl.value      = c.description || '';
         adoptedEl.value   = c.isAdopted ? 'true' : 'false';
-        if (fileEl) fileEl.value = ''; // clear file input
+        if (fileEl) fileEl.value = '';
 
         currentEditId = c._id || null;
         setMode('edit');
@@ -261,8 +264,8 @@
     if (action === 'del') {
       if (!confirm('Delete this cat?')) return;
       try {
-        const res = await fetch(`/cats/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error(`DELETE /cats/${id} failed: ${res.status}`);
+        const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error(`DELETE failed: ${res.status}`);
         await loadCats();
         if (currentEditId === id) resetForm();
       } catch (err) {
@@ -272,7 +275,9 @@
     }
   });
 
-  // init
+  // ---------- init ----------
   setMode('add');
   document.addEventListener('DOMContentLoaded', loadCats);
 </script>
+</body>
+</html>

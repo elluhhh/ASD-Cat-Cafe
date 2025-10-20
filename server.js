@@ -13,6 +13,7 @@ const adoptionRequestRoutes = require("./routes/adoptionRequestRoute.js");
 const staffLoginRoutes = require("./routes/staffLoginRoutes.js");
 const menuRoutes = require("./routes/menuRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const catProfileRoutes = require('./routes/catProfileRoutes');
 require('dotenv').config();
 
 const app = express();
@@ -20,6 +21,7 @@ const app = express();
 // Middleware
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, "public")));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
@@ -41,7 +43,7 @@ app.use("/booking", bookingRoutes);
 app.use("/cats", catRoutes);
 app.use("/adoption", adoptionRoutes);
 app.use("/requests", adoptionRequestRoutes);
-app.use("/cats", require("./routes/catProfileRoutes.js"));
+app.use('/catprofile/api', catProfileRoutes);
 app.use("/api/cart", require("./routes/cartRoutes"));
 app.use('/checkout', checkoutRoutes);
 app.use("/staffLogin", staffLoginRoutes);
@@ -51,12 +53,14 @@ app.use("/api/orders", orderRoutes);
 app.get("/", (req, res) => {
   res.render("index");
 });
-app.get('/catprofile', (req, res) => {
+/*app.get('/catprofile', (req, res) => {
   res.render('catProfile'); 
-});
+});*/
 app.get("/food", (_req, res) => res.render("food"));
 
-app.get('/', (req, res) => res.redirect('/adoption/request'));
+//app.get('/', (req, res) => res.redirect('/adoption/request'));
+
+app.get('/catprofile', (req, res) => res.render('catProfile'));
 
 app.get("/health", (_req, res) => res.status(200).json({ status: "ok" }));
 app.get("/api/health", (_req, res) => res.status(200).json({ status: "ok" }));
