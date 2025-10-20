@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Staff Dashboard - ASD Cat Cafe</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .dashboard-header {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 16px;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    
+    .dashboard-header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    
+    .welcome-text {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .logout-btn {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.3);
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.5);
+    }
+    
+    .management-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    
+    .management-card {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-decoration: none;
+      color: var(--ink);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+    
+    .management-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      border-color: var(--accent);
+    }
+    
+    .management-card .icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+    
+    .management-card h2 {
+      color: var(--accent);
+      margin: 0 0 10px 0;
+      font-size: 1.3rem;
+    }
+    
+    .management-card p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 0.9rem;
+    }
+    
+    .customer-link {
+      text-align: center;
+      padding: 20px;
+      background: var(--bg);
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+    
+    .customer-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .customer-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <div>
+      <h1>👨‍💼 Staff Dashboard</h1>
+      <p class="welcome-text">Welcome back, <strong><%= staffName %></strong>!</p>
+    </div>
+    <a href="/" class="logout-btn">← Back to Home</a>
+  </div>
+
+  <!-- Management Tools -->
+  <h2 style="color: var(--muted); margin-bottom: 20px;">🛠️ Management Tools</h2>
+  <div class="management-grid">
+    <!-- Booking Management -->
+    <a href="/bookingManagement" class="management-card">
+      <span class="icon">📋</span>
+      <h2>Manage Bookings</h2>
+      <p>View, edit, and cancel customer bookings</p>
+    </a>
+
+    <!-- Food Management -->
+    <a href="/food/management" class="management-card">
+      <span class="icon">🍽️</span>
+      <h2>Manage Food Items</h2>
+      <p>Add, edit, and update menu items</p>
+    </a>
+
+    <!-- Cat Profile Management -->
+    <a href="/catprofile" class="management-card">
+      <span class="icon">🐈</span>
+      <h2>Edit Cat Profiles</h2>
+      <p>Manage cat information and photos</p>
+    </a>
+
+    <!-- Adoption Requests -->
+    <a href="/requests" class="management-card">
+      <span class="icon">📝</span>
+      <h2>Adoption Requests</h2>
+      <p>Review and process adoption applications</p>
+    </a>
+  </div>
+
+  <!-- Customer View Link -->
+  <div class="customer-link">
+    <p>Want to see the customer view? <a href="/">← Go to Customer Home Page</a></p>
+  </div>
+</body>
+</html>

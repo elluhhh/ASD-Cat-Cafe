@@ -2,24 +2,136 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Cat Profile</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="utf-8">
+  <title>Staff Login - ASD Cat Cafe</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    #login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 40px;
+      background: #fff;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    #login-container h1 {
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    
+    #login-container p {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 30px;
+    }
+    
+    #profile-img {
+      display: block;
+      margin: 0 auto 20px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid var(--accent);
+    }
+    
+    #error-msg {
+      background: #fff0f0;
+      color: #d84a4a;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+      display: <%= typeof errorMsg !== 'undefined' && errorMsg ? 'block' : 'none' %>;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    label {
+      font-weight: 600;
+      color: var(--ink);
+    }
+    
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    #login-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    #login-btn:hover {
+      filter: brightness(1.1);
+    }
+    
+    .back-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .back-link a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 
 <body>
-    <h1>ASD Cat Cafe</h1>
-    <a href="/">home</a>
-    <h1>Staff Login</h1>
-    <form id="login-div" action="/staffLogin" method="POST">
-        <img id="profile-img" src="/images/profile-img.png">
-        <p id="error-msg"><%=typeof(errorMsg) === 'undefined'? "" : errorMsg%></p>
+  <div id="login-container">
+    <img id="profile-img" src="/images/profile-img.png" alt="Staff Login" onerror="this.style.display='none'">
+    <h1>🔐 Staff Login</h1>
+    <p>ASD Cat Cafe Management Portal</p>
+    
+    <div id="error-msg">
+      <%= typeof errorMsg !== 'undefined' ? errorMsg : '' %>
+    </div>
+    
+    <form action="/staffLogin" method="POST">
+      <div>
         <label for="email">Email</label>
-        <input type="text" name="email">
+        <input type="text" name="email" id="email" placeholder="staff@catcafe.com" required>
+      </div>
+      <div>
         <label for="password">Password</label>
-        <input type="password" name="password">
-        <input id="login-btn" type="submit" value="Login">
+        <input type="password" name="password" id="password" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" id="login-btn">Login</button>
     </form>
+    
+    <div class="back-link">
+      <a href="/">← Back to Home</a>
+    </div>
+  </div>
 </body>
 
 </html>
