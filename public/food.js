@@ -202,12 +202,27 @@ function mapFromArrayPairs(pairs) {
 }
 
 function validateSearch(value) {
-  const v = String(value || "");
-  if (v.length > 80) return "Search is too long.";
-  const banned = /(--|\/\*|\*\/|;|<|>|['"]|drop\s+table|union\s+select|delete\s+from|insert\s+into|update\s+\w+\s+set|xp_)/i;
-  if (banned.test(v)) return "Please avoid special characters or SQL keywords in search.";
+  const v = String(value || "").trim();
+
+  // limit excessive search length (prevent long-string DoS or malformed input)
+  if (v.length > 30) return "Search is too long.";
+
+  // block MongoDB operators to prevent NoSQL injection
+  const bannedNoSQL = /(\$ne|\$gt|\$lt|\$regex|\$where|\$or|\$and|\$exists|\$in|\$nin)/i;
+
+  // block HTML/JavaScript tags to prevent XSS injection
+  const bannedXSS = /[<>]/;
+
+  // block general code or query manipulation patterns
+  const bannedGeneric = /(;|--|['"`])/;
+
+  if (bannedNoSQL.test(v)) return "Please avoid NoSQL operators or special characters in search.";
+  if (bannedXSS.test(v)) return "HTML tags are not allowed.";
+  if (bannedGeneric.test(v)) return "Please avoid special characters in search.";
+
   return "";
 }
+
 
 function bindEvents() {
   searchInput.addEventListener("input", () => {
