@@ -1,62 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Payment Successful</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .success-container {
-            max-width: 600px;
-            margin: 50px auto;
-            text-align: center;
-            background: #fff;
-            padding: 40px;
-            border-radius: 10px;
-        }
-        .checkmark {
-            font-size: 80px;
-            color: var(--success);
-        }
-        .order-items {
-            text-align: left;
-            margin: 20px 0;
-        }
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - Cat Cafe</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .success-container {
+      max-width: 600px;
+      margin: 50px auto;
+      text-align: center;
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .checkmark {
+      font-size: 80px;
+      color: #2e8b57;
+      margin-bottom: 20px;
+    }
+    
+    .order-details {
+      background: #f9f9f9;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 12px;
+      text-align: left;
+    }
+    
+    .order-items {
+      margin: 20px 0;
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 2px solid #333;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      margin-top: 20px;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    
+    .btn:hover {
+      filter: brightness(1.1);
+    }
+  </style>
 </head>
 <body>
-    <div class="success-container">
-        <div class="checkmark">✓</div>
-        <h1>Payment Successful!</h1>
-        <p>Thank you for your order.</p>
-        
-        <div style="background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px;">
-            <p><strong>Order Number:</strong> <%= orderNumber %></p>
-            <p><strong>Confirmation sent to:</strong> <%= email %></p>
-            
-            <% if (cartItems && cartItems.length > 0) { %>
-                <div class="order-items">
-                    <h3 style="margin-top: 15px;">Items Ordered:</h3>
-                    <% cartItems.forEach(item => { %>
-                        <div class="order-item">
-                            <span><%= item.name %> × <%= item.qty %></span>
-                            <span>$<%= (item.price * item.qty).toFixed(2) %></span>
-                        </div>
-                    <% }); %>
-                </div>
-            <% } %>
-            
-            <p style="margin-top: 15px; font-size: 1.2em;">
-                <strong>Total Paid:</strong> $<%= total %>
-            </p>
+  <div class="success-container">
+    <div class="checkmark">✓</div>
+    <h1>Payment Successful!</h1>
+    <p style="color: var(--muted); font-size: 1.1rem;">Thank you for your order.</p>
+    
+    <div class="order-details">
+      <p><strong>Order Number:</strong> <%= orderNumber %></p>
+      <p><strong>Confirmation sent to:</strong> <%= email %></p>
+      
+      <% if (cartItems && cartItems.length > 0) { %>
+        <div class="order-items">
+          <h3 style="margin-top: 20px; margin-bottom: 10px;">Items Ordered:</h3>
+          <% cartItems.forEach(item => { %>
+            <div class="order-item">
+              <span><%= item.name %> × <%= item.qty %></span>
+              <span>$<%= (item.price * item.qty).toFixed(2) %></span>
+            </div>
+          <% }); %>
+          
+          <div class="total-row">
+            <span>Total Paid:</span>
+            <span>$<%= total %></span>
+          </div>
         </div>
-        
-        <p><a href="/" class="btn primary">Return Home</a></p>
+      <% } %>
     </div>
+    
+    <p style="margin-top: 30px;">
+      <a href="/" class="btn">Return to Home</a>
+      <a href="/food" class="btn" style="background: #fff; color: var(--accent); border: 2px solid var(--accent);">Order More</a>
+    </p>
+  </div>
 </body>
 </html>
