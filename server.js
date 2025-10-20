@@ -75,12 +75,12 @@ app.get("/staffDashboard", (req, res) => {
 });
 // Cat profile management PAGE (staff view)
 app.get("/catprofile", (req, res) => {
-  res.render("cat-display"); // Render the EJS page
+  res.render("catProfile"); // Render the EJS page
 });
 // Cat routes for customer viewing
 app.use("/cats", catRoutes); 
 // Cat CRUD API (for the catProfile page to use via fetch)
-app.use("/cats", catProfileRoutes);
+app.use("/catprofile/api", catProfileRoutes);
 app.use("/adoption", adoptionRoutes);
 app.use("/requests", adoptionRequestRoutes);
 
