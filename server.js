@@ -1,76 +1,100 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const path = require("path");
-const _fs = require("fs").promises;
-const favicon = require("serve-favicon");
+
+// Import routes
+const foodRoutes = require("./routes/foodRoutes");
+const menuRoutes = require("./routes/menuRoutes");
+const checkoutRoutes = require("./routes/checkoutRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const bookingManagementRoutes = require("./routes/bookingManagementRoutes");
-const catRoutes = require("./routes/catRoutes.js");
-const checkoutRoutes = require('./routes/checkoutRoutes');
-const adoptionRoutes = require("./routes/adoptionRoute"); 
-const adoptionRequestRoutes = require("./routes/adoptionRequestRoute.js");
-const staffLoginRoutes = require("./routes/staffLoginRoutes.js");
-const menuRoutes = require("./routes/menuRoutes");
-const orderRoutes = require("./routes/orderRoutes");
-const catProfileRoutes = require('./routes/catProfileRoutes');
-require('dotenv').config();
+const staffLoginRoutes = require("./routes/staffLoginRoutes");
+const catRoutes = require("./routes/catRoutes");
+const catProfileRoutes = require("./routes/catProfileRoutes");
+const adoptionRoutes = require("./routes/adoptionRoute");
+const adoptionRequestRoutes = require("./routes/adoptionRequestRoute");
 
 const app = express();
 
-// Middleware
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(express.static(path.join(__dirname, "public")));
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-// MongoDB connection
+// Connect to MongoDB (skip in test environment)
 if (process.env.NODE_ENV !== "test") {
-  mongoose.connect("mongodb+srv://admin:cFBUZU6hozSWFbfk@cat-cafe-website.kycc7fg.mongodb.net/cat-cafe?retryWrites=true&w=majority&appName=cat-cafe-website")
-    .then(() => console.log("DB is connected"))
-    .catch(err => console.error("DB connection error", err));
+  mongoose
+    .connect(
+      "mongodb+srv://admin:cFBUZU6hozSWFbfk@cat-cafe-website.kycc7fg.mongodb.net/cat-cafe?retryWrites=true&w=majority&appName=cat-cafe-website"
+    )
+    .then(() => {
+      console.log("DB is connected");
+    })
+    .catch((err) => {
+      console.error("DB connection error:", err);
+    });
 }
 
-// Routes
-app.use("/bookingManagement", bookingManagementRoutes);
-app.use("/booking", bookingRoutes);
-app.use("/cats", catRoutes);
-app.use("/adoption", adoptionRoutes);
-app.use("/requests", adoptionRequestRoutes);
-app.use('/catprofile/api', catProfileRoutes);
-app.use("/api/cart", require("./routes/cartRoutes"));
-app.use('/checkout', checkoutRoutes);
-app.use("/staffLogin", staffLoginRoutes);
-app.use("/api/menu", menuRoutes);       
-app.use("/api/orders", orderRoutes);
+// Middleware
+app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.set("view engine", "ejs");
 
+// Health check endpoint for testing
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+// Home page
 app.get("/", (req, res) => {
   res.render("index");
 });
-/*app.get('/catprofile', (req, res) => {
-  res.render('catProfile'); 
-});*/
-app.get("/food", (_req, res) => res.render("food"));
 
-//app.get('/', (req, res) => res.redirect('/adoption/request'));
+// FOOD ROUTES - Order matters!
+// 1. Staff management page (must come before /food API route)
+app.use("/food/management", foodRoutes); // Staff food management
+app.get("/foodManagement", (req, res) => res.redirect("/food/management")); // Legacy redirect
 
-app.get('/catprofile', (req, res) => res.render('catProfile'));
+// 2. Customer food ordering page (renders the food.ejs page)
+app.get("/food", (req, res) => {
+  res.render("food"); // This shows the nice menu page for customers
+});
 
-app.get("/health", (_req, res) => res.status(200).json({ status: "ok" }));
-app.get("/api/health", (_req, res) => res.status(200).json({ status: "ok" }));
+// 3. API endpoints
+app.use("/api/menu", menuRoutes); // JSON API for menu items
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
 
-app.use((_req, res) => res.status(404).send("Not Found"));
+// OTHER ROUTES
+app.use("/checkout", checkoutRoutes);
+app.use("/booking", bookingRoutes);
+app.use("/bookingManagement", bookingManagementRoutes);
+app.use("/staffLogin", staffLoginRoutes);
+// Staff dashboard (after successful login)
+app.get("/staffDashboard", (req, res) => {
+  // In a real app, you'd check session authentication here
+  res.render("staffDashboard", { staffName: "Staff Member" });
+});
+// Cat profile management PAGE (staff view)
+app.get("/catprofile", (req, res) => {
+  res.render("cat-display"); // Render the EJS page
+});
+// Cat routes for customer viewing
+app.use("/cats", catRoutes); 
+// Cat CRUD API (for the catProfile page to use via fetch)
+app.use("/cats", catProfileRoutes);
+app.use("/adoption", adoptionRoutes);
+app.use("/requests", adoptionRequestRoutes);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).send("Not Found");
+});
+
+// Error handler
 app.use((err, req, res, _next) => {
   const status = err.status || 500;
   const message = err.message || "Internal Server Error";
-  if (req.path.startsWith("/api/")) return res.status(status).json({ error: message });
-  return res.status(status).send(message);
+  console.error("Error:", err);
+  res.status(status).send(message);
 });
 
 module.exports = app;
