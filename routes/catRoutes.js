@@ -1,21 +1,7 @@
 const express = require('express');
-const { createCat } = require('../controllers/catController.js');
-const multer = require('multer');
-const path = require('path');
 const Cat = require('../models/Cat.js');
 const router = express.Router();
 
-// save uploaded file to folder
-const storage = multer.diskStorage({
-    destination: 'public/uploads',
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
-});
-
-const upload = multer({ storage });
-
-router.post('/add', upload.single('image'), createCat);
 router.get('/:id', async (req, res) => {
     const cat = await Cat.findById(req.params.id);
     res.render('cat-profile', { cat });
