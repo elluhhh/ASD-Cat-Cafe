@@ -61,7 +61,7 @@ const getCheckout = async (req, res) => {
 
 const processPayment = async (req, res) => {
   try {
-    const { orderId, cardNumber, cardName, expiry, cvc, cvv, email, total: totalFromForm } = req.body;
+    const { orderId, cardNumber, cardName, expiry, cvc, cvv, email } = req.body;
     
     if (!orderId) return res.status(400).send("Missing orderId");
 
