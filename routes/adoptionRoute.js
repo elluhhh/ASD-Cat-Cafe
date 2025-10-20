@@ -2,6 +2,7 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 const { AdoptionRequest } = require('../models/adoptionRequest');
+const Cat = require('../models/Cat');
 
 // Short tracking code
 const makeCode = () => crypto.randomBytes(6).toString('base64url');
@@ -10,8 +11,15 @@ const makeCode = () => crypto.randomBytes(6).toString('base64url');
 router.get('/', (req, res) => res.redirect('/adoption/request'));
 
 // Show the form
-router.get('/request', (req, res) => {
-  res.render('adoptionForm');
+router.get('/request', async (req, res, next) => {
+  try {
+    // Get cat information from cat profile
+    const catId = req.query.catId || null;
+    const cat = catId ? await Cat.findById(catId) : null;
+    res.render('adoptionForm', { catId, cat });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Create request, then go to status page

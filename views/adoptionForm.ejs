@@ -29,6 +29,9 @@
             <label class="chip"><input type="radio" name="hasOtherPets" value="no" checked> No</label>
           </div>
         </label>
+      
+        <label>Chosen Cat<input value="<%= cat ? cat.name : 'No Specific Cat Chosen'%>" readonly></label>
+        <input type="hidden" name="catId" value="<%= cat ? catId : ''%>">
 
         <label class="wide">Why would you like to adopt?
           <textarea name="whyAdopt" rows="4" required></textarea>
@@ -36,8 +39,12 @@
       </div>
 
       <div class="actions">
+        <% if (cat != null) { %>
+          <a class="btn" style="margin-right: auto;" href="/cats/<%= cat._id %>">Back to <%= cat.name %>'s Profile</a>
+        <% } %>
+
         <button class="btn primary" type="submit">Submit Request</button>
-        <a class="btn" href="/catprofile">Back to Cats</a>
+        <a class="btn" href="/cats">Back to Cats</a>
       </div>
     </form>
   </section>
