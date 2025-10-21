@@ -155,8 +155,8 @@
       <td><img class="thumb" src="${src}" alt=""></td>
       <td>${c.name || '-'}</td>
       <td>${c.breed || '-'}</td>
-      <td><span class="badge gender-${(c.gender || '').toLowerCase()}">${c.gender || '-'}</span></td>
       <td>${c.ageMonths ?? '-'}</td>
+      <td><span class="badge gender-${(c.gender || '').toLowerCase()}">${c.gender || '-'}</span></td>
       <td>${c.microchipId || '-'}</td>
       <td>${c.price != null ? `$${c.price}` : '-'}</td>
       <td>${c.description || '-'}</td>
@@ -205,7 +205,7 @@
       if (currentEditId) {
         if (fileEl.files && fileEl.files.length > 0) {
           const fd = new FormData(formEl);
-          fd.set('gender', genderEl.value || '');
+          
           fd.set('isAdopted', adoptedEl.value);
 
           const res = await fetch(`/catProfile/api/${currentEditId}`, {

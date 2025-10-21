@@ -21,9 +21,10 @@ body {
 }
 
 .wrap {
-    max-width: 980px;
-    margin: 32px auto;
-    padding: 0 16px
+    max-width: 100%;
+    width: 95vw;            
+    margin: 0 auto;
+    padding: 2rem 3rem;    
 }
 
 .header h1 {
@@ -40,9 +41,12 @@ body {
 .panel {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px;
-    margin: 16px 0;
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    width: 100%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+
     box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
 }
 
@@ -129,10 +133,10 @@ select:focus {
 }
 
 .table {
-    width: 100%;
-    border-collapse: collapse;
-    overflow: hidden;
-    border-radius: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;   
+  word-wrap: break-word;
 }
 
 thead {
@@ -142,14 +146,24 @@ thead {
 
 th,
 td {
-    padding: 12px 10px;
+    padding: 0.8rem;
     text-align: left;
-    vertical-align: middle
+    vertical-align: top;
 }
 
 th {
     font-weight: 700;
     font-size: .95rem
+}
+
+.table th:nth-child(8),
+.table td:nth-child(8) {
+  width: 40%;  
+}
+
+.table th:not(:nth-child(8)),
+.table td:not(:nth-child(8)) {
+  width: auto;
 }
 
 tbody tr:nth-child(odd) {
