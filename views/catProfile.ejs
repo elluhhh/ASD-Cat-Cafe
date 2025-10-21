@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Cat Café — Edit Cat Profiles</title>
+  <title>Cat Café</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="/css/catProfile.css">
 </head>
 <body>
   <div class="wrap">
     <h1>🐾 Cat Profiles</h1>
-    <p class="muted">Add / Edit / Delete</p>
+    <p class="muted">Cat Profile Management. </p>
 
     <!-- Form (posts to CatProfile API, not /cats) -->
     <section class="panel">
@@ -85,7 +85,6 @@
   <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
-  // ---------- Config: use a separate API to avoid /cats conflicts ----------
   const API_BASE = '/catProfile/api';
 
   // ---------- helpers ----------
