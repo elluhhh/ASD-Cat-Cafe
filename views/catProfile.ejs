@@ -9,9 +9,12 @@
 <body>
   <div class="wrap">
     <h1>🐾 Cat Profiles</h1>
-    <p class="muted">Cat Profile Management. </p>
+    <p class="muted">Cat Profile Management </p>
+    <div class="actions" style="margin-bottom: 20px;">
+  <a class="btn" href="/cats" style="background-color:#ff914d;color:white;font-weight:600;">🐱 View List of Cats</a>
+  <a class="btn" href="/" style="margin-left:8px;">🏠 Back to Home</a>
+</div>
 
-    <!-- Form (posts to CatProfile API, not /cats) -->
     <section class="panel">
       <h2 class="panel-title" id="form-title">Add Cat</h2>
       <form id="cat-form" class="grid" action="/catProfile/api/add" method="POST" enctype="multipart/form-data">
