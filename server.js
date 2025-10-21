@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
+const session = require("express-session");
 
 // Import routes
 const foodRoutes = require("./routes/foodRoutes");
@@ -33,10 +33,22 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 // Middleware
-app.use(express.static(__dirname + "/public"));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
+app.use(express.urlencoded({ extended: true }));            
+app.use(express.json());
+
+//session middleware for cart/order routes
+const cartSession = session({
+  name: "cart.sid",
+  secret: process.env.SESSION_SECRET || "dev-secret",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    // secure: process.env.NODE_ENV === "production",
+    maxAge: 1000 * 60 * 60,
+  },
+});
 
 // Health check endpoint for testing
 app.get("/health", (req, res) => {
@@ -48,20 +60,19 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-// FOOD ROUTES - Order matters!
 // 1. Staff management page (must come before /food API route)
 app.use("/food/management", foodRoutes); // Staff food management
 app.get("/foodManagement", (req, res) => res.redirect("/food/management")); // Legacy redirect
 
-// 2. Customer food ordering page (renders the food.ejs page)
+// Customer food ordering page (renders the food.ejs page)
 app.get("/food", (req, res) => {
-  res.render("food"); // This shows the nice menu page for customers
+  res.render("food");
 });
 
-// 3. API endpoints
-app.use("/api/menu", menuRoutes); // JSON API for menu items
-app.use("/api/cart", cartRoutes);
-app.use("/api/orders", orderRoutes);
+// API endpoints
+app.use("/api/menu", menuRoutes);           // JSON API for menu items
+app.use("/api/cart", cartSession, cartRoutes);     
+app.use("/api/orders", cartSession, orderRoutes);  
 
 // OTHER ROUTES
 app.use("/checkout", checkoutRoutes);
@@ -78,7 +89,7 @@ app.get("/catprofile", (req, res) => {
   res.render("catProfile"); // Render the EJS page
 });
 // Cat routes for customer viewing
-app.use("/cats", catRoutes); 
+app.use("/cats", catRoutes);
 // Cat CRUD API (for the catProfile page to use via fetch)
 app.use("/catprofile/api", catProfileRoutes);
 app.use("/adoption", adoptionRoutes);

@@ -16,8 +16,8 @@ function withNames(prevMap, updatedMap, provided) {
   return out;
 }
 
-function sendState(res) {
-  const cart = getCart();
+function sendState(req, res) {
+  const cart = getCart(req);
   return res.json({
     ok: true,
     cart: Array.from(cart),
@@ -40,14 +40,15 @@ router.post(
       const priceCents = Math.round(Number(food.price) * 100);
       const name = food.name;
 
-      const updated = nextCart(getCart(), { type: "add", id, qty, priceCents, name });
-      const merged = withNames(getCart(), updated, { id, name });
-      replaceCart(merged);
+      const prev = getCart(req); 
+      const updated = nextCart(prev, { type: "add", id, qty, priceCents, name });
+      const merged = withNames(prev, updated, { id, name });
+      replaceCart(req, merged);  
 
       return res.status(201).json({
         ok: true,
-        cart: Array.from(getCart()),
-        totals: computeTotals(getCart()),
+        cart: Array.from(getCart(req)),    
+        totals: computeTotals(getCart(req)) 
       });
     } catch (e) {
       next(e);
@@ -62,10 +63,11 @@ router.post(
   (req, res, next) => {
     try {
       const { id, qty } = req.body;
-      const updated = nextCart(getCart(), { type: "setQty", id: String(id), qty: Number(qty) });
-      const merged = withNames(getCart(), updated);
-      replaceCart(merged);
-      return sendState(res);
+      const prev = getCart(req); 
+      const updated = nextCart(prev, { type: "setQty", id: String(id), qty: Number(qty) });
+      const merged = withNames(prev, updated);
+      replaceCart(req, merged);  
+      return sendState(req, res); 
     } catch (e) {
       next(e);
     }
@@ -78,21 +80,23 @@ router.post(
   (req, res, next) => {
     try {
       const { id } = req.body;
-      const updated = nextCart(getCart(), { type: "remove", id: String(id) });
-      const merged = withNames(getCart(), updated);
-      replaceCart(merged);
-      return sendState(res);
+      const prev = getCart(req); 
+      const updated = nextCart(prev, { type: "remove", id: String(id) });
+      const merged = withNames(prev, updated);
+      replaceCart(req, merged);  
+      return sendState(req, res); 
     } catch (e) {
       next(e);
     }
   }
 );
 
-router.get("/state", (_req, res) => sendState(res));
+router.get("/state", (req, res) => sendState(req, res));
 
-router.get("/debug", (_req, res) => {
-  const list = Array.from(getCart().entries()).map(([id, v]) => ({ id, ...v }));
-  res.json({ items: list, totals: computeTotals(getCart()) });
+router.get("/debug", (req, res) => {
+  const cart = getCart(req); 
+  const list = Array.from(cart.entries()).map(([id, v]) => ({ id, ...v }));
+  res.json({ items: list, totals: computeTotals(cart) });
 });
 
 module.exports = router;

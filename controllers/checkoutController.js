@@ -1,12 +1,7 @@
-// controllers/checkoutController.js
 const Order = require("../models/orderModel");
 
 const toMoney = (cents) => (Number(cents || 0) / 100).toFixed(2);
 
-/**
- * GET /checkout?orderId=...
- * DB에서 주문을 조회해 Checkout 화면을 렌더링
- */
 const getCheckout = async (req, res) => {
   try {
     const orderId = req.query.orderId;
@@ -91,7 +86,6 @@ const processPayment = async (req, res) => {
     const { total = 0 } = order.totals || {};
 
     // Render success page
-    console.log("Payment successful, rendering paymentSuccess page"); // Debug log
     return res.render("paymentSuccess", {
       orderNumber: String(order._id),
       email: email,

@@ -1,10 +1,5 @@
 const Food = require("../models/foodModel");
 
-/**
- * GET /food OR /api/menu
- * Get menu items from database for customers
- * Only returns items with status "Available"
- */
 async function getMenu(req, res) {
   try {
     // Only show available items to customers
