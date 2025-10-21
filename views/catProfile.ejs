@@ -25,6 +25,12 @@
         <label>Breed
           <input id="breed" name="breed" required />
         </label>
+        <label>Gender
+          <select id="gender" name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </label>
         <label>Age (months)
           <input id="ageMonths" name="ageMonths" type="number" min="0" required />
         </label>
@@ -72,6 +78,7 @@
             <th>Name</th>
             <th>Breed</th>
             <th>Age (m)</th>
+            <th>Gender</th>
             <th>Microchip ID</th>
             <th>Price ($)</th>
             <th>Description</th>
@@ -103,6 +110,7 @@
   const idEl      = $('#id');
   const nameEl    = $('#name');
   const breedEl   = $('#breed');
+  const genderEl  = $('#gender');
   const ageEl     = $('#ageMonths');
   const microEl   = $('#microchipId');
   const priceEl   = $('#price');
@@ -138,21 +146,26 @@
 
   // ---------- table render ----------
   function rowTpl(c) {
-    return `
-      <tr data-id="${c._id}">
-        <td><img class="thumb" src="${c.imageUrl || 'https://placehold.co/80x80?text=Cat'}" alt=""></td>
-        <td>${c.name || '-'}</td>
-        <td>${c.breed || '-'}</td>
-        <td>${c.ageMonths ?? '-'}</td>
-        <td>${c.microchipId || '-'}</td>
-        <td>${c.price != null ? `$${c.price}` : '-'}</td>
-        <td>${c.description || '-'}</td>
-        <td><span class="badge ${c.isAdopted ? 'yes':'no'}">${c.isAdopted ? 'Yes':'No'}</span></td>
-        <td>
-          <button class="btn small" data-action="edit">Edit</button>
-          <button class="btn small danger" data-action="del">Delete</button>
-        </td>
-      </tr>`;
+  const src = c.imageUrl
+    ? (c.imageUrl.startsWith('/') ? c.imageUrl : `/uploads/${c.imageUrl}`)
+    : 'https://placehold.co/80x80?text=Cat';
+
+  return `
+    <tr data-id="${c._id}">
+      <td><img class="thumb" src="${src}" alt=""></td>
+      <td>${c.name || '-'}</td>
+      <td>${c.breed || '-'}</td>
+      <td><span class="badge gender-${(c.gender || '').toLowerCase()}">${c.gender || '-'}</span></td>
+      <td>${c.ageMonths ?? '-'}</td>
+      <td>${c.microchipId || '-'}</td>
+      <td>${c.price != null ? `$${c.price}` : '-'}</td>
+      <td>${c.description || '-'}</td>
+      <td><span class="badge ${c.isAdopted ? 'yes':'no'}">${c.isAdopted ? 'Yes':'No'}</span></td>
+      <td>
+        <button class="btn small" data-action="edit">Edit</button>
+        <button class="btn small danger" data-action="del">Delete</button>
+      </td>
+    </tr>`;
   }
 
   function renderTable(list) {
@@ -179,7 +192,7 @@
     resetForm();
   });
 
-  formEl.addEventListener('submit', async (e) => {
+    formEl.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     if (!nameEl.value.trim() || !breedEl.value.trim() || ageEl.value === '') {
@@ -188,27 +201,44 @@
     }
 
     try {
+      // EDIT MODE
       if (currentEditId) {
-        // UPDATE (JSON)
-        const payload = {
-          name: nameEl.value.trim(),
-          breed: breedEl.value.trim(),
-          ageMonths: Number(ageEl.value),
-          microchipId: microEl.value.trim() || null,
-          price: priceEl.value ? Number(priceEl.value) : null,
-          description: descEl.value.trim() || '',
-          isAdopted: adoptedEl.value === 'true',
-        };
-        const res = await fetch(`${API_BASE}/${currentEditId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error(`PUT failed: ${res.status}`);
+        if (fileEl.files && fileEl.files.length > 0) {
+          const fd = new FormData(formEl);
+          fd.set('gender', genderEl.value || '');
+          fd.set('isAdopted', adoptedEl.value);
+
+          const res = await fetch(`/catProfile/api/${currentEditId}`, {
+            method: 'PUT',
+            headers: { 'Accept': 'application/json' }, 
+            body: fd
+          });
+          if (!res.ok) throw new Error(`PUT (multipart) failed: ${res.status}`);
+        } else {
+          const payload = {
+            name: nameEl.value.trim(),
+            breed: breedEl.value.trim(),
+            gender: genderEl.value || null, 
+            ageMonths: Number(ageEl.value),
+            microchipId: microEl.value.trim() || null,
+            price: priceEl.value ? Number(priceEl.value) : null,
+            description: descEl.value.trim() || '',
+            isAdopted: adoptedEl.value === 'true',
+          };
+          const res = await fetch(`/catProfile/api/${currentEditId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error(`PUT (json) failed: ${res.status}`);
+        }
       } else {
-        // CREATE (multipart with optional image)
+        // CREATE — always multipart to allow optional image
         const fd = new FormData(formEl);
-        const res = await fetch(`${API_BASE}/add`, {
+        fd.set('gender', genderEl.value || '');
+        fd.set('isAdopted', adoptedEl.value);
+
+        const res = await fetch('/catProfile/api/add', {
           method: 'POST',
           headers: { 'Accept': 'application/json' },
           body: fd
@@ -247,6 +277,7 @@
         idEl.value        = c._id || '';
         nameEl.value      = c.name || '';
         breedEl.value     = c.breed || '';
+        genderEl.value    = c.gender || '';
         ageEl.value       = c.ageMonths ?? '';
         microEl.value     = c.microchipId || '';
         priceEl.value     = (c.price != null ? c.price : '');

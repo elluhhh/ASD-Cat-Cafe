@@ -224,3 +224,21 @@ tbody tr:hover {
         grid-template-columns: 1fr
     }
 }
+
+.badge.gender-male {
+  background-color: #5DADE2;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.badge.gender-female {
+  background-color: #F1948A;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 600;
+}
