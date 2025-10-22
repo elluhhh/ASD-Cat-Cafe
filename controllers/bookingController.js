@@ -21,17 +21,17 @@ const createBooking = async (req, res) => {
 	try {
 		const {date, time, attendees, total_price, f_name, l_name, email, phone} = req.body;
 		
-		await Booking.create({
+		const booking = await Booking.create({
 			f_name: f_name,
 			l_name: l_name,
 			email: email,
 			attendees_no: attendees,
-			date_time: new Date(date).setHours(Number(time)),
+			date_time: new Date(date).setHours(Number(time), 0, 0),
 			total_price: total_price,
 			phone: phone
 		});
 
-		res.redirect("/");
+		res.redirect("/checkout/" + booking._id);
 	} catch (err) {
 		res.status(500).send(err);
 	}
