@@ -11,6 +11,7 @@ const orderRoutes = require("./routes/orderRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const bookingManagementRoutes = require("./routes/bookingManagementRoutes");
 const staffLoginRoutes = require("./routes/staffLoginRoutes");
+const staffDashRoutes = require("./routes/staffDashRoutes");
 const catRoutes = require("./routes/catRoutes");
 const catProfileRoutes = require("./routes/catProfileRoutes");
 const adoptionRoutes = require("./routes/adoptionRoute");
@@ -79,11 +80,8 @@ app.use("/checkout", checkoutRoutes);
 app.use("/booking", bookingRoutes);
 app.use("/bookingManagement", bookingManagementRoutes);
 app.use("/staffLogin", staffLoginRoutes);
-// Staff dashboard (after successful login)
-app.get("/staffDashboard", (req, res) => {
-  // In a real app, you'd check session authentication here
-  res.render("staffDashboard", { staffName: "Staff Member" });
-});
+app.use("/staffDashboard", staffDashRoutes);
+
 // Cat profile management PAGE (staff view)
 app.get("/catprofile", (req, res) => {
   res.render("catProfile"); // Render the EJS page

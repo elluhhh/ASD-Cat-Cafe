@@ -2,6 +2,7 @@ const Staff = require("../models/staffModel.js");
 
 const findStaff = async (req, res) => {
   try {
+    console.log("running");
     const {email, password} = req.body;
     var errorMsg = "";
 
@@ -15,7 +16,7 @@ const findStaff = async (req, res) => {
       res.render("staffLogin", {errorMsg});
     }
     else {
-      res.render("staffDashboard", { staffName: staff.name });
+      res.redirect("staffDashboard/" + staff.name);
     }
   } catch (err) {
     res.status(500).send(err);
