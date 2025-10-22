@@ -4,108 +4,25 @@
     <meta charset="UTF-8">
     <title>Checkout - Cat Cafe</title>
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .checkout-container {
-            max-width: 800px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .order-summary {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .payment-form {
-            display: grid;
-            gap: 15px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        .form-group label {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input {
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 15px;
-        }
-        .total-section {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 20px 0;
-        }
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 8px 0;
-        }
-        .total-row.final {
-            font-size: 1.3em;
-            font-weight: bold;
-            padding-top: 10px;
-            border-top: 2px solid #333;
-        }
-        .submit-btn {
-            background: var(--accent);
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .submit-btn:hover {
-            filter: brightness(1.1);
-        }
-        .security-note {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: #e8f5e9;
-            border-radius: 6px;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-    </style>
 </head>
 <body>
+    <% const isFoodCheckout = typeof orderId === 'undefined' ? false : true %>
     <div class="checkout-container">
         <h1>Checkout</h1>
+        <% if(isFoodCheckout){%>
         <p><a href="/food">← Back to Menu</a></p>
+        <% } else {%>
+            <p><a href="/booking">← Back to Booking</a></p>
+        <% } %>
 
         <!-- Order Summary (U125) -->
         <div class="order-summary">
             <h2>Order Summary</h2>
             <% if (cartItems.length === 0) { %>
-                <p style="text-align: center; padding: 20px;">
-                    Demo Mode: Add items from <a href="/food">menu page</a> first
-                </p>
+                <div class="order-item">
+                    <span><%= "Booking" %> × <%= booking.attendees_no %> attendees</span>
+                    <span>$<%= booking.total_price.toFixed(2) %></span>
+                </div>
             <% } else { %>
                 <% cartItems.forEach(item => { %>
                     <div class="order-item">
@@ -133,8 +50,10 @@
 
         <!-- Payment Form (U126) -->
         <h2>Payment Details</h2>
-        <form action="/checkout/process" method="POST" class="payment-form">
+        <form action=<%= isFoodCheckout ? "/checkout/process" : "/checkout/process/" + booking._id%> method="POST" class="payment-form">
+            <% if(isFoodCheckout) { %>
             <input type="hidden" name="orderId" value="<%= orderId %>">
+            <% } %>
             <input type="hidden" name="total" value="<%= (total / 100).toFixed(2) %>">
             
             <div class="form-group">
