@@ -1,6 +1,7 @@
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
-    background: #ffecd2;
+    /* background: #ffecd2; */
+    background: #faf7f3;
     min-height: 1200px;
 }
 
@@ -66,7 +67,7 @@ input[type=text] {
 .btn {
     padding: 15px;
     margin-left: 5rem;
-    background: #fff8f0;
+    background: white;
     border: 2px #e6cfc3 solid;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-radius: 10px;
@@ -84,6 +85,15 @@ input[type=text] {
 a {
     all: unset;
     display: inline-block;
+}
+
+/* purposeful link styling */
+.link {
+    color: #0000EE;
+    text-decoration: underline;
+    cursor: grab;
+    margin-left: auto;
+    margin-right: 5%
 }
 
 .profile {
@@ -116,7 +126,7 @@ a {
     border: 2px #e6cfc3 solid;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     border-radius: 20px;
-    background: #fff8f0;
+    background: white;
 }
 
 .adoption-card:hover {

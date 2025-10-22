@@ -23,13 +23,16 @@
         </label>
     </form>
 
-    <button class="btn" style="padding: 10px; margin-top: 10px;" type="button" id="clearFilter">Clear Filters</button>
+    <div style="display: flex;">
+        <button class="btn" style="padding: 10px; margin-top: 10px;" type="button" id="clearFilter">Clear Filters</button>
+        <a class="link" href="/staffDashboard">Return to Dashboard</a>
+    </div>
       
     <div class="adoption-container" id="requestList">
         <% if (requests.length > 0 ) { %>
             <% requests.forEach(request => { %>
                 <a href="/requests/<%= request._id %>"><div class="adoption-card">
-                    <h2>Adoption Request <%= request.trackingCode %></h2>
+                    <h2 style="color: #ff8c42;">Adoption Request <%= request.trackingCode %></h2>
                     <p class="cat-info" style="text-align: left;">
                         <strong>Applicant Name</strong>: <%= request.applicant.name %><br>
                         <strong>Enquiry for</strong>: <%= request.catId?.name || 'Non-Specific Cat' %><br><br>
@@ -43,8 +46,6 @@
             <p class="intro">No Adoption Requests Found</p>
         <% } %>
     </div>
-
-    <a class="btn" href="/staffDashboard">Return to Dashboard</a>
 
 <script type="module">
     // filter requests

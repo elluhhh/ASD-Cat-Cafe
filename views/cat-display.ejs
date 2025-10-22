@@ -30,7 +30,12 @@
         <label for="maleCat">Male</label>
     </form>
 
-    <button class="btn" style="padding: 10px;" type="button" id="clearFilter">Clear Filters</button>
+    <div style="display: flex;">
+        <button class="btn" style="padding: 10px;" type="button" id="clearFilter">Clear Filters</button>
+
+        <!-- links back to index page -->
+        <a class="link" href="/">Return Home</a>
+    </div>
 
     <div class="container" id="catList">
         <% if (cats.length > 0 ) { %>
@@ -46,9 +51,6 @@
             <p class="intro">No Cats Found :(</p>
         <% } %>
     </div>
-
-    <!-- links back to index page -->
-    <a class="btn" href="/">Go Back Home</a>
 
 <script type="module">
     // filter cats
