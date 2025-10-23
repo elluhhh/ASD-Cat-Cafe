@@ -77,47 +77,6 @@ const getBookingCheckout = async (req, res) => {
 };
 
 /**
- * Validate credit card expiry date
- * @param {string} expiry - Expiry in MM/YY format
- * @returns {boolean} - True if valid and not expired
- */
-function validateExpiry(expiry) {
-  // Check format: MM/YY
-  if (!/^\d{2}\/\d{2}$/.test(String(expiry))) {
-    return false;
-  }
-
-  const [monthStr, yearStr] = expiry.split('/');
-  const month = parseInt(monthStr, 10);
-  const year = parseInt(yearStr, 10);
-
-  // Validate month (01-12)
-  if (month < 1 || month > 12) {
-    return false;
-  }
-
-  // Convert 2-digit year to 4-digit (assume 20xx)
-  const fullYear = 2000 + year;
-
-  // Get current date
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth() + 1; // getMonth() is 0-indexed
-
-  // Check if card is expired
-  // Card expires at the END of the expiry month
-  if (fullYear < currentYear) {
-    return false; // Year is in the past
-  }
-  
-  if (fullYear === currentYear && month < currentMonth) {
-    return false; // Same year but month has passed
-  }
-
-  return true;
-}
-
-/**
  * POST /checkout/process
  * Process payment and update order status
  */
