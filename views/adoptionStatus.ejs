@@ -6,7 +6,27 @@
 <div class="wrap">
   <h1>🐾 Adoption Request Status</h1>
 
-  <% if (notFound) { %>
+  
+  <% if (typeof lookupOnly !== 'undefined' && lookupOnly) { %>
+    <section class="panel">
+      <h2 class="panel-title">Check your adoption request status</h2>
+      <form class="form" method="get" action="/adoption/status" autocomplete="off">
+        <div class="grid" style="grid-template-columns: 3fr 1fr;">
+          <label class="wide">
+            Tracking Code
+            <input name="code" placeholder="e.g. AbC123xy" required>
+          </label>
+          <div class="actions" style="align-items:end;">
+            <button class="btn primary" type="submit">Check</button>
+          </div>
+        </div>
+      </form>
+      <p class="actions" style="justify-content:flex-start; gap:8px; margin-top:12px;">
+        <a class="btn" href="/adoption/request">➕ Submit a new request</a>
+        <a class="btn" href="/">🏠 Back to Home</a>
+      </p>
+    </section>
+    <% } else if (notFound) { %>
     <section class="panel">
       <h2 class="panel-title">Not found</h2>
       <p class="subtitle">No request with code:</p>
