@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const getBookings = async (req, res) => {
 	try {
-		const bookings = await Booking.find().sort({date_time: 0});
+		const bookings = await Booking.find().sort({date_time: 1});
 		res.render("bookingManagement", { bookings });
 	} catch (err) {
 		res.status(500).send(err);
