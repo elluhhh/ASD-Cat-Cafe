@@ -131,8 +131,62 @@ describe("Checkout & Payment Tests", () => {
       });
     
     expect(res.status).toBe(400);
-    expect(res.text).toMatch(/Invalid expiry/);
+    expect(res.text).toMatch(/Invalid or expired card/);
   });
+
+  // Payment validates month in expiry (01-12 only)
+test("POST /checkout/process rejects invalid month in expiry", async () => {
+  const mockOrder = {
+    _id: "test123",
+    items: [],
+    totals: { total: 1000 },
+    status: "CONFIRMED",
+    save: jest.fn().mockResolvedValue(true)
+  };
+
+  Order.findById = jest.fn().mockResolvedValue(mockOrder);
+
+  const res = await request(app)
+    .post("/checkout/process")
+    .send({
+      orderId: "test123",
+      cardNumber: "1234567890123456",
+      cardName: "John Doe",
+      expiry: "13/25", // Invalid: month 13
+      cvv: "123",
+      email: "test@example.com"
+    });
+  
+  expect(res.status).toBe(400);
+  expect(res.text).toMatch(/Invalid or expired card/);
+});
+
+// Payment validates card is not expired
+test("POST /checkout/process rejects expired card", async () => {
+  const mockOrder = {
+    _id: "test123",
+    items: [],
+    totals: { total: 1000 },
+    status: "CONFIRMED",
+    save: jest.fn().mockResolvedValue(true)
+  };
+
+  Order.findById = jest.fn().mockResolvedValue(mockOrder);
+
+  const res = await request(app)
+    .post("/checkout/process")
+    .send({
+      orderId: "test123",
+      cardNumber: "1234567890123456",
+      cardName: "John Doe",
+      expiry: "12/20", // Expired: December 2020
+      cvv: "123",
+      email: "test@example.com"
+    });
+  
+  expect(res.status).toBe(400);
+  expect(res.text).toMatch(/Invalid or expired card/);
+});
 
   // Valid payment succeeds and shows success page
   test("POST /checkout/process accepts valid payment", async () => {
