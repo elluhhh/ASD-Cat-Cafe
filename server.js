@@ -18,7 +18,7 @@ const adoptionRoutes = require("./routes/adoptionRoute");
 const adoptionRequestRoutes = require("./routes/adoptionRequestRoute");
 
 const app = express();
-
+//test
 // Connect to MongoDB (skip in test environment)
 if (process.env.NODE_ENV !== "test") {
   mongoose
