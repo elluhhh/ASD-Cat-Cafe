@@ -1,3 +1,4 @@
+//Ella Gibbs + Ena Debnath
 const Staff = require("../models/staffModel.js");
 
 const findStaff = async (req, res) => {
@@ -13,7 +14,7 @@ const findStaff = async (req, res) => {
       const errorMsg = "Incorrect login details. Try again.";
       return res.render("staffLogin", { errorMsg });
     } else {
-      return res.render("staffDashboard", { staffName: staff.name });
+      return res.redirect("staffDashboard");
     }
   } catch (err) {
     console.error("Staff login error:", err);

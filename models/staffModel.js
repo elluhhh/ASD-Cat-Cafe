@@ -1,3 +1,4 @@
+//Ella Gibbs
 const mongoose = require("mongoose");
 
 const staffSchema = new mongoose.Schema({
