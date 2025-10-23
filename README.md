@@ -13,6 +13,11 @@ https://asd-cat-cafe-ajhtfwf3a8h5ezeh.australiaeast-01.azurewebsites.net
     * Run "npm start" to start server
     * View website on http://localhost:8000/
 
+## Staff Login
+
+email: staff@email.com
+pw: password
+
 ## Contributors
 
 Jiyun Choi (14445124)

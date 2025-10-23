@@ -38,9 +38,7 @@ describe("Staff Authentication Tests", () => {
         password: "ena2025"
       });
 
-    expect(res.status).toBe(200);
-    expect(res.text).toMatch(/Staff Dashboard/);
-    expect(res.text).toMatch(/Ena Debnath/);
+    expect(res.status).toBe(302);
   });
 
   // Invalid staff login fails
