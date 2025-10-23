@@ -1,19 +1,72 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  branches:
+    include:
+      - '*'
 
-pool:
-  vmImage: ubuntu-latest
+variables:
+  buildConfiguration: 'Release'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+- stage: 'Build'
+  displayName: 'Build the web application'
+  jobs: 
+  - job: 'Build'
+    displayName: 'Build job'
+    pool:
+      vmImage: 'ubuntu-latest'
+      demands:
+      - npm
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    steps:
+
+    - task: Npm@1
+      displayName: 'Run npm install'
+      inputs:
+        verbose: false
+
+    - task: NodeTool@0
+      displayName: 'Install Node.js 22.x'
+      inputs:
+        versionSpec: '22.x'
+
+    - script: npm ci
+      displayName: 'Install dependencies'
+
+    - script: npm test
+      displayName: 'Run unit tests'
+
+    - script: npm run lint
+      displayName: 'Lint'
+
+    - script: |
+        mkdir -p $(Build.ArtifactStagingDirectory)
+        cp -R ./* $(Build.ArtifactStagingDirectory)
+      displayName: 'Copy files to ArtifactStagingDirectory'
+
+  # Publish pipeline artifact
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'drop'
+      displayName: 'Publish pipeline artifact'
+
+- stage: 'Deploy'
+  displayName: 'Deploy the web application'
+  dependsOn: Build
+  jobs:
+  - deployment: Deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: dev
+    variables:
+    - group: Release
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: 'Resource Manager - ASD Cat Cafe'
+              appName: '$(WebAppName)'
+              package: '$(Pipeline.Workspace)/drop'
