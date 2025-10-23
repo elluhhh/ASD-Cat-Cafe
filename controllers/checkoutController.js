@@ -165,7 +165,7 @@ function validate(res, cardNumber, cardName, expiry, cvc, cvv, email) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || ""))) return res.status(400).send("Invalid email");
 }
 
-/*
+/**
  * Validate credit card expiry date
  * @param {string} expiry - Expiry in MM/YY format
  * @returns {boolean} - True if valid and not expired
