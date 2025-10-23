@@ -54,14 +54,18 @@ router.get('/status/:code', async (req, res, next) => {
   try {
     const code = req.params.code;
     const doc = await AdoptionRequest.findOne({ trackingCode: code });
+
     if (!doc) {
       return res.status(404).render('adoptionStatus', {
+        lookupOnly: false,
         notFound: true,
         code,
-        reqDoc: null,
+        reqDoc: null
       });
     }
+
     res.render('adoptionStatus', {
+      lookupOnly: false,
       notFound: false,
       reqDoc: {
         trackingCode: doc.trackingCode,
@@ -69,18 +73,29 @@ router.get('/status/:code', async (req, res, next) => {
         applicant: doc.applicant || {},
         createdAt: doc.createdAt || new Date(),
         updatedAt: doc.updatedAt || new Date(),
-        catId: doc.catId || null,
-      },
+        catId: doc.catId || null
+      }
     });
   } catch (e) {
     next(e);
   }
 });
 
+// 3️⃣ Handle form submission for ?code=
 router.get('/status', (req, res) => {
   const code = (req.query.code || '').trim();
-  if (!code) return res.redirect('/adoption/request');
+  if (!code) return res.redirect('/adoption/check');
   res.redirect(`/adoption/status/${encodeURIComponent(code)}`);
+});
+
+// Simple page to enter a tracking code and check status
+router.get('/check', (req, res) => {
+  res.render('adoptionStatus', {
+    lookupOnly: true,  
+    notFound: null,
+    code: '',
+    reqDoc: null
+  });
 });
 
 module.exports = router;
