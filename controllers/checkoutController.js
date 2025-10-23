@@ -65,7 +65,7 @@ const getBookingCheckout = async (req, res) => {
     const booking = await Booking.findById(bookingID);
     const cartItems = [];
     const total = booking.total_price * 100;
-    const tax = total * 0.1 * 10;
+    const tax = total * 0.1;
     const subtotal = total - tax;
 
     res.render("checkout", {
