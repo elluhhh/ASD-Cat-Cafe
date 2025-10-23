@@ -63,7 +63,7 @@ describe("Checkout & Payment Tests", () => {
       save: jest.fn().mockResolvedValue(true)
     };
 
-    Order.findById = jest.fn().mockResolvedValue(mockOrder);
+    Order.findById = await jest.fn().mockResolvedValue(mockOrder);
 
     const res = await request(app)
       .post("/checkout/process")
