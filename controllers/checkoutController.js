@@ -89,12 +89,6 @@ const processPayment = async (req, res) => {
       return res.status(400).send("Missing orderId");
     }
 
-    // Validate card number (16 digits, spaces allowed)
-    const digits = String(cardNumber || "").replace(/\s/g, "");
-    if (!/^\d{16}$/.test(digits)) {
-      return res.status(400).send("Invalid card number");
-    }
-
     validate(res, cardNumber, cardName, expiry, cvc, cvv, email);
 
     // Find order
