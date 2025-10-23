@@ -1,11 +1,10 @@
 const express = require("express");
-const { getCheckout, processPayment } = require("../controllers/checkoutController");
+const { getCheckout, getBookingCheckout, processPayment, processBookingPayment } = require("../controllers/checkoutController");
 const router = express.Router();
 
-// GET /checkout - Display checkout page
 router.get("/", getCheckout);
-
-// POST /checkout/process - Process payment
+router.get("/:id", getBookingCheckout);
 router.post("/process", processPayment);
+router.post("/process/:id", processBookingPayment);
 
 module.exports = router;
