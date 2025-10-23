@@ -1,4 +1,5 @@
-const Booking = require('./bookingModel');
+//Ella Gibbs
+const Booking = require('../models/bookingModel');
 const mongoose = require("mongoose");
 
 beforeAll(async () => {
