@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - Cat Cafe</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <% const isFoodCheckout = typeof orderId === 'undefined' ? false : true %>
+    <div class="checkout-container">
+        <h1>Checkout</h1>
+        <% if(isFoodCheckout){%>
+        <p><a href="/food">← Back to Menu</a></p>
+        <% } else {%>
+            <p><a href="/booking">← Back to Booking</a></p>
+        <% } %>
+
+        <!-- Order Summary (U125) -->
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <% if (cartItems.length === 0) { %>
+                <div class="order-item">
+                    <span><%= "Booking" %> × <%= booking.attendees_no %> attendees</span>
+                    <span>$<%= booking.total_price.toFixed(2) %></span>
+                </div>
+            <% } else { %>
+                <% cartItems.forEach(item => { %>
+                    <div class="order-item">
+                        <span><%= item.name %> × <%= item.qty %></span>
+                        <span>$<%= (item.price * item.qty).toFixed(2) %></span>
+                    </div>
+                <% }); %>
+            <% } %>
+            
+            <div class="total-section">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span>$<%= (subtotal / 100).toFixed(2) %></span>
+                </div>
+                <div class="total-row">
+                    <span>Tax (10%):</span>
+                    <span>$<%= (tax / 100).toFixed(2) %></span>
+                </div>
+                <div class="total-row final">
+                    <span>Total:</span>
+                    <span>$<%= (total / 100).toFixed(2) %></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Form (U126) -->
+        <h2>Payment Details</h2>
+        <form action=<%= isFoodCheckout ? "/checkout/process" : "/checkout/process/" + booking._id%> method="POST" class="payment-form">
+            <% if(isFoodCheckout) { %>
+            <input type="hidden" name="orderId" value="<%= orderId %>">
+            <% } %>
+            <input type="hidden" name="total" value="<%= (total / 100).toFixed(2) %>">
+            
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" 
+                       placeholder="your.email@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cardName">Cardholder Name *</label>
+                <input type="text" id="cardName" name="cardName" 
+                       placeholder="John Doe" required 
+                       pattern="[A-Za-z\s]+" 
+                       title="Letters and spaces only">
+            </div>
+
+            <div class="form-group">
+                <label for="cardNumber">Card Number *</label>
+                <input type="text" id="cardNumber" name="cardNumber" 
+                       placeholder="1234 5678 9012 3456" 
+                       maxlength="19" required
+                       pattern="[\d\s]{16,19}"
+                       title="16 digits">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="expiry">Expiry Date *</label>
+                    <input type="text" id="expiry" name="expiry" 
+                           placeholder="MM/YY" required
+                           pattern="\d{2}/\d{2}"
+                           maxlength="5"
+                           title="Format: MM/YY">
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV *</label>
+                    <input type="text" id="cvv" name="cvv" 
+                           placeholder="123" required
+                           pattern="\d{3,4}"
+                           maxlength="4"
+                           title="3-4 digits">
+                </div>
+            </div>
+
+            <!-- Security Note (U218) -->
+            <div class="security-note">
+                <span style="font-size: 20px;">🔒</span>
+                <span>
+                    <strong>Secure Payment:</strong> All payment data is encrypted using SSL/TLS. 
+                    In production, this would integrate with Stripe or PayPal for PCI compliance.
+                </span>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Complete Purchase - $<%= (total / 100).toFixed(2) %>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // auto-format card number
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formatted;
+        });
+
+        // auto-format expiry
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                e.target.value = value.slice(0,2) + '/' + value.slice(2,4);
+            } else {
+                e.target.value = value;
+            }
+        });
+    </script>
+</body>
+</html>

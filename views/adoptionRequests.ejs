@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>View Adoption Requests</title>
+  <link rel="stylesheet" href="/cat-display.css">
+</head>
+
+<body>
+    <h1>View all adoption requests</h1>
+
+    <form id="requestFilter">
+        <input type="text" name="search" placeholder="Search by name or tracking code">
+
+        <label>Status:
+        <select name="status">
+            <option value="">Any</option>
+            <% ADOPTION_STATUSES.forEach(status => { %>
+                <option value="<%= status %>" ><%= status %></option>
+            <% }) %>
+        </select>
+        </label>
+    </form>
+
+    <div style="display: flex;">
+        <button class="btn" style="padding: 10px; margin-top: 10px;" type="button" id="clearFilter">Clear Filters</button>
+        <a class="link" href="/staffDashboard">Return to Dashboard</a>
+    </div>
+      
+    <div class="adoption-container" id="requestList">
+        <% if (requests.length > 0 ) { %>
+            <% requests.forEach(request => { %>
+                <a href="/requests/<%= request._id %>"><div class="adoption-card">
+                    <h2 style="color: #ff8c42;">Adoption Request <%= request.trackingCode %></h2>
+                    <p class="cat-info" style="text-align: left;">
+                        <strong>Applicant Name</strong>: <%= request.applicant.name %><br>
+                        <strong>Enquiry for</strong>: <%= request.catId?.name || 'Non-Specific Cat' %><br><br>
+                        <strong>Current Status</strong>: <%= request.status %><br>
+                        <strong>Staff Notes</strong>: <%= request.staffNotes || 'N/A' %><br>
+                        <br><span style="color: grey; font-size: 16px;">Latest Update: <%= request.updatedAt %></span>
+                    </p>
+                </div></a>
+            <% }) %>
+        <% } else { %>
+            <p class="intro">No Adoption Requests Found</p>
+        <% } %>
+    </div>
+
+<script type="module">
+    // filter requests
+    import { setupFilter } from '/js/filterUtils.js';
+
+    setupFilter({
+        formSelector: '#requestFilter',
+        listSelector: '#requestList',
+        endpoint: '/requests',
+        fields: [
+            { name: 'search', type: 'text', live: 'input' },
+            { name: 'status', type: 'select', live: 'change' }
+        ]
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Food Management - Staff Portal</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <style>
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .stat-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      border: 2px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card h3 {
+      margin: 0;
+      font-size: 2rem;
+      color: var(--accent);
+    }
+    
+    .stat-card p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    
+    .low-stock {
+      color: #d84a4a;
+      font-weight: bold;
+    }
+    
+    .status-available {
+      color: green;
+    }
+    
+    .status-unavailable {
+      color: red;
+      opacity: 0.6;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+    
+    .form-section {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border: 2px solid var(--border);
+    }
+    
+    .form-section h2 {
+      margin-top: 0;
+      color: var(--accent);
+    }
+    
+    .demo-warning {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍽️ Staff Food Management</h1>
+  <p>← <a href="/staffDashboard">Return to Dashboard</a> | <a href="/food">View Customer Menu</a></p>
+  
+  <!-- Statistics Dashboard -->
+  <div class="stats">
+    <div class="stat-card">
+      <h3><%= foods.length %></h3>
+      <p>Total Items</p>
+    </div>
+    <div class="stat-card">
+      <h3><%= foods.filter(f => f.status === 'Available').length %></h3>
+      <p>Available</p>
+    </div>
+    <div class="stat-card">
+      <h3><%= foods.filter(f => f.status === 'Unavailable').length %></h3>
+      <p>Unavailable</p>
+    </div>
+    <div class="stat-card">
+      <h3><%= foods.filter(f => f.stock < 10).length %></h3>
+      <p>Low Stock Alerts</p>
+    </div>
+  </div>
+
+  <!-- Add/Edit Form -->
+  <div class="form-section">
+    <h2 id="form-title">➕ Add New Menu Item</h2>
+    <form id="food-form" action="/food/management/create" method="POST">
+      <input type="hidden" name="id" id="edit-id">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+          <label for="name">Item Name *</label>
+          <input type="text" name="name" id="name" required>
+        </div>
+        <div>
+          <label for="category">Category *</label>
+          <select name="category" id="category" required>
+            <option value="">Select...</option>
+            <option value="drink">Drink</option>
+            <option value="food">Food</option>
+            <option value="dessert">Dessert</option>
+          </select>
+        </div>
+        <div>
+          <label for="price">Price ($) *</label>
+          <input type="number" name="price" id="price" step="0.01" min="0" required>
+        </div>
+        <div>
+          <label for="stock">Stock Quantity *</label>
+          <input type="number" name="stock" id="stock" min="0" required>
+        </div>
+        <div>
+          <label for="status">Status *</label>
+          <select name="status" id="status" required>
+            <option value="Available">Available</option>
+            <option value="Unavailable">Unavailable</option>
+          </select>
+        </div>
+        <div>
+          <label for="vegan">Vegan?</label>
+          <select name="vegan" id="vegan">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label for="description">Description</label>
+          <textarea name="description" id="description" rows="2"></textarea>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label for="image">Image URL</label>
+          <input type="text" name="image" id="image" placeholder="/images/item.png">
+        </div>
+      </div>
+      <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <button type="submit" class="btn primary" id="submit-btn">Add Item</button>
+        <button type="button" class="btn" id="cancel-btn" style="display: none;">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- All Menu Items Table -->
+  <h2>📋 All Menu Items</h2>
+  <% if (foods.length === 0) { %>
+    <p style="text-align: center; padding: 40px; color: var(--muted);">
+      No food items found. Add your first item above!
+    </p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Stock</th>
+          <th>Vegan</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% foods.forEach(food => { %>
+          <tr class="<%= food.status === 'Unavailable' ? 'status-unavailable' : '' %>">
+            <td><strong><%= food.name %></strong></td>
+            <td><%= food.category ? food.category.toUpperCase() : 'N/A' %></td>
+            <td>$<%= food.price ? food.price.toFixed(2) : '0.00' %></td>
+            <td class="<%= food.status === 'Available' ? 'status-available' : '' %>">
+              <%= food.status %>
+            </td>
+            <td class="<%= food.stock < 10 ? 'low-stock' : '' %>">
+              <%= food.stock %><%= food.stock < 10 ? ' ⚠️' : '' %>
+            </td>
+            <td><%= food.vegan ? '🌱 Yes' : '❌' %></td>
+            <td><%= food.description || '-' %></td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn btn-small" onclick='editFood(<%= JSON.stringify(food) %>)'>Edit</button>
+                <form action="/food/management/delete/<%= food._id %>" method="POST" style="display: inline;">
+                  <button type="submit" class="btn btn-small" style="background: #d84a4a; color: white;" 
+                          onclick="return confirm('Delete <%= food.name %>?')">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } %>
+
+  <script>
+    const form = document.getElementById('food-form');
+    const formTitle = document.getElementById('form-title');
+    const submitBtn = document.getElementById('submit-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const editIdInput = document.getElementById('edit-id');
+    
+    function editFood(food) {
+      // Switch to edit mode
+      formTitle.textContent = '✏️ Edit Menu Item';
+      form.action = '/food/management/update';
+      submitBtn.textContent = 'Update Item';
+      cancelBtn.style.display = 'inline-block';
+      
+      // Populate form
+      editIdInput.value = food._id;
+      document.getElementById('name').value = food.name;
+      document.getElementById('category').value = food.category;
+      document.getElementById('price').value = food.price;
+      document.getElementById('stock').value = food.stock;
+      document.getElementById('status').value = food.status;
+      document.getElementById('vegan').value = food.vegan ? 'true' : 'false';
+      document.getElementById('description').value = food.description || '';
+      document.getElementById('image').value = food.image || '';
+      
+      // Scroll to form
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    // Cancel edit - reset to add mode
+    cancelBtn.addEventListener('click', function() {
+      formTitle.textContent = '➕ Add New Menu Item';
+      form.action = '/food/management/create';
+      submitBtn.textContent = 'Add Item';
+      cancelBtn.style.display = 'none';
+      form.reset();
+      editIdInput.value = '';
+    });
+  </script>
+</body>
+</html>

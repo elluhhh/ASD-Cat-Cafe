@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Staff Dashboard - ASD Cat Cafe</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body class="dashboard-body">
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <div>
+      <h1>👨‍💼 Staff Dashboard</h1>
+      <p class="welcome-text">Welcome back, <strong><%= staffName %></strong>!</p>
+    </div>
+    <a href="/" class="logout-btn">← Logout</a>
+  </div>
+
+  <!-- Management Tools -->
+  <h2 style="color: var(--muted); margin-bottom: 20px;">🛠️ Management Tools</h2>
+  <div class="management-grid">
+    <!-- Booking Management -->
+    <a href="/bookingManagement" class="management-card">
+      <span class="icon">📋</span>
+      <h2>Manage Bookings</h2>
+      <p>View, edit, and cancel customer bookings</p>
+    </a>
+
+    <!-- Food Management -->
+    <a href="/food/management" class="management-card">
+      <span class="icon">🍽️</span>
+      <h2>Manage Food Items</h2>
+      <p>Add, edit, and update menu items</p>
+    </a>
+
+    <!-- Cat Profile Management -->
+    <a href="/catprofile" class="management-card">
+      <span class="icon">🐈</span>
+      <h2>Edit Cat Profiles</h2>
+      <p>Manage cat information and photos</p>
+    </a>
+
+    <!-- Adoption Requests -->
+    <a href="/requests" class="management-card">
+      <span class="icon">📝</span>
+      <h2>Adoption Requests</h2>
+      <p>Review and process adoption applications</p>
+    </a>
+  </div>
+
+  <!-- Customer View Link -->
+  <div class="customer-link">
+    <p>Want to see the customer view? <a href="/">← Go to Customer Home Page</a></p>
+  </div>
+</body>
+</html>

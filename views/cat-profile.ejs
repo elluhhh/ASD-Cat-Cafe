@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Cat Profile</title>
+    <link rel="stylesheet" href="/cat-display.css">
+</head>
+
+<body>
+    <h1>Meet <%= cat.name %> </h1>
+    <div class="profile">
+        <div class="left">
+            <img class="cat" src="<%= cat.imageUrl %>" onerror="this.onerror=null;this.src='/uploads/UnavailableImageFallback.png';" >
+            <!-- links back to cat display page -->
+            <a class="btn" href="/cats">Go back to the Cats</a>
+        </div>
+
+        <div class="details">
+            <h2> <%= cat.name %> </h2>
+            <p class="cat-info"><%= cat.gender %>, <%= Math.floor(cat.ageMonths / 12) %> Years and <%= (cat.ageMonths % 12) %> months old</p>
+            <p class="description"><%= cat.description %></p>
+            <a class="btn" href="/adoption/request?catId=<%= cat._id %>">Request Adoption</a>
+        </div>
+        
+    </div>
+
+</body>
+
+</html>

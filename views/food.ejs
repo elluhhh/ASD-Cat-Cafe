@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Food Page - ASD Cat Cafe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/food.css" />
+</head>
+<body>
+  <header>
+    <h1>Menu</h1>
+    <nav>
+      <a href="/">Home</a>
+    </nav>
+  </header>
+
+  <section class="filters">
+    <input id="search" type="text" placeholder="Search menu..." />
+    <select id="category">
+      <option value="">All</option>
+      <option value="drink">Drinks</option>
+      <option value="food">Food</option>
+    </select>
+    <label>
+      <input id="veganOnly" type="checkbox" /> Vegan only
+    </label>
+  </section>
+
+  <div id="toast" 
+       style="display:none;
+              margin:12px 0;
+              padding:10px;
+              border:1px solid #f5c2c7;
+              background:#f8d7da;
+              color:#842029;
+              border-radius:6px;">
+  </div>
+
+  <main id="menuGrid" class="grid"></main>
+
+  <aside id="cart" class="cart">
+    <h2>Cart</h2>
+    <ul id="cartList"></ul>
+    <div id="totals">
+      <p>Subtotal: <span id="subtotal">$0.00</span></p>
+      <p>Tax (10%): <span id="tax">$0.00</span></p>
+      <p><strong>Total: <span id="total">$0.00</span></strong></p>
+    </div>
+    <button id="checkoutBtn" disabled>Checkout</button>
+  </aside>
+
+  <script type="module" src="/food.js"></script>
+
+  <script>
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      if (!el) return;
+      el.textContent = msg;
+      el.style.display = "block";
+      setTimeout(() => {
+        el.style.display = "none";
+        el.textContent = "";
+      }, 3000);
+    }
+
+    window.showToast = showToast;
+  </script>
+</body>
+</html>

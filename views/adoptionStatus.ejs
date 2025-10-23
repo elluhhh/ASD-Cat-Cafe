@@ -1,0 +1,64 @@
+<!doctype html><html lang="en"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Adoption Status</title>
+  <link rel="stylesheet" href="/css/adoption.css">
+</head><body>
+<div class="wrap">
+  <h1>🐾 Adoption Request Status</h1>
+
+  <% if (notFound) { %>
+    <section class="panel">
+      <h2 class="panel-title">Not found</h2>
+      <p class="subtitle">No request with code:</p>
+      <pre class="code"><%= code %></pre>
+      <p><a class="btn" href="/adoption/request">Start a new request</a></p>
+    </section>
+  <p class="actions" style="justify-content:flex-start; gap:8px;">
+  <a class="btn" href="/adoption/request">Submit another request</a>
+  <a class="btn" href="/adoption">Back to Adoption Home</a>
+  <a class="btn" href="/">🏠 Back to Main Home</a>
+</p>
+    <% } else { %>
+    <section class="panel">
+      <h2 class="panel-title">Tracking Code</h2>
+      <pre class="code"><%= reqDoc.trackingCode %></pre>
+      <p class="subtitle">Keep this code to check your status later.</p>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">Current Status</h2>
+      <p class="status <%= reqDoc.status.toLowerCase() %>"><%= reqDoc.status %></p>
+      <p class="subtitle">Last updated: <%= new Date(reqDoc.updatedAt).toLocaleString() %></p>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">Application Details</h2>
+      <ul class="details">
+        <li><strong>Name:</strong> <%= reqDoc.applicant.name %></li>
+        <li><strong>Email:</strong> <%= reqDoc.applicant.email %></li>
+        <li><strong>Phone:</strong> <%= reqDoc.applicant.phone || '-' %></li>
+        <li><strong>Address:</strong> <%= reqDoc.applicant.address || '-' %></li>
+        <li><strong>Lives with children:</strong> <%= reqDoc.applicant.livesWithChildren ? 'Yes' : 'No' %></li>
+        <li><strong>Has other pets:</strong> <%= reqDoc.applicant.hasOtherPets ? 'Yes' : 'No' %></li>
+        <li class="wide"><strong>Reason:</strong> <%= reqDoc.applicant.whyAdopt %></li>
+      </ul>
+    </section>
+  
+    <section class="panel">
+  <h2 class="panel-title">Already applied? Check your status</h2>
+  <form class="form" method="get" action="/adoption/status" autocomplete="off">
+    <div class="grid" style="grid-template-columns: 3fr 1fr;">
+      <label class="wide">
+        Tracking Code
+        <input name="code" placeholder="e.g. AbC123xy" required>
+      </label>
+      <div class="actions" style="align-items:end;">
+        <button class="btn primary" type="submit">Check</button>
+      </div>
+    </div>
+  </form>
+</section>
+  
+ <% } %>
+</div>
+</body></html>
