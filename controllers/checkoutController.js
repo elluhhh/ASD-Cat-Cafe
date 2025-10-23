@@ -83,13 +83,16 @@ const getBookingCheckout = async (req, res) => {
 const processPayment = async (req, res) => {
   try {
     const { orderId, cardNumber, cardName, expiry, cvc, cvv, email } = req.body;
+
+    const validationErrorMsg = validate(cardNumber, cardName, expiry, cvc, cvv, email);
+    if(validationErrorMsg != ""){
+      return res.status(400).send(validationErrorMsg);
+    }
     
     // Validate orderId first
     if (!orderId) {
       return res.status(400).send("Missing orderId");
     }
-
-    validate(res, cardNumber, cardName, expiry, cvc, cvv, email);
 
     // Find order
     const order = await Order.findById(orderId);
@@ -130,7 +133,8 @@ const processBookingPayment = async (req, res) => {
     const { cardNumber, cardName, expiry, cvc, cvv, email } = req.body;
     const booking = await Booking.findById(req.params.id);
 
-    validate(res, cardNumber, cardName, expiry, cvc, cvv, email);
+    const validationErrorMsg = validate(cardNumber, cardName, expiry, cvc, cvv, email);
+    if(validationErrorMsg != "") res.status(400).send(validationErrorMsg);
 
     // Render success page
     return res.render("paymentSuccess", {
@@ -142,27 +146,38 @@ const processBookingPayment = async (req, res) => {
   } catch (err) {
     console.error("[processPayment] error:", err);
     return res.status(500).send("Payment processing failed: " + err.message);
-    return res.status(500).send("Payment processing failed");
   }
 };
 
-function validate(res, cardNumber, cardName, expiry, cvc, cvv, email) {
+function validate(cardNumber, cardName, expiry, cvc, cvv, email) {
   // Validate card number (16, digits, spaces allowed)
   const digits = String(cardNumber || "").replace(/\s/g, "");
-  if (!/^\d{16}$/.test(digits)) return res.status(400).send("Invalid card number");
+  if (!/^\d{16}$/.test(digits)){
+    return "Invalid card number";
+  }
   
   // Validate cardholder name
-  if (!cardName || String(cardName).trim() === "") return res.status(400).send("Name on card is required");
-  
+  if (!cardName || String(cardName).trim() === ""){
+    return "Name on card is required";
+  }
+
   // Validate expiry (MM/YY format)
-  if (!validateExpiry(expiry)) return res.status(400).send("Invalid or expired card. Please check the expiry date (MM/YY format, month must be 01-12, and card must not be expired)");
+  if (!validateExpiry(expiry)){
+    return "Invalid or expired card. Please check the expiry date (MM/YY format, month must be 01-12, and card must not be expired)";
+  }
   
   // Validate CVC/CVV (3-4 digits)
   const sec = String(cvc || cvv || "");
-  if (!/^\d{3,4}$/.test(sec)) return res.status(400).send("Invalid CVC");
+  if (!/^\d{3,4}$/.test(sec)){
+    return "Invalid CVC";
+  }
   
   // Validate email
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || ""))) return res.status(400).send("Invalid email");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || ""))){
+    return "Invalid email";
+  }
+
+  return "";
 }
 
 /**
