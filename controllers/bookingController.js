@@ -40,10 +40,14 @@ const createBooking = async (req, res) => {
 
 const getAvailableTimes = async (req, res) => {
 	try {
+		// Gets a booking if editing a booking
 		const booking = mongoose.Types.ObjectId.isValid(req.params.id)? await Booking.findById(req.params.id) : "";
 		const today = new Date();
+
+		// If no date has been selected, default to today's date, otherwise create a new Date obj from the selected date
 		const date = req.query.date == "" || req.query.date == null || req.query.date == today.toISOString().split('T')[0]? today : new Date(req.query.date);
 		
+		// Retrieve all the bookings in the selected date
 		const bookingsInDate = await Booking.find(
 			{date_time: {
 				$gte: new Date(date).setHours(0,0,0,0),
@@ -53,7 +57,7 @@ const getAvailableTimes = async (req, res) => {
 		
 		const availBookingTimes = [10, 11, 12, 13, 14, 15];
 
-		//removes times that have bookings
+		// Removes the times that already have bookings
 		bookingsInDate.forEach(booking => {
 			const index = availBookingTimes.indexOf(booking.date_time.getHours());
 			if(index > -1){
@@ -61,7 +65,7 @@ const getAvailableTimes = async (req, res) => {
 			}
 		});
 		
-		//remove times for today that before the current time e.g. it is 2pm therefore, <=2 should be unselectable
+		// Remove the times for today that are before the current time e.g. it is 2pm therefore, <=2 should be unselectable
 		if(date == today && availBookingTimes.includes(date.getHours())){
 			availBookingTimes.splice(0, availBookingTimes.indexOf(date.getHours())+1);
 		}

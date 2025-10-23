@@ -45,7 +45,7 @@ const findBookings = async (req, res) => {
 			).exec());
 		}
 
-		//remove empty arrays from bookings array
+		// Remove empty arrays from the bookings array
 		bookings = bookings.filter(e=> {
 			if(Array.isArray(e) && e.length == 0){
 				return false;
