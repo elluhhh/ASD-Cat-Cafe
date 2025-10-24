@@ -1,3 +1,5 @@
+// Jiyun Choi (partial) - this section is shared with Ena Debnath's Checkout feature
+
 const Order = require("../models/orderModel");
 const Booking = require("../models/bookingModel");
 

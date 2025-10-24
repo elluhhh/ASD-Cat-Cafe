@@ -1,3 +1,5 @@
+// Jiyun Choi (partial) - this section is shared with Ena Debnath's Checkout feature
+
 const express = require("express");
 const { getCheckout, getBookingCheckout, processPayment, processBookingPayment } = require("../controllers/checkoutController");
 const router = express.Router();

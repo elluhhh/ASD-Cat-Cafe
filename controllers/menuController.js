@@ -1,3 +1,5 @@
+// Jiyun Choi
+
 const Food = require("../models/foodModel");
 
 async function getMenu(req, res) {

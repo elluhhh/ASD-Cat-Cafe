@@ -1,3 +1,5 @@
+// Jiyun Choi
+
 const mongoose = require("mongoose");
 
 const orderItemSchema = new mongoose.Schema({

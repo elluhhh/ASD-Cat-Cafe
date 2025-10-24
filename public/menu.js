@@ -1,3 +1,5 @@
+// Jiyun Choi
+
 const toCents = (n) => Math.round(Number(n || 0) * 100);
 const money = (cents) => (Number(cents || 0) / 100).toFixed(2);
 let lastTotals = { subtotal: 0, tax: 0, total: 0 };
