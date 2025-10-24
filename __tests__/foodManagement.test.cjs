@@ -65,7 +65,7 @@ describe("Food Management Tests", () => {
 
   // Customer food ordering page renders
   test("GET /food returns customer menu page", async () => {
-    const res = await request(app).get("/food");
+    const res = await request(app).get("/menu");
     expect(res.status).toBe(200);
     expect(res.headers["content-type"]).toMatch(/html/);
     expect(res.text).toMatch(/Menu/);

@@ -9,7 +9,7 @@ describe("pages render", () => {
   });
 
   test("GET /food returns HTML", async () => {
-    const res = await request(app).get("/food");
+    const res = await request(app).get("/menu");
     expect(res.status).toBe(200);
     expect(res.headers["content-type"]).toMatch(/html/);
   });

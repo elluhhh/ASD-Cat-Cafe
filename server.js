@@ -81,8 +81,8 @@ app.get("/foodManagement", (req, res) => res.redirect("/food/management")); // L
 
 // Customer food ordering page (renders the food.ejs page)
 // added: attach cartSession here so we can actually clear session on /food
-app.get("/food", cartSession, clearOnFoodEnter, (req, res) => {
-  res.render("food");
+app.get("/menu", cartSession, clearOnFoodEnter, (req, res) => {
+  res.render("menu");
 });
 
 // API endpoints

@@ -12,7 +12,7 @@ router.get("/cancel", (req, res) => {
     req.session.currentOrderId = null;
     req.session.cartLocked = false;
   }
-  return res.redirect("/food"); // send user back to the menu page
+  return res.redirect("/menu"); // send user back to the menu page
 });
 
 router.get("/:id", getBookingCheckout);

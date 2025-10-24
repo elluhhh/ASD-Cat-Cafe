@@ -45,7 +45,7 @@ Features: F102 Adoption Request & F107 Cat Detail Management
 Menu View & Cart
 - Reusable cart utilities: `toCents`, `money`, `nextCart`, `computeTotals` (`public/cart.js`)
 - Cart API routes with input validation(`routes/cartRoutes.js, utils/cartValidation.js`)
-- Front-end cart UI + client-side validation (`public/food.js, public/cart.js000`)
+- Front-end cart UI + client-side validation (`public/menu.js, public/cart.js000`)
 
 ## Version History
 

@@ -15,7 +15,7 @@ const getCheckout = async (req, res) => {
 
     // if query is missing, try the session (so re-entry still works)
     const orderId = req.query.orderId || (req.session && req.session.currentOrderId);
-    if (!orderId) return res.redirect("/food");
+    if (!orderId) return res.redirect("/menu");
 
     const order = await Order.findById(orderId).lean();
     if (!order) {
