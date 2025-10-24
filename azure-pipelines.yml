@@ -38,11 +38,6 @@ stages:
     - script: npm run lint
       displayName: 'Lint'
 
-    - script: |
-        mkdir -p $(Build.ArtifactStagingDirectory)
-        cp -R ./* $(Build.ArtifactStagingDirectory)
-      displayName: 'Copy files to ArtifactStagingDirectory'
-
   # Publish pipeline artifact
     - task: PublishPipelineArtifact@1
       inputs:
