@@ -65,5 +65,21 @@
 
     window.showToast = showToast;
   </script>
+
+  <!-- added: detect browser back from /checkout and clear session via /checkout/cancel -->
+  <script>
+    window.addEventListener('pageshow', function (e) {
+      const nav = performance.getEntriesByType('navigation')[0];
+      const backForward = e.persisted || (nav && nav.type === 'back_forward');
+
+      // if user came back from checkout with the browser back button,
+      // call the cancel route so the cart/session doesn't stay stuck
+      if (backForward && document.referrer.includes('/checkout')) {
+        fetch('/checkout/cancel', { method: 'GET', credentials: 'include' })
+          .then(() => location.replace('/food'))
+          .catch(() => location.replace('/food'));
+      }
+    });
+  </script>
 </body>
 </html>

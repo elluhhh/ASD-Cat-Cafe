@@ -10,7 +10,7 @@
     <div class="checkout-container">
         <h1>Checkout</h1>
         <% if(isFoodCheckout){%>
-        <p><a href="/food">← Back to Menu</a></p>
+        <p><a href="/checkout/cancel">← Back to Menu</a></p>
         <% } else {%>
             <p><a href="/booking">← Back to Booking</a></p>
         <% } %>
@@ -130,6 +130,8 @@
                 e.target.value = value;
             }
         });
+
+        
     </script>
 </body>
 </html>

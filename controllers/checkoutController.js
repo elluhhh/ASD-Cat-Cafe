@@ -9,11 +9,20 @@ const toMoney = (cents) => (Number(cents || 0) / 100).toFixed(2);
  */
 const getCheckout = async (req, res) => {
   try {
-    const orderId = req.query.orderId;
+    // avoid showing a cached checkout page when using browser back
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    res.set('Pragma', 'no-cache');
+
+    // if query is missing, try the session (so re-entry still works)
+    const orderId = req.query.orderId || (req.session && req.session.currentOrderId);
     if (!orderId) return res.redirect("/food");
 
     const order = await Order.findById(orderId).lean();
     if (!order) {
+      if (req.session) {
+        req.session.currentOrderId = null;
+        req.session.cartLocked = false;
+      }
       return res.status(404).render("checkout", {
         cartItems: [],
         subtotal: 0,
@@ -24,6 +33,12 @@ const getCheckout = async (req, res) => {
         orderId: null,
         toMoney
       });
+    }
+
+    // mark “in-progress” so we can clean/reset on cancel/back
+    if (req.session) {
+      req.session.currentOrderId = String(order._id);
+      req.session.cartLocked = true;
     }
 
     const cartItems = (order.items || []).map((it) => ({
@@ -61,11 +76,20 @@ const getCheckout = async (req, res) => {
 
 const getBookingCheckout = async (req, res) => {
   try {
+    // same reason as food checkout: avoid stale page on back
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    res.set('Pragma', 'no-cache');
+
     const bookingID = req.params.id;
     const booking = await Booking.findById(bookingID);
+
+    if (req.session) {
+      req.session.cartLocked = true; // reuse the same flag for consistency
+    }
+
     const cartItems = [];
-    const total = booking.total_price * 100;
-    const tax = total * 0.1;
+    const total = Math.round((booking.total_price || 0) * 100); // keep everything in cents
+    const tax = Math.round(total * 0.1);
     const subtotal = total - tax;
 
     res.render("checkout", {
@@ -73,6 +97,15 @@ const getBookingCheckout = async (req, res) => {
     });
   } catch (err) {
     console.error("booking checkout error", err);
+    return res.status(500).render("checkout", {
+      booking: null,
+      cartItems: [],
+      subtotal: 0,
+      tax: 0,
+      total: 0,
+      error: "Failed to load booking checkout",
+      toMoney
+    });
   }
 };
 
@@ -85,7 +118,7 @@ const processPayment = async (req, res) => {
     const { orderId, cardNumber, cardName, expiry, cvc, cvv, email } = req.body;
 
     const validationErrorMsg = validate(cardNumber, cardName, expiry, cvc, cvv, email);
-    if(validationErrorMsg != ""){
+    if (validationErrorMsg != "") {
       return res.status(400).send(validationErrorMsg);
     }
     
@@ -105,6 +138,13 @@ const processPayment = async (req, res) => {
     order.paidAt = new Date();
     order.paymentMethod = "CARD";
     await order.save();
+
+    // after a successful payment, just clean up the session so cart/order doesn’t linger
+    if (req.session) {
+      req.session.cart = null;
+      req.session.currentOrderId = null;
+      req.session.cartLocked = false;
+    }
 
     // Prepare data for success page
     const cartItems = (order.items || []).map((it) => ({
@@ -134,27 +174,40 @@ const processBookingPayment = async (req, res) => {
     const booking = await Booking.findById(req.params.id);
 
     const validationErrorMsg = validate(cardNumber, cardName, expiry, cvc, cvv, email);
-    if(validationErrorMsg != "") res.status(400).send(validationErrorMsg);
-    const total = booking.total_price;
-    const tax = total * 0.1;
-    const subtotal = total - tax;
+    if (validationErrorMsg != "") {
+      return res.status(400).send(validationErrorMsg);
+    }
+
+    // normalize money as cents (same convention as food)
+    const totalCents = Math.round((booking.total_price || 0) * 100);
+    const taxCents = Math.round(totalCents * 0.1);
+    const subtotalCents = totalCents - taxCents;
 
     await Order.create({
       booking: booking,
       totals: {
-        subtotal: subtotal,
-        tax: tax,
-        total: total
+        subtotal: subtotalCents,
+        tax: taxCents,
+        total: totalCents
       },
-      status: "PAID"
+      status: "PAID",
+      paymentMethod: "CARD",
+      paidAt: new Date()
     });
+
+    // clean up session flags for consistency
+    if (req.session) {
+      req.session.cart = null;
+      req.session.currentOrderId = null;
+      req.session.cartLocked = false;
+    }
 
     // Render success page
     return res.render("paymentSuccess", {
       orderNumber: String(booking._id),
       email: email,
       cartItems: [],
-      total: (booking.total_price / 100).toFixed(2)
+      total: (totalCents / 100).toFixed(2)
     });
   } catch (err) {
     console.error("[processPayment] error:", err);

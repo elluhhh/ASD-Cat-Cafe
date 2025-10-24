@@ -36,10 +36,10 @@ if (process.env.NODE_ENV !== "test") {
 // Middleware
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
-app.use(express.urlencoded({ extended: true }));            
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-//session middleware for cart/order routes
+// session middleware for cart/order routes
 const cartSession = session({
   name: "cart.sid",
   secret: process.env.SESSION_SECRET || "dev-secret",
@@ -50,6 +50,20 @@ const cartSession = session({
     maxAge: 1000 * 60 * 60,
   },
 });
+
+// added: when user lands on /food while a checkout was in progress,
+// just clear the session so the cart doesn't stay stuck
+function clearOnFoodEnter(req, res, next) {
+  if (req.session?.cartLocked) {
+    req.session.cart = null;
+    req.session.currentOrderId = null;
+    req.session.cartLocked = false;
+  }
+  // also tell the browser not to reuse a cached page here (helps with back-forward cache)
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+  res.set("Pragma", "no-cache");
+  next();
+}
 
 // Health check endpoint for testing
 app.get("/health", (req, res) => {
@@ -66,17 +80,18 @@ app.use("/food/management", foodRoutes); // Staff food management
 app.get("/foodManagement", (req, res) => res.redirect("/food/management")); // Legacy redirect
 
 // Customer food ordering page (renders the food.ejs page)
-app.get("/food", (req, res) => {
+// added: attach cartSession here so we can actually clear session on /food
+app.get("/food", cartSession, clearOnFoodEnter, (req, res) => {
   res.render("food");
 });
 
 // API endpoints
-app.use("/api/menu", menuRoutes);           // JSON API for menu items
-app.use("/api/cart", cartSession, cartRoutes);     
-app.use("/api/orders", cartSession, orderRoutes);  
+app.use("/api/menu", menuRoutes);                  // JSON API for menu items
+app.use("/api/cart", cartSession, cartRoutes);     // needs session
+app.use("/api/orders", cartSession, orderRoutes);  // needs session
 
 // OTHER ROUTES
-app.use("/checkout", checkoutRoutes);
+app.use("/checkout", cartSession, checkoutRoutes); // needs session
 app.use("/booking", bookingRoutes);
 app.use("/bookingManagement", bookingManagementRoutes);
 app.use("/staffLogin", staffLoginRoutes);
