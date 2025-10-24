@@ -2,13 +2,13 @@
 
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
-    /* background: #ffecd2; */
     background: #faf7f3;
-    min-height: 1200px;
 }
 
 h1 {
     text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eadfda;
 }
 
 .container {
@@ -152,4 +152,12 @@ select {
     padding: 10px;
     border: 2px solid #e6cfc3;
     border-radius: 10px;
+}
+
+.footer {
+    text-align: center;
+    color: #7b6d68;
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 2px solid #eadfda;
 }
