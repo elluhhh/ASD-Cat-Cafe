@@ -9,6 +9,7 @@ const orderItemSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema({
   items: [orderItemSchema],
+  booking: {type: Object},
   totals: { subtotal: Number, tax: Number, total: Number },
   status: { type: String, default: "CONFIRMED" },
   createdAt: { type: Date, default: Date.now },

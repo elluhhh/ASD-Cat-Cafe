@@ -135,6 +135,19 @@ const processBookingPayment = async (req, res) => {
 
     const validationErrorMsg = validate(cardNumber, cardName, expiry, cvc, cvv, email);
     if(validationErrorMsg != "") res.status(400).send(validationErrorMsg);
+    const total = booking.total_price;
+    const tax = total * 0.1;
+    const subtotal = total - tax;
+
+    await Order.create({
+      booking: booking,
+      totals: {
+        subtotal: subtotal,
+        tax: tax,
+        total: total
+      },
+      status: "PAID"
+    });
 
     // Render success page
     return res.render("paymentSuccess", {
