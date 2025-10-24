@@ -1,3 +1,5 @@
+// Sarah White
+
 const { AdoptionRequest, ADOPTION_STATUSES } = require('../models/adoptionRequest.js');
 const { validateAdoptionRequestUpdate } = require('../public/js/requestValidator.js');
 

@@ -1,3 +1,4 @@
+// Sarah White
 // Used in the cat-display and adoptionRequests page to filter results
 
 function getFilterValues(form, fields) {

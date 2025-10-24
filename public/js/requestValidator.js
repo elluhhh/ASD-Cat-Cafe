@@ -1,3 +1,5 @@
+// Sarah White
+
 function validateAdoptionRequestUpdate({ name, email, whyAdopt, address }) {
     const errors = [];
 

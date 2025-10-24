@@ -1,3 +1,5 @@
+// + Sarah White
+
 const mongoose = require('mongoose');
 
 const catSchema = new mongoose.Schema({

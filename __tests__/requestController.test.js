@@ -1,4 +1,5 @@
 /** @jest-environment jsdom */
+// Sarah White
 
 const { getFilterValues } = require('../public/js/filterUtils.js');
 const { validateAdoptionRequestUpdate } = require('../public/js/requestValidator.js');
