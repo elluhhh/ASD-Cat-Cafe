@@ -11,6 +11,7 @@
 	<body id="booking-bod">
         <div id="form-div">
 		    <a href="/">Return Home</a>
+            <!-- Check if creating a new booking or editing based on if a booking obj has been passed in -->
             <%const isEditing = booking != "";%>
             <%const isDisabled = isEditing? "disabled" : ""%>
             <h1>Make a Booking</h1>
@@ -24,10 +25,11 @@
 
             <h3><%=date.toLocaleDateString("en-EN", {weekday: "long", day: "numeric", month: "long"})%></h3>
             <h3>Available Time Slots</h3>
-
+            <!-- If editing, use update route and if making a new booking, use create route -->
             <form action="<%=isEditing? "/booking/" + booking._id : "/booking/create"%>" method="POST">
                 <input type="hidden" name="date" value="<%=date%>"/>
 
+                <!-- Show available booking times -->
                 <%availBookingTimes.forEach(time => { %>
                     <%const ampm = time > 11 ? "PM" : "AM" %>
                     <input type="radio" name="time" id="time" value="<%=time%>" required>
@@ -51,6 +53,7 @@
                         <p id="total">$28</p>
                     </div>
                     <input type="hidden" id="total_price" name="total_price" value="28">
+                    <!-- Update the total price based on how many attendees -->
                     <script>
                         async function updateContent() {
                             const total = Number(document.getElementById("attendees").value) * 28;
@@ -60,6 +63,7 @@
                     </script>
                 </div>
                 <h2>Contact Details</h2>
+                <!-- Changing contact details is disabled when editing -->
                 <div id="contact-deets">
                     <div>
                         <label for="f_name">First Name</label>
