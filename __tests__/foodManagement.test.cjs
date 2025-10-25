@@ -87,7 +87,10 @@ describe("Food Management Tests", () => {
     });
     
     const res = await request(app).get("/api/menu");
-    expect(Food.find).toHaveBeenCalledWith({ status: "Available" });
+    expect(Food.find).toHaveBeenCalledWith(
+  { status: "Available", stock: { $gt: 0 } },
+  expect.any(Object)
+);
     expect(res.body.every(item => item.status === "Available")).toBe(true);
   });
 });

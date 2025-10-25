@@ -8,7 +8,7 @@ const foodSchema = new mongoose.Schema({
     price: Number,
     description: String,
     status: String,
-    stock: Number,
+    stock: { type: Number, min: 0, default: 0 }, // prevent negative value error
     vegan: Boolean,
     image: String
 });
