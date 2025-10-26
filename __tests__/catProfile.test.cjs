@@ -20,7 +20,7 @@ const mockCats = [
 ];
 
 // Mock the Cat model used in routes 
-jest.mock('../models/Cat', () => ({
+/* jest.mock('../models/Cat', () => ({
   __esModule: false,
   Cat: {
     find: jest.fn(async () => [...mockCats]),
@@ -37,6 +37,38 @@ jest.mock('../models/Cat', () => ({
       const [deleted] = mockCats.splice(idx, 1);
       return deleted;
     }),
+    create: jest.fn(async (data) => {
+      const newCat = { _id: String(mockCats.length + 1), ...data };
+      mockCats.push(newCat);
+      return newCat;
+    })
+  }
+})); */
+jest.mock('../models/Cat', () => ({
+  __esModule: false,
+  Cat: {
+    find: jest.fn(async () => [...mockCats]),
+    findById: jest.fn(async (id) => mockCats.find(c => c._id === id) || null),
+
+    // Make update more forgiving and log what’s happening
+    findByIdAndUpdate: jest.fn(async (id, update) => {
+      const idx = mockCats.findIndex(c => c._id === id);
+      if (idx === -1) {
+        console.error('❌ Mock update: Cat not found', id);
+        throw new Error('Cat not found');
+      }
+      console.log('🧩 Mock update called with:', id, update);
+      mockCats[idx] = { ...mockCats[idx], ...update };
+      return mockCats[idx];
+    }),
+
+    findByIdAndDelete: jest.fn(async (id) => {
+      const idx = mockCats.findIndex(c => c._id === id);
+      if (idx === -1) return null;
+      const [deleted] = mockCats.splice(idx, 1);
+      return deleted;
+    }),
+
     create: jest.fn(async (data) => {
       const newCat = { _id: String(mockCats.length + 1), ...data };
       mockCats.push(newCat);
@@ -70,6 +102,21 @@ describe('Cat Profile API', () => {
     expect(mockCats.length).toBeGreaterThan(1);
   });
 
+/* test('PUT /catProfile/api/:id updates cat info', async () => {
+  const res = await request(app)
+    .put('/catProfile/api/1')
+    .set('Accept', 'application/json')
+    .field('name', 'Bilbo')
+    .field('breed', 'Domestic Long Hair')
+    .field('gender', 'Male')
+    .field('ageMonths', '150')
+    .field('price', '120')
+    .field('isAdopted', 'true');
+
+  expect(res.status).toBe(200);
+  expect(res.body.price).toBe(120);
+  expect(res.body.isAdopted).toBe(true);
+}); */
 test('PUT /catProfile/api/:id updates cat info', async () => {
   const res = await request(app)
     .put('/catProfile/api/1')
@@ -81,6 +128,9 @@ test('PUT /catProfile/api/:id updates cat info', async () => {
     .field('price', '120')
     .field('isAdopted', 'true');
 
+  console.log('PUT Response:', res.status, res.body);
+
+  expect(res.status).toBeLessThan(500);  // sanity check
   expect(res.status).toBe(200);
   expect(res.body.price).toBe(120);
   expect(res.body.isAdopted).toBe(true);
