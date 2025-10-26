@@ -47,6 +47,18 @@ Menu View & Cart
 - Cart API routes with input validation(`routes/cartRoutes.js, utils/cartValidation.js`)
 - Front-end cart UI + client-side validation (`public/menu.js, public/cart.js000`)
 
+Adoption View
+- Model: `Cat.js`
+- View: `cat-display.ejs`, `cat-profile.ejs`
+- Controller: `catController.js`, `catRoutes.js`
+- Utils: `filterUtils.js`
+
+Adoption Management
+- Model: `adoptionRequest.js`
+- View: `adoptionRequest.ejs`, `adoptionRequests.ejs`
+- Controller: `requestController.js`, `adoptionRequestRoute.js`
+- Utils: `filterUtils.js`, `requestValidator.js`
+
 ## Version History
 
 * 2
