@@ -36,7 +36,7 @@ Sarah White (24844072)
 Email: sarah.e.white@student.uts.edu.au  
 Features: F101 Adoption View & F110 Adoption Management
 
-Jean Quinsenberg (13192190)  
+Jean Quisumbing (13192190)  
 Email: JeanPaulette.P.Quisumbing@student.uts.edu.au  
 Features: F102 Adoption Request & F107 Cat Detail Management
 
