@@ -47,7 +47,7 @@ jest.mock('../models/Cat', () => ({
 
 const app = require('../server'); 
 
-describe('🐱 Cat Profile API (Mock Mongoose)', () => {
+describe('Cat Profile API', () => {
   test('GET /catProfile/api returns cat list', async () => {
     const res = await request(app).get('/catProfile/api');
     expect(res.status).toBe(200);
@@ -72,8 +72,15 @@ describe('🐱 Cat Profile API (Mock Mongoose)', () => {
 
   test('PUT /catProfile/api/:id updates cat info', async () => {
     const res = await request(app)
-      .put('/catProfile/api/1')
-      .send({ price: 120, isAdopted: true });
+        .put('/catProfile/api/1')
+        .send({
+        name: 'Bilbo',
+        breed: 'Domestic Long Hair',
+        gender: 'Male',           
+        ageMonths: 150,           
+        price: 120,
+        isAdopted: true
+   });
 
     expect(res.status).toBe(200);
     expect(res.body.price).toBe(120);

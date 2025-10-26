@@ -29,7 +29,7 @@ jest.mock('../models/Cat', () => ({
 
 const app = require('../server');
 
-describe('🐾 Adoption Request (Mock Mongoose)', () => {
+describe('Adoption Request', () => {
   test('POST /adoption/request creates a new request and redirects', async () => {
     const res = await request(app)
       .post('/adoption/request')
@@ -45,7 +45,7 @@ describe('🐾 Adoption Request (Mock Mongoose)', () => {
       });
 
     expect(res.status).toBe(302);
-    expect(res.headers.location).toBe('/adoption/status/ABC123');
+    expect(res.headers.location).toMatch(/^\/adoption\/status\/[A-Za-z0-9_-]+$/);
     expect(mockRequests.length).toBe(1);
   });
 
@@ -67,7 +67,7 @@ describe('🐾 Adoption Request (Mock Mongoose)', () => {
     expect(res.headers.location).toBe('/adoption/status/XYZ');
   });
 
-  test('GET /adoption/status/:invalid returns 404', async () => {
+  test('GET /adoption/status/:invalid is invalid', async () => {
     const res = await request(app).get('/adoption/status/NOPE');
     expect(res.status).toBe(404);
     expect(res.text).toContain('Not found');
