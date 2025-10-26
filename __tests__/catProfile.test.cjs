@@ -1,64 +1,47 @@
+// Jean Quisumbing
 const request = require("supertest");
 const app = require("../server");
 
-// Mock model
 const mockFind = jest.fn();
 const mockCreate = jest.fn();
+const mockFindById = jest.fn();
+const mockFindByIdAndUpdate = jest.fn();
 const mockFindByIdAndDelete = jest.fn();
 
 jest.mock("../models/Cat", () => ({
-  // Your route does: const CatModel = require('../models/Cat'); const Cat = CatModel?.Cat || CatModel
   Cat: {
     find: (...args) => mockFind(...args),
     create: (...args) => mockCreate(...args),
+    findById: (...args) => mockFindById(...args),
+    findByIdAndUpdate: (...args) => mockFindByIdAndUpdate(...args),
     findByIdAndDelete: (...args) => mockFindByIdAndDelete(...args),
   },
 }));
 
-describe("Cat Profile API", () => {
+describe("Cat Profile Tests", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   test("GET /catProfile/api returns cat list", async () => {
     mockFind.mockResolvedValue([
-      {
-        _id: "c1",
-        name: "Mochi",
-        breed: "DSH",
-        gender: "Female",
-        ageMonths: 12,
-        microchipId: "12345",
-        price: 99,
-        description: "Sweet cat",
-        isAdopted: false,
-        imageUrl: "/uploads/mochi.png",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+      { _id: "1", name: "Mochi", breed: "DSH", gender: "Female" },
     ]);
 
-    const res = await request(app)
-      .get("/catProfile/api")
-      .set("Accept", "application/json");
-
+    const res = await request(app).get("/catProfile/api");
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
     expect(res.body[0].name).toBe("Mochi");
   });
 
-  test("POST /catProfile/api/add adds a new cat (JSON without file)", async () => {
+  test("POST /catProfile/api/add creates a new cat", async () => {
     const newCat = {
-      _id: "c2",
+      _id: "2",
       name: "Bilbo",
       breed: "Ragdoll",
       gender: "Male",
       ageMonths: 24,
-      microchipId: "99999",
       price: 150,
-      description: "Fluffy",
-      isAdopted: false,
-      imageUrl: "",
     };
 
     mockCreate.mockResolvedValue(newCat);
@@ -66,26 +49,42 @@ describe("Cat Profile API", () => {
     const res = await request(app)
       .post("/catProfile/api/add")
       .set("Accept", "application/json")
-      .send({
-        name: "Bilbo",
-        breed: "Ragdoll",
-        gender: "Male",
-        ageMonths: 24,
-        microchipId: "99999",
-        price: 150,
-        description: "Fluffy",
-        isAdopted: false,
-      });
+      .send(newCat);
 
     expect(res.status).toBe(201);
     expect(res.body.name).toBe("Bilbo");
     expect(mockCreate).toHaveBeenCalled();
   });
 
-  test("DELETE /catProfile/api/:id deletes a cat", async () => {
-    mockFindByIdAndDelete.mockResolvedValue({ _id: "c1" });
+  test("PUT /catProfile/api/:id updates a cat", async () => {
+    // Mock findById().select('imageUrl') chain
+    mockFindById.mockReturnValue({
+      select: jest.fn().mockResolvedValue({ imageUrl: "/uploads/old.png" }),
+    });
 
-    const res = await request(app).delete("/catProfile/api/c1");
+    const updatedCat = {
+      _id: "1",
+      name: "Mochi",
+      price: 120,
+      isAdopted: true,
+      gender: "Female",
+    };
+
+    mockFindByIdAndUpdate.mockResolvedValue(updatedCat);
+
+    const res = await request(app)
+      .put("/catProfile/api/1")
+      .send({ price: 120, isAdopted: true, gender: "Female" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.price).toBe(120);
+    expect(res.body.isAdopted).toBe(true);
+  });
+
+  test("DELETE /catProfile/api/:id removes a cat", async () => {
+    mockFindByIdAndDelete.mockResolvedValue({ _id: "1" });
+
+    const res = await request(app).delete("/catProfile/api/1");
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ message: "Deleted" });
   });
