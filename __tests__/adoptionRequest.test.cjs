@@ -1,9 +1,7 @@
 // Jean Quisumbing
-
 process.env.NODE_ENV = 'test';
 
 const request = require('supertest');
-
 const mockRequests = [];
 
 // Mock AdoptionRequest model 
