@@ -1,4 +1,4 @@
-// + Sarah White
+// Jean Quisumbing + Sarah White
 
 const mongoose = require('mongoose');
 

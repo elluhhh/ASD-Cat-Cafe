@@ -1,3 +1,4 @@
+// Jean Quisumbing
 const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
@@ -43,13 +44,7 @@ router.post('/request', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-/*router.get('/status/:code', async (req, res, next) => {
-  try {
-    const doc = await AdoptionRequest.findOne({ trackingCode: req.params.code }).lean();
-    if (!doc) return res.status(404).render('adoptionStatus', { notFound: true, code: req.params.code });
-    res.render('adoptionStatus', { notFound: false, reqDoc: doc });
-  } catch (e) { next(e); }
-});*/
+// Show status by code
 router.get('/status/:code', async (req, res, next) => {
   try {
     const code = req.params.code;
@@ -81,7 +76,7 @@ router.get('/status/:code', async (req, res, next) => {
   }
 });
 
-// 3️⃣ Handle form submission for ?code=
+// Handle form submission for ?code=
 router.get('/status', (req, res) => {
   const code = (req.query.code || '').trim();
   if (!code) return res.redirect('/adoption/check');

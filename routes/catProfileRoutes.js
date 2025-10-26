@@ -1,3 +1,4 @@
+// Jean Quisumbing
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
@@ -7,14 +8,14 @@ const Cat = CatModel?.Cat || CatModel;
 
 const router = express.Router();
 
-// --- Multer setup for image uploads ---
+// Multer setup for image uploads 
 const storage = multer.diskStorage({
   destination: path.join(__dirname, '..', 'public', 'uploads'),
   filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
 });
 const upload = multer({ storage });
 
-// ---------- 1. LIST ALL ----------
+// LIST ALL 
 router.get('/', async (_req, res) => {
   try {
     const cats = await Cat.find();
@@ -24,7 +25,7 @@ router.get('/', async (_req, res) => {
   }
 });
 
-// ---------- 2. GET ONE ----------
+// GET CAT 
 router.get('/:id', async (req, res) => {
   try {
     const cat = await Cat.findById(req.params.id);
@@ -35,7 +36,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// ---------- 3. ADD ----------
+// ADD NEW CAT
 router.post('/add', upload.single('image'), async (req, res) => {
   try {
     const cat = await Cat.create({
@@ -55,7 +56,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
   }
 });
 
-// ---------- 4. UPDATE ----------
+// UPDATE CAT 
 router.put('/:id', upload.single('image'), async (req, res) => {
   try {
     const isAdoptedValue =
@@ -97,7 +98,7 @@ router.put('/:id', upload.single('image'), async (req, res) => {
   }
 });
 
-// ---------- 5. DELETE ----------
+// DELETE CAT 
 router.delete('/:id', async (req, res) => {
   try {
     const cat = await Cat.findByIdAndDelete(req.params.id);

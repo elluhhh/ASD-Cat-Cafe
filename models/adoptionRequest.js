@@ -1,3 +1,4 @@
+// Jean Quisumbing 
 const mongoose = require('mongoose');
 
 const STATUSES = ['RECEIVED', 'UNDER_REVIEW', 'APPROVED', 'REJECTED', 'NEEDS_INFO'];
