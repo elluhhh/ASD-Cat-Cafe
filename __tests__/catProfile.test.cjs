@@ -57,7 +57,6 @@ describe("Cat Profile Tests", () => {
   });
 
   test("PUT /catProfile/api/:id updates a cat", async () => {
-    // Mock findById().select('imageUrl') chain
     mockFindById.mockReturnValue({
       select: jest.fn().mockResolvedValue({ imageUrl: "/uploads/old.png" }),
     });
