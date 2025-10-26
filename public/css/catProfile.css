@@ -22,9 +22,7 @@ body {
 
 .wrap {
     max-width: 100%;
-    width: 95vw;            
-    margin: 0 auto;
-    padding: 2rem 3rem;    
+    padding: 0 2rem;    
 }
 
 .header h1 {
@@ -46,7 +44,7 @@ body {
     width: 100%;
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     margin-bottom: 2rem;
-
+    margin: 0 auto;
     box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
 }
 
@@ -92,9 +90,7 @@ select:focus {
 }
 
 .actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end
+    margin-bottom: 1rem;
 }
 
 .btn {
@@ -146,7 +142,7 @@ thead {
 
 th,
 td {
-    padding: 0.8rem;
+    padding: 10px 8px;
     text-align: left;
     vertical-align: top;
 }

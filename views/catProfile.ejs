@@ -84,6 +84,8 @@
             <th>Price ($)</th>
             <th>Description</th>
             <th>Adopted</th>
+            <th>Created</th>
+            <th>Last Updated</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -151,6 +153,9 @@
     ? (c.imageUrl.startsWith('/') ? c.imageUrl : `/uploads/${c.imageUrl}`)
     : 'https://placehold.co/80x80?text=Cat';
 
+  const created = c.createdAt ? new Date(c.createdAt).toLocaleDateString() : '-';
+  const updated = c.updatedAt ? new Date(c.updatedAt).toLocaleDateString() : '-';
+
   return `
     <tr data-id="${c._id}">
       <td><img class="thumb" src="${src}" alt=""></td>
@@ -162,6 +167,8 @@
       <td>${c.price != null ? `$${c.price}` : '-'}</td>
       <td>${c.description || '-'}</td>
       <td><span class="badge ${c.isAdopted ? 'yes':'no'}">${c.isAdopted ? 'Yes':'No'}</span></td>
+      <td>${created}</td>
+      <td>${updated}</td>
       <td>
         <button class="btn small" data-action="edit">Edit</button>
         <button class="btn small danger" data-action="del">Delete</button>
