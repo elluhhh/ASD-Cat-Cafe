@@ -70,22 +70,21 @@ describe('Cat Profile API', () => {
     expect(mockCats.length).toBeGreaterThan(1);
   });
 
-  test('PUT /catProfile/api/:id updates cat info', async () => {
-    const res = await request(app)
-        .put('/catProfile/api/1')
-        .send({
-        name: 'Bilbo',
-        breed: 'Domestic Long Hair',
-        gender: 'Male',           
-        ageMonths: 150,           
-        price: 120,
-        isAdopted: true
-   });
+test('PUT /catProfile/api/:id updates cat info', async () => {
+  const res = await request(app)
+    .put('/catProfile/api/1')
+    .set('Accept', 'application/json')
+    .field('name', 'Bilbo')
+    .field('breed', 'Domestic Long Hair')
+    .field('gender', 'Male')
+    .field('ageMonths', '150')
+    .field('price', '120')
+    .field('isAdopted', 'true');
 
-    expect(res.status).toBe(200);
-    expect(res.body.price).toBe(120);
-    expect(res.body.isAdopted).toBe(true);
-  });
+  expect(res.status).toBe(200);
+  expect(res.body.price).toBe(120);
+  expect(res.body.isAdopted).toBe(true);
+});
 
   test('DELETE /catProfile/api/:id deletes a cat', async () => {
     const res = await request(app).delete('/catProfile/api/1');
