@@ -21,7 +21,7 @@ jest.mock('../models/adoptionRequest', () => ({
   }
 }));
 
-// Mock Cat model 
+// Mock Cat model
 jest.mock('../models/Cat', () => ({
   __esModule: false,
   Cat: { findById: jest.fn(async () => null) }
