@@ -47,6 +47,18 @@ Menu View & Cart
 - Cart API routes with input validation(`routes/cartRoutes.js, utils/cartValidation.js`)
 - Front-end cart UI + client-side validation (`public/menu.js, public/cart.js000`)
 
+Food Management
+- Model: `models/foodModel.js`
+- Controller: `controllers/foodController.js`
+- Route: `routes/foodRoutes.js`
+- Views: `views/foodManagement.ejs`, `views/menu.ejs`
+
+Checkout & Payment
+- Model: `models/orderModel.js`
+- Controller: `controllers/checkoutController.js`
+- Route: `routes/checkoutRoutes.js`
+- Views: `views/checkout.ejs`, `views/paymentSuccess.ejs`
+
 Adoption View
 - Model: `Cat.js`
 - View: `cat-display.ejs`, `cat-profile.ejs`
