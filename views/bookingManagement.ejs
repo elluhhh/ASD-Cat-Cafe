@@ -50,8 +50,7 @@
 					<td><%=booking.email%></td>
 					<td><%=booking.phone%></td>
 					<td>
-						<%=booking.date_time.toLocaleDateString([], {day:
-						'numeric', month: 'numeric', year:'numeric'})%>
+						<%=booking.date_time.toLocaleDateString('en-GB')%>
 					</td>
                     <td>
 						<%=booking.date_time.toLocaleString([], {hour:
