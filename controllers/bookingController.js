@@ -21,6 +21,11 @@ const updateBooking = async (req, res) => {
 const createBooking = async (req, res) => {
 	try {
 		const {date, time, attendees, total_price, f_name, l_name, email, phone} = req.body;
+		console.log(time);
+
+		if(typeof time === 'undefined'){
+			return res.redirect("/booking");
+		}
 		
 		const booking = await Booking.create({
 			f_name: f_name,
