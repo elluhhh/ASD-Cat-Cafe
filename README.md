@@ -9,7 +9,8 @@ https://asd-cat-cafe-ajhtfwf3a8h5ezeh.australiaeast-01.azurewebsites.net
 ## Run Locally
     * Download from GitHub Repo
     * Unzip file
-    * Run "npm ci" to download necessary modules
+    * Open Command Prompt and change the current directory to the directory of the unzipped file
+    * Run "npm install" to download necessary modules
     * Run "npm start" to start server
     * View website on http://localhost:8000/
 
@@ -70,6 +71,18 @@ Adoption Management
 - View: `adoptionRequest.ejs`, `adoptionRequests.ejs`
 - Controller: `requestController.js`, `adoptionRequestRoute.js`
 - Utils: `filterUtils.js`, `requestValidator.js`
+
+Booking
+- Model: `bookingModel.js`
+- View: `booking.ejs`
+- Route: `bookingRoutes.js`
+- Controller: `bookingController.js` 
+
+Booking Managmenet
+- Model: `bookingModel.js`
+- View: `bookingManagment.ejs`
+- Route: `bookingManagementRoutes.js`
+- Controller: `bookingManagementController.js`
 
 ## Version History
 
